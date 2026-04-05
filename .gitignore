@@ -1,0 +1,7 @@
+.DS_Store
+*.png
+*.jpg
+*.jpeg
+supabase/.temp/
+node_modules/
+Website for L'Epicerie Sociale/
