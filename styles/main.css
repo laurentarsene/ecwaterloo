@@ -61,7 +61,7 @@ strong { color: inherit; font-weight: 600; }
   margin-inline: auto;
   margin-bottom: 3.5rem;
 }
-.section-header .body-text { margin-top: 1rem; }
+.section-header .body-text { margin-top: 1rem; margin-inline: auto; }
 
 /* --- Typography --- */
 .label {
@@ -493,25 +493,17 @@ strong { color: inherit; font-weight: 600; }
   background: #fff;
   border-radius: 2px;
   border: 1px solid rgba(28,48,56,0.06);
+  box-shadow: 0 4px 24px rgba(28,48,56,0.08);
   overflow: hidden;
+  max-width: 900px;
+  margin-inline: auto;
 }
 
 .cal-frame {
   width: 100%;
-  height: 680px;
+  height: 700px;
   border: none;
   display: block;
-}
-
-.cal-placeholder {
-  padding: 4rem 2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-  color: rgba(28,48,56,0.4);
-  font-size: 0.95rem;
 }
 
 /* --- Bénévoles join steps --- */
