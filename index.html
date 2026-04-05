@@ -286,11 +286,11 @@
           <p class="body-text body-text--muted-light">Chaque <strong class="text-white">premier jeudi du mois</strong>, les étudiants peuvent venir faire leurs courses à l'Espace Convivial pour seulement <strong class="text-accent-yellow">5€ symboliques</strong>.</p>
           <p class="body-text body-text--muted-light">On sait que la vie étudiante n'est pas facile. Entre le loyer, les cours, les transports — l'alimentation ne devrait pas être un stress supplémentaire.</p>
           <p class="body-text body-text--muted-light">Il suffit de s'inscrire en avance. L'inscription prend 30 secondes.</p>
-          <a href="#contact" class="btn btn--yellow">
+          <button type="button" class="btn btn--yellow" id="openStudentForm">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             Je m'inscris pour le prochain jeudi
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
+          </button>
         </div>
         <div class="student-stats reveal" data-reveal data-delay="150">
           <div class="student-stat-card" style="background: var(--mint)">
@@ -480,6 +480,143 @@
       <p class="footer__copy">&copy; 2014–2026 Espace Convivial de Waterloo · ASBL</p>
     </div>
   </footer>
+
+  <!-- ══════════ MODAL INSCRIPTION ÉTUDIANTS ══════════ -->
+  <div class="student-modal-overlay" id="studentModal" aria-hidden="true">
+    <div class="student-modal" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
+
+      <button class="student-modal__close" id="closeStudentModal" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div class="sform-progress" aria-hidden="true">
+        <div class="sform-progress__bar" id="sformProgressBar"></div>
+      </div>
+
+      <form id="studentForm" novalidate>
+        <input type="hidden" name="date_rdv" id="hiddenDateRdv">
+
+        <!-- ── Étape 1 : Rappels ── -->
+        <div class="sform-step active" data-step="1">
+          <p class="sform-kicker">Épicerie étudiante</p>
+          <h2 class="sform-title" id="studentModalTitle">Prochain<br>rendez-vous</h2>
+          <div class="sform-date-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="nextThursdayDisplay">Calcul en cours…</span>
+          </div>
+          <ul class="sform-rules">
+            <li>
+              <span class="sform-rule-icon sform-rule-icon--yellow">5€</span>
+              <span><strong>5€ symboliques</strong> à apporter impérativement le jour J. Aucune exception.</span>
+            </li>
+            <li>
+              <span class="sform-rule-icon">✓</span>
+              <span>L'inscription est <strong>obligatoire</strong>. Les absents non excusés ne pourront plus s'inscrire.</span>
+            </li>
+            <li>
+              <span class="sform-rule-icon">✉</span>
+              <span>Tu recevras un <strong>email de confirmation</strong> avec l'adresse et les infos pratiques.</span>
+            </li>
+          </ul>
+          <button type="button" class="btn btn--yellow sform-next">
+            Je m'inscris
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <!-- ── Étape 2 : Identité ── -->
+        <div class="sform-step" data-step="2">
+          <p class="sform-kicker">Étape 1 / 3</p>
+          <h2 class="sform-title">Qui<br>es-tu ?</h2>
+          <div class="sform-row">
+            <div class="sform-group">
+              <label class="sform-label" for="inputPrenom">Prénom</label>
+              <input class="sform-input" type="text" id="inputPrenom" name="prenom" autocomplete="given-name" placeholder="Marie">
+            </div>
+            <div class="sform-group">
+              <label class="sform-label" for="inputNom">Nom</label>
+              <input class="sform-input" type="text" id="inputNom" name="nom" autocomplete="family-name" placeholder="Dupont">
+            </div>
+          </div>
+          <div class="sform-group">
+            <label class="sform-label">Genre</label>
+            <div class="sform-radio-group" id="genreGroup">
+              <label class="sform-radio">
+                <input type="radio" name="genre" value="Femme">
+                <span>Femme</span>
+              </label>
+              <label class="sform-radio">
+                <input type="radio" name="genre" value="Homme">
+                <span>Homme</span>
+              </label>
+            </div>
+          </div>
+          <div class="sform-nav">
+            <button type="button" class="btn btn--outline-dark sform-prev">← Retour</button>
+            <button type="button" class="btn btn--yellow sform-next">Continuer →</button>
+          </div>
+        </div>
+
+        <!-- ── Étape 3 : Coordonnées ── -->
+        <div class="sform-step" data-step="3">
+          <p class="sform-kicker">Étape 2 / 3</p>
+          <h2 class="sform-title">Tes<br>coordonnées</h2>
+          <div class="sform-group">
+            <label class="sform-label" for="inputEmail">Email</label>
+            <input class="sform-input" type="email" id="inputEmail" name="email" autocomplete="email" placeholder="marie@exemple.com">
+          </div>
+          <div class="sform-group">
+            <label class="sform-label" for="inputTel">Téléphone</label>
+            <input class="sform-input" type="tel" id="inputTel" name="telephone" autocomplete="tel" placeholder="+32 470 00 00 00">
+          </div>
+          <div class="sform-nav">
+            <button type="button" class="btn btn--outline-dark sform-prev">← Retour</button>
+            <button type="button" class="btn btn--yellow sform-next">Continuer →</button>
+          </div>
+        </div>
+
+        <!-- ── Étape 4 : Visite ── -->
+        <div class="sform-step" data-step="4">
+          <p class="sform-kicker">Étape 3 / 3</p>
+          <h2 class="sform-title">Ta<br>visite</h2>
+          <div class="sform-group">
+            <label class="sform-label" for="inputUniv">Université / École</label>
+            <input class="sform-input" type="text" id="inputUniv" name="universite" placeholder="UCLouvain, ULB, HELHa…">
+          </div>
+          <div class="sform-group">
+            <label class="sform-label">Pour combien de personnes ?</label>
+            <div class="sform-stepper">
+              <button type="button" class="sform-stepper__btn" id="stepperMinus" aria-label="Réduire">−</button>
+              <span class="sform-stepper__val" id="stepperVal">1</span>
+              <button type="button" class="sform-stepper__btn" id="stepperPlus" aria-label="Augmenter">+</button>
+            </div>
+            <input type="hidden" name="nb_personnes" id="hiddenNbPersonnes" value="1">
+          </div>
+          <label class="sform-checkbox" id="engagementLabel">
+            <input type="checkbox" id="engagementCheck">
+            <span>Je m'engage à me présenter le <strong class="thursday-ref">…</strong> et à apporter <strong>5€</strong> par personne.</span>
+          </label>
+          <div class="sform-nav">
+            <button type="button" class="btn btn--outline-dark sform-prev">← Retour</button>
+            <button type="submit" class="btn btn--yellow">Confirmer →</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- ── Succès ── -->
+      <div class="sform-success" id="sformSuccess" hidden>
+        <div class="sform-success__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="30" height="30"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="sform-kicker">C'est bon !</p>
+        <h2 class="sform-title">À jeudi !</h2>
+        <p class="sform-success__date" id="successDate"></p>
+        <p class="sform-success__note">Un email de confirmation t'a été envoyé. N'oublie pas d'apporter tes <strong>5€</strong> le jour J !</p>
+        <button type="button" class="btn btn--dark" id="closeSuccess">Fermer</button>
+      </div>
+
+    </div>
+  </div>
 
   <script src="scripts/main.js"></script>
 </body>
