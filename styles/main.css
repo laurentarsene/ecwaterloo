@@ -162,7 +162,7 @@ strong { color: inherit; font-weight: 600; }
 }
 
 .nav__logo-img {
-  height: 18px;
+  height: 28px;
   width: auto;
   display: block;
 }
@@ -677,7 +677,7 @@ strong { color: inherit; font-weight: 600; }
 }
 
 .footer__logo-img {
-  height: 18px;
+  height: 26px;
   width: auto;
   display: block;
   filter: brightness(0) invert(1);
