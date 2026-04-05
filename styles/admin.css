@@ -397,6 +397,64 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── Settings panel ─────────────────────────────────── */
+.admin-settings-card {
+  background: #fff;
+  border-radius: 3px;
+  border: 1px solid rgba(28,48,56,.07);
+  padding: 2rem;
+  max-width: 560px;
+}
+
+.admin-settings-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: #1c3038;
+  margin-bottom: 0.5rem;
+}
+
+.admin-settings-desc {
+  font-size: 0.875rem;
+  color: rgba(28,48,56,.5);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.admin-settings-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-input {
+  width: 80px;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid rgba(28,48,56,.14);
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1c3038;
+  text-align: center;
+  outline: none;
+}
+.admin-input:focus { border-color: #1c3038; }
+
+.admin-settings-unit {
+  font-size: 0.875rem;
+  color: rgba(28,48,56,.6);
+  flex: 1;
+}
+
+.admin-settings-feedback {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: #1a6e40;
+  min-height: 1.2em;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .admin-header__inner { gap: 0.75rem; }

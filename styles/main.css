@@ -131,6 +131,15 @@ strong { color: inherit; font-weight: 600; }
 
 .btn--yellow { background: var(--yellow); color: var(--dark); border-color: transparent; }
 .btn--yellow:hover { background: #d4d426; }
+.btn--disabled,
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+.student-countdown {
+  margin-top: 0.9rem;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.02em;
+}
 
 /* --- Nav --- */
 .nav {

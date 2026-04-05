@@ -50,6 +50,39 @@ links.querySelectorAll('a').forEach(a => {
   const hiddenDate = document.getElementById('hiddenDateRdv');
   if (hiddenDate) hiddenDate.value = nextThursdayStr;
 
+  // Supabase client (partagé dans tout le module)
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── Fenêtre d'inscription ─────────────────────────────
+  async function initButtonState() {
+    let joursMax = 3;
+    try {
+      const { data } = await sb.from('settings').select('value').eq('key', 'jours_inscription_max').single();
+      if (data) joursMax = parseInt(data.value, 10);
+    } catch (_) {}
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const daysUntil   = Math.round((nextThursday - today) / 86400000);
+    const daysUntilOpen = daysUntil - joursMax;
+
+    const btn       = document.getElementById('openStudentForm');
+    const countdown = document.getElementById('studentCountdown');
+    if (!btn) return;
+
+    if (daysUntilOpen > 0) {
+      btn.disabled = true;
+      btn.classList.add('btn--disabled');
+      if (countdown) {
+        const j = daysUntilOpen;
+        countdown.textContent = `Inscriptions ouvertes dans ${j} jour${j > 1 ? 's' : ''} · ${nextThursdayStr}`;
+        countdown.hidden = false;
+      }
+    }
+  }
+  initButtonState();
+
   // Elements
   const overlay   = document.getElementById('studentModal');
   const openBtn   = document.getElementById('openStudentForm');
@@ -191,9 +224,6 @@ links.querySelectorAll('a').forEach(a => {
     };
 
     // 1. Insérer dans Supabase
-    const { createClient } = supabase;
-    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const { error: insertError } = await sb
       .from('inscriptions_etudiantes')
       .insert([data]);

@@ -45,6 +45,7 @@
         </div>
         <nav class="admin-tabs" id="adminTabs">
           <button class="admin-tab active" data-tab="inscriptions">Inscriptions étudiantes</button>
+          <button class="admin-tab" data-tab="parametres">Paramètres</button>
         </nav>
         <button class="admin-logout" id="logoutBtn">Déconnexion</button>
       </div>
@@ -117,6 +118,20 @@
       </div>
 
     </main>
+    <!-- Panel : Paramètres -->
+    <main class="admin-main" id="panelParametres" hidden>
+      <div class="admin-settings-card">
+        <h2 class="admin-settings-title">Fenêtre d'inscription</h2>
+        <p class="admin-settings-desc">Définit combien de jours avant le premier jeudi du mois les inscriptions s'ouvrent sur le site. En dehors de cette fenêtre, le bouton est désactivé avec un message de compte à rebours.</p>
+        <div class="admin-settings-row">
+          <input type="number" class="admin-input" id="settingJours" min="1" max="30" value="3">
+          <span class="admin-settings-unit">jours avant le premier jeudi</span>
+          <button class="admin-btn admin-btn--primary" id="saveSettings">Enregistrer</button>
+        </div>
+        <p class="admin-settings-feedback" id="settingsFeedback"></p>
+      </div>
+    </main>
+
   </div>
 
   <script src="config.js"></script>

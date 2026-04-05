@@ -265,5 +265,40 @@ function formatDateFr(date) {
   return `Jeudi ${date.getDate()} ${mois[date.getMonth()]} ${date.getFullYear()}`;
 }
 
+// ── Tab switching ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.admin-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.dataset.tab;
+    document.getElementById('panelInscriptions').hidden = target !== 'inscriptions';
+    document.getElementById('panelParametres').hidden   = target !== 'parametres';
+    if (target === 'parametres') loadSettings();
+  });
+});
+
+// ── Paramètres ────────────────────────────────────────────────────────────────
+async function loadSettings() {
+  const { data } = await sb.from('settings').select('value').eq('key', 'jours_inscription_max').single();
+  if (data) document.getElementById('settingJours').value = data.value;
+}
+
+document.getElementById('saveSettings').addEventListener('click', async () => {
+  const val      = parseInt(document.getElementById('settingJours').value, 10);
+  const feedback = document.getElementById('settingsFeedback');
+
+  if (!val || val < 1) { feedback.textContent = 'Valeur invalide.'; feedback.style.color = '#a03030'; return; }
+
+  const { error } = await sb.from('settings').upsert({ key: 'jours_inscription_max', value: String(val) });
+
+  if (error) {
+    feedback.textContent = 'Erreur lors de la sauvegarde.';
+    feedback.style.color = '#a03030';
+  } else {
+    feedback.textContent = `✓ Enregistré — inscriptions ouvertes ${val} jour${val > 1 ? 's' : ''} avant chaque rendez-vous.`;
+    feedback.style.color = '#1a6e40';
+  }
+});
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 init();
