@@ -157,10 +157,14 @@ strong { color: inherit; font-weight: 600; }
 }
 
 .nav__logo {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 1.5rem;
-  color: var(--dark);
-  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+}
+
+.nav__logo-img {
+  height: 40px;
+  width: auto;
+  display: block;
 }
 
 .nav__links {
@@ -672,10 +676,11 @@ strong { color: inherit; font-weight: 600; }
   flex-wrap: wrap;
 }
 
-.footer__logo {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 1.5rem;
-  color: #fff;
+.footer__logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
 }
 
 .footer__copy {
