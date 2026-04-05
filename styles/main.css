@@ -606,6 +606,26 @@ strong { color: inherit; font-weight: 600; }
   color: rgba(28,48,56,0.6);
   line-height: 1.6;
   padding-top: 0.25rem;
+  flex: 1;
+}
+
+.donation-item--link {
+  text-decoration: none;
+  cursor: pointer;
+}
+.donation-item--link:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(28,48,56,0.08);
+}
+
+.donation-item__arrow {
+  flex-shrink: 0;
+  color: rgba(28,48,56,0.3);
+  transition: transform 0.2s, color 0.2s;
+}
+.donation-item--link:hover .donation-item__arrow {
+  transform: translateX(3px);
+  color: var(--dark);
 }
 
 .iban-block {
