@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="L'Espace Convivial de Waterloo — accompagnement social, alimentation, emploi, logement. Une ASBL 100% bénévole au cœur de Waterloo.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Espace Convivial de Waterloo">
+  <meta property="og:description" content="ASBL 100% bénévole. Alimentation, emploi, logement, santé, justice. On s'occupe de tout.">
+  <meta property="og:locale" content="fr_BE">
+
+  <title>Espace Convivial de Waterloo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+  <!-- ══════════ NAV ══════════ -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#" class="nav__logo" aria-label="Espace Convivial de Waterloo">ECW</a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#mission">Mission</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#workflow">Démarche</a></li>
+        <li><a href="#etudiants">Étudiants</a></li>
+        <li><a href="#rdv">Rendez-vous</a></li>
+        <li><a href="#benevoles">Bénévoles</a></li>
+        <li><a href="#soutenir">Soutenir</a></li>
+        <li><a href="#contact" class="nav__cta">Nous contacter</a></li>
+      </ul>
+      <button class="nav__toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════ HERO ══════════ -->
+  <section id="accueil" class="hero">
+    <div class="hero__inner">
+      <div class="hero__text reveal" data-reveal>
+        <span class="label">ASBL · Waterloo · Depuis 2014</span>
+        <h1 class="hero__title">
+          BIEN PLUS<br>
+          QU'UNE<br>
+          <span class="text-accent-red">ÉPICERIE</span>
+        </h1>
+        <p class="hero__desc">
+          Fondée par <strong>Wivine Mayaya</strong>, l'Espace Convivial accompagne des milliers de personnes vers une vie digne. Uniquement des bénévoles, zéro salariés.
+        </p>
+        <div class="hero__actions">
+          <a href="#mission" class="btn btn--dark">
+            Découvrir
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#benevoles" class="btn btn--outline-dark">
+            Rejoindre l'équipe
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__media reveal" data-reveal data-delay="200">
+        <div class="hero__img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1593113616828-6f22bca04804?w=900&q=80"
+            alt="Bénévoles de l'Espace Convivial de Waterloo en action"
+            class="hero__img"
+            loading="eager"
+          >
+          <div class="hero__stat hero__stat--bottom">
+            <p class="stat__val">1000+</p>
+            <p class="stat__lbl">Personnes aidées</p>
+          </div>
+          <div class="hero__stat hero__stat--top">
+            <p class="stat__val stat__val--accent">0</p>
+            <p class="stat__lbl stat__lbl--light">Salariés</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ MARQUEE ══════════ -->
+  <div class="marquee-bar" aria-hidden="true">
+    <div class="marquee-track">
+      <span>SOLIDARITÉ</span><span class="sep">✦</span>
+      <span>DIGNITÉ</span><span class="sep">✦</span>
+      <span>ENTRAIDE</span><span class="sep">✦</span>
+      <span>ÉCOUTE</span><span class="sep">✦</span>
+      <span>HUMANITÉ</span><span class="sep">✦</span>
+      <span>PARTAGE</span><span class="sep">✦</span>
+      <span>RESPECT</span><span class="sep">✦</span>
+      <span>ESPOIR</span><span class="sep">✦</span>
+      <span>COMMUNAUTÉ</span><span class="sep">✦</span>
+      <span>ACTION</span><span class="sep">✦</span>
+      <!-- duplicate for seamless loop -->
+      <span>SOLIDARITÉ</span><span class="sep">✦</span>
+      <span>DIGNITÉ</span><span class="sep">✦</span>
+      <span>ENTRAIDE</span><span class="sep">✦</span>
+      <span>ÉCOUTE</span><span class="sep">✦</span>
+      <span>HUMANITÉ</span><span class="sep">✦</span>
+      <span>PARTAGE</span><span class="sep">✦</span>
+      <span>RESPECT</span><span class="sep">✦</span>
+      <span>ESPOIR</span><span class="sep">✦</span>
+      <span>COMMUNAUTÉ</span><span class="sep">✦</span>
+      <span>ACTION</span><span class="sep">✦</span>
+    </div>
+  </div>
+
+  <!-- ══════════ MISSION ══════════ -->
+  <section id="mission" class="section bg-cream">
+    <div class="container">
+      <div class="grid-2">
+        <div class="img-block reveal" data-reveal>
+          <div class="img-block__frame">
+            <img
+              src="https://images.unsplash.com/photo-1771340588962-174f6dbafecb?w=900&q=80"
+              alt="Accompagnement communautaire"
+              class="img-block__img"
+              loading="lazy"
+            >
+          </div>
+          <div class="img-block__shadow" style="background: var(--pink)"></div>
+        </div>
+        <div class="reveal" data-reveal data-delay="100">
+          <span class="label">Notre Mission</span>
+          <h2 class="big-heading">
+            ÉCOUTE,<br>
+            ENTRAIDE<br>
+            <span class="text-accent-blue">&amp; ACTION</span>
+          </h2>
+          <p class="body-text">L'Espace Convivial de Waterloo n'est pas une simple distribution alimentaire. C'est un véritable <strong>tremplin vers l'autonomie</strong>. Chaque bénéficiaire est accompagné de manière holistique : on ne traite pas juste le symptôme, on s'attaque aux causes.</p>
+          <p class="body-text">Créée par <strong>Wivine Mayaya</strong> il y a 12 ans, cette ASBL fonctionne <strong>uniquement avec des bénévoles</strong> — pas un seul employé salarié. C'est la preuve vivante que l'engagement et la solidarité peuvent déplacer des montagnes.</p>
+          <p class="body-text">Des milliers de personnes ont été aidées : logement, hôpitaux, justice, aides financières, emploi, alimentation... Tout est possible quand on agit ensemble.</p>
+          <div class="stats-row">
+            <div class="stat-item">
+              <p class="stat-item__val">12+</p>
+              <p class="stat-item__lbl">ANNÉES</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-item__val">1000+</p>
+              <p class="stat-item__lbl">AIDÉS</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-item__val">100%</p>
+              <p class="stat-item__lbl">BÉNÉVOLES</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SERVICES ══════════ -->
+  <section id="services" class="section bg-dark">
+    <div class="container">
+      <div class="services__header">
+        <div class="reveal" data-reveal>
+          <span class="label label--light">Nos Services</span>
+          <h2 class="big-heading big-heading--light">
+            ON S'OCCUPE<br>
+            DE <span class="text-accent-yellow">TOUT</span>
+          </h2>
+        </div>
+        <div class="reveal" data-reveal data-delay="100">
+          <p class="body-text body-text--muted-light">Alimentation, emploi, logement, justice, santé, finances. L'Espace Convivial sait ce dont les personnes en difficulté ont besoin et planifie chaque étape avec elles.</p>
+        </div>
+      </div>
+      <div class="services__grid">
+        <div class="service-card reveal" data-reveal style="background: var(--pink)">
+          <svg class="service-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <h3 class="service-card__title">ALIMENTATION</h3>
+          <p class="service-card__desc">Colis alimentaires hebdomadaires pour les familles dans le besoin.</p>
+        </div>
+        <div class="service-card reveal" data-reveal data-delay="80" style="background: var(--mint)">
+          <svg class="service-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <h3 class="service-card__title">EMPLOI</h3>
+          <p class="service-card__desc">Accompagnement vers l'emploi : CV, formations, mises en relation avec des employeurs.</p>
+        </div>
+        <div class="service-card reveal" data-reveal data-delay="160" style="background: var(--cream)">
+          <svg class="service-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <h3 class="service-card__title">LOGEMENT</h3>
+          <p class="service-card__desc">Recherche de logement, constitution de dossiers, médiation avec les propriétaires.</p>
+        </div>
+        <div class="service-card reveal" data-reveal data-delay="240" style="background: var(--lime)">
+          <svg class="service-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <h3 class="service-card__title">JUSTICE</h3>
+          <p class="service-card__desc">Accompagnement dans les démarches judiciaires et administratives.</p>
+        </div>
+        <div class="service-card reveal" data-reveal data-delay="320" style="background: var(--pink)">
+          <svg class="service-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <h3 class="service-card__title">SANTÉ</h3>
+          <p class="service-card__desc">Orientation vers les hôpitaux, médecins et services de santé adaptés.</p>
+        </div>
+        <div class="service-card reveal" data-reveal data-delay="400" style="background: var(--mint)">
+          <svg class="service-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <h3 class="service-card__title">FINANCES</h3>
+          <p class="service-card__desc">Aide à la gestion budgétaire et orientation vers les aides sociales existantes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ WORKFLOW ══════════ -->
+  <section id="workflow">
+    <div class="workflow-step" style="background: var(--mint)">
+      <div class="container workflow-step__inner">
+        <div class="reveal" data-reveal>
+          <span class="label">Étape 1</span>
+          <h2 class="big-heading">ACCUEIL &amp; ÉCOUTE</h2>
+          <p class="body-text">Chaque personne est reçue individuellement. On écoute, on comprend la situation, on identifie les besoins réels.</p>
+        </div>
+        <div class="workflow-step__icon reveal" data-reveal data-delay="150">
+          <div class="workflow-icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="48" height="48"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="workflow-step" style="background: var(--pink)">
+      <div class="container workflow-step__inner workflow-step__inner--reverse">
+        <div class="reveal" data-reveal>
+          <span class="label">Étape 2</span>
+          <h2 class="big-heading">ÉVALUATION</h2>
+          <p class="body-text">Nos bénévoles formés évaluent la situation globale : alimentation, logement, emploi, santé, administratif.</p>
+        </div>
+        <div class="workflow-step__icon reveal" data-reveal data-delay="150">
+          <div class="workflow-icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="48" height="48"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="workflow-step" style="background: var(--cream)">
+      <div class="container workflow-step__inner">
+        <div class="reveal" data-reveal>
+          <span class="label">Étape 3</span>
+          <h2 class="big-heading">PLAN D'ACTION</h2>
+          <p class="body-text">Un plan d'accompagnement sur mesure est mis en place avec la personne. Chaque étape est définie ensemble.</p>
+        </div>
+        <div class="workflow-step__icon reveal" data-reveal data-delay="150">
+          <div class="workflow-icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="48" height="48"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="workflow-step" style="background: var(--lime)">
+      <div class="container workflow-step__inner workflow-step__inner--reverse">
+        <div class="reveal" data-reveal>
+          <span class="label">Étape 4</span>
+          <h2 class="big-heading">SUIVI CONTINU</h2>
+          <p class="body-text">Un suivi régulier et humain. On ne lâche personne. Chaque bénévole est un point de contact de confiance.</p>
+        </div>
+        <div class="workflow-step__icon reveal" data-reveal data-delay="150">
+          <div class="workflow-icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="48" height="48"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ ÉTUDIANTS ══════════ -->
+  <section id="etudiants" class="section bg-dark">
+    <div class="container">
+      <div class="grid-2">
+        <div class="reveal" data-reveal>
+          <span class="label label--light">Épicerie Étudiante</span>
+          <h2 class="big-heading big-heading--light">
+            ÉTUDIANT<span class="text-accent-yellow"> ?</span><br>
+            ON PENSE<br>
+            <span class="text-accent-red">À TOI</span>
+          </h2>
+          <p class="body-text body-text--muted-light">Chaque <strong class="text-white">premier jeudi du mois</strong>, les étudiants peuvent venir faire leurs courses à l'Espace Convivial pour seulement <strong class="text-accent-yellow">5€ symboliques</strong>.</p>
+          <p class="body-text body-text--muted-light">On sait que la vie étudiante n'est pas facile. Entre le loyer, les cours, les transports — l'alimentation ne devrait pas être un stress supplémentaire.</p>
+          <p class="body-text body-text--muted-light">Il suffit de s'inscrire en avance. L'inscription prend 30 secondes.</p>
+          <a href="#contact" class="btn btn--yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            Je m'inscris pour le prochain jeudi
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="student-stats reveal" data-reveal data-delay="150">
+          <div class="student-stat-card" style="background: var(--mint)">
+            <p class="student-stat-val">5€</p>
+            <p class="student-stat-lbl">PAR INSCRIPTION</p>
+          </div>
+          <div class="student-stat-card" style="background: var(--cream)">
+            <p class="student-stat-val">1er</p>
+            <p class="student-stat-lbl">JEUDI DU MOIS</p>
+          </div>
+          <div class="student-stat-card" style="background: var(--pink)">
+            <p class="student-stat-val">30s</p>
+            <p class="student-stat-lbl">POUR S'INSCRIRE</p>
+          </div>
+          <div class="student-stat-card" style="background: var(--lime)">
+            <p class="student-stat-val">∞</p>
+            <p class="student-stat-lbl">BONNE AMBIANCE</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ RENDEZ-VOUS ══════════ -->
+  <section id="rdv" class="section" style="background: var(--lime)">
+    <div class="container">
+      <div class="section-header reveal" data-reveal>
+        <span class="label">Prendre Rendez-vous</span>
+        <h2 class="big-heading">
+          RÉSERVEZ UN<br>
+          <span class="text-accent-blue">CRÉNEAU</span>
+        </h2>
+        <p class="body-text">Besoin d'un rendez-vous pour un accompagnement personnalisé ? Choisissez le créneau qui vous convient directement dans notre agenda.</p>
+      </div>
+      <div class="cal-wrapper reveal" data-reveal data-delay="200">
+        <!-- Phase 2 : remplacer src par votre lien Cal.com réel -->
+        <!-- <iframe
+          src="https://cal.com/espace-convivial/rendez-vous"
+          class="cal-frame"
+          title="Prendre rendez-vous — Espace Convivial de Waterloo"
+        ></iframe> -->
+        <div class="cal-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <p>Le calendrier de réservation sera disponible prochainement.</p>
+          <a href="#contact" class="btn btn--dark">Nous contacter en attendant</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ BÉNÉVOLES ══════════ -->
+  <section id="benevoles" class="section" style="background: var(--bg)">
+    <div class="container">
+      <div class="grid-2">
+        <div class="reveal" data-reveal>
+          <span class="label">Rejoignez-nous</span>
+          <h2 class="big-heading">
+            NOS BÉNÉVOLES<br>
+            SONT NOTRE<br>
+            <span class="text-accent-red">SUPER-POUVOIR</span>
+          </h2>
+          <p class="body-text">Aucun employé. Que des bénévoles impliqués, organisés et passionnés. Chaque personne apporte ses compétences, son temps et son cœur.</p>
+          <p class="body-text">Nous recevons régulièrement des demandes de personnes souhaitant aider. <strong>Toute aide sérieuse est toujours la bienvenue</strong> : logistique, accompagnement social, cuisine, transport, administratif, traduction...</p>
+          <div class="join-steps">
+            <p class="join-steps__title">COMMENT NOUS REJOINDRE</p>
+            <div class="join-step">
+              <span class="join-step__num">01</span>
+              <p>Contactez-nous par téléphone ou email</p>
+            </div>
+            <div class="join-step">
+              <span class="join-step__num">02</span>
+              <p>Rencontrez notre équipe lors d'une permanence</p>
+            </div>
+            <div class="join-step">
+              <span class="join-step__num">03</span>
+              <p>On identifie ensemble comment vous pouvez contribuer</p>
+            </div>
+            <div class="join-step">
+              <span class="join-step__num">04</span>
+              <p>Vous êtes intégré(e) dans l'équipe, à votre rythme</p>
+            </div>
+          </div>
+        </div>
+        <div class="img-block img-block--right reveal" data-reveal data-delay="100">
+          <div class="img-block__frame">
+            <img
+              src="https://images.unsplash.com/photo-1542323228-002ac256e7b8?w=900&q=80"
+              alt="Bénévoles ensemble"
+              class="img-block__img"
+              loading="lazy"
+            >
+          </div>
+          <div class="img-block__shadow img-block__shadow--right" style="background: var(--mint)"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ SOUTENIR ══════════ -->
+  <section id="soutenir" class="section" style="background: var(--pink)">
+    <div class="container">
+      <div class="grid-2">
+        <div class="reveal" data-reveal>
+          <span class="label">Soutenir notre action</span>
+          <h2 class="big-heading">
+            CHAQUE EURO<br>
+            COMPTE <span class="text-accent-red">DOUBLE</span>
+          </h2>
+          <p class="body-text">Puisque nous n'avons <strong>aucun salarié</strong>, chaque euro donné va directement à l'aide des bénéficiaires. Pas de frais de personnel — juste de l'aide concrète, là où elle est nécessaire.</p>
+          <p class="body-text">Nous fonctionnons en toute <strong>transparence</strong>. Chaque don est utilisé pour financer les colis alimentaires, le matériel de nos permanences, les déplacements et les fournitures essentielles.</p>
+          <p class="body-text"><strong>Même un petit geste régulier fait une différence énorme</strong> quand il est multiplié par la générosité de toute une communauté.</p>
+          <div class="donation-actions">
+            <a href="#contact" class="btn btn--dark">
+              Faire un don
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </a>
+            <a href="#contact" class="btn btn--outline-dark">
+              Nous contacter d'abord
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="reveal" data-reveal data-delay="100">
+          <p class="donation-list-title">CONCRÈTEMENT, VOTRE DON FINANCE</p>
+          <div class="donation-list">
+            <div class="donation-item">
+              <div class="donation-item__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="20" height="20"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              </div>
+              <p>20€ = 1 colis alimentaire pour une famille pendant 1 semaine</p>
+            </div>
+            <div class="donation-item">
+              <div class="donation-item__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="20" height="20"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+              <p>50€ = fournitures scolaires pour 3 enfants</p>
+            </div>
+            <div class="donation-item">
+              <div class="donation-item__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="20" height="20"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              </div>
+              <p>100€ = 1 mois de permanences d'accueil (café, chauffage, matériel)</p>
+            </div>
+            <div class="donation-item">
+              <div class="donation-item__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <p>200€ = accompagnement médical complet pour 1 personne</p>
+            </div>
+          </div>
+          <div class="iban-block">
+            <p class="iban-block__label">Compte bancaire ASBL</p>
+            <p class="iban-block__val">BE XX XXXX XXXX XXXX</p>
+            <p class="iban-block__comm">Communication : "Don ECW"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CONTACT ══════════ -->
+  <section id="contact" class="section bg-dark">
+    <div class="container">
+      <div class="section-header section-header--light reveal" data-reveal>
+        <span class="label label--light">Contact</span>
+        <h2 class="big-heading big-heading--light">
+          ENVIE D'AIDER<span class="text-accent-yellow"> ?</span><br>
+          BESOIN D'AIDE<span class="text-accent-red"> ?</span>
+        </h2>
+        <p class="body-text body-text--muted-light">Notre porte est toujours ouverte. N'hésitez pas.</p>
+      </div>
+      <div class="contact-cards">
+        <div class="contact-card reveal" data-reveal style="background: var(--mint)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1c3038" stroke-width="1.5" width="28" height="28"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.5 2 2 0 0 1 3.59 1.3h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.7 16.92z"/></svg>
+          <p>+32 XXX XX XX XX</p>
+        </div>
+        <div class="contact-card reveal" data-reveal data-delay="100" style="background: var(--cream)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1c3038" stroke-width="1.5" width="28" height="28"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <p>info@espaceconvivial.be</p>
+        </div>
+        <div class="contact-card reveal" data-reveal data-delay="200" style="background: var(--pink)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1c3038" stroke-width="1.5" width="28" height="28"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <p>Waterloo, Belgique</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <span class="footer__logo">ECW</span>
+      <p class="footer__copy">&copy; 2014–2026 Espace Convivial de Waterloo · ASBL</p>
+    </div>
+  </footer>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>
