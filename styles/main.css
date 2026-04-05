@@ -26,8 +26,6 @@ strong { color: inherit; font-weight: 600; }
   --blue:   #59a2b4;
   --yellow: #c9c918;
 
-  --serif: 'Cormorant Garamond', Georgia, serif;
-
   --max-w: 1400px;
   --pad:   clamp(1.25rem, 5vw, 2.5rem);
   --section-py: clamp(5.5rem, 10vw, 9rem);
@@ -95,14 +93,13 @@ strong { color: inherit; font-weight: 600; }
 .big-heading--light { color: #fff; }
 
 .body-text {
-  font-family: var(--serif);
-  font-size: 1.15rem;
-  color: rgba(28, 48, 56, 0.55);
-  line-height: 1.8;
+  font-size: 1rem;
+  color: rgba(28, 48, 56, 0.5);
+  line-height: 1.7;
   margin-bottom: 1.1rem;
   max-width: 520px;
 }
-.body-text--muted-light { color: rgba(255,255,255,0.5); }
+.body-text--muted-light { color: rgba(255,255,255,0.45); }
 
 /* --- Buttons --- */
 .btn {
@@ -289,12 +286,11 @@ strong { color: inherit; font-weight: 600; }
 }
 
 .hero__desc {
-  font-family: var(--serif);
-  font-size: 1.25rem;
-  color: rgba(28,48,56,0.6);
-  max-width: 460px;
+  font-size: 1.1rem;
+  color: rgba(28,48,56,0.5);
+  max-width: 440px;
   margin-bottom: 2.5rem;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 .hero__desc strong { color: var(--dark); }
 
