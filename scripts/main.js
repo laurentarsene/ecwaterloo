@@ -190,15 +190,27 @@ links.querySelectorAll('a').forEach(a => {
       date_rdv:    nextThursdayStr,
     };
 
-    // TODO: connecter à votre backend (Formspree, Google Sheets, etc.)
-    // Exemple Formspree :
-    // const res = await fetch('https://formspree.io/f/VOTRE_ID', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    //   body: JSON.stringify(data)
-    // });
+    // 1. Insérer dans Supabase
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Afficher la confirmation
+    const { error: insertError } = await sb
+      .from('inscriptions_etudiantes')
+      .insert([data]);
+
+    if (insertError) {
+      console.error(insertError);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Réessayer';
+      return;
+    }
+
+    // 2. Email de confirmation via Edge Function (best-effort)
+    sb.functions.invoke('send-email', {
+      body: { type: 'confirmation', data }
+    }).catch(err => console.warn('Email non envoyé :', err));
+
+    // 3. Afficher la confirmation
     form.hidden = true;
     progressBar.style.width = '100%';
     successEl.hidden = false;

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Espace Convivial de Waterloo</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/images/ecw-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+
+  <!-- ══════════ LOGIN ══════════ -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <img src="assets/images/ecw-logo.png" alt="Espace Convivial de Waterloo" class="login-logo">
+      <h1 class="login-title">Espace<br>Admin</h1>
+      <form id="loginForm" novalidate>
+        <div class="login-group">
+          <label class="login-label" for="loginEmail">Email</label>
+          <input class="login-input" type="email" id="loginEmail" autocomplete="email" placeholder="admin@ecwaterloo.com" required>
+        </div>
+        <div class="login-group">
+          <label class="login-label" for="loginPassword">Mot de passe</label>
+          <input class="login-input" type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••" required>
+        </div>
+        <p class="login-error" id="loginError"></p>
+        <button type="submit" class="login-btn" id="loginBtn">Connexion</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════ DASHBOARD ══════════ -->
+  <div id="dashboard" class="dashboard" hidden>
+
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="admin-header__inner">
+        <div class="admin-header__brand">
+          <img src="assets/images/ecw-logo.png" alt="ECW" height="26">
+          <span class="admin-badge">Admin</span>
+        </div>
+        <nav class="admin-tabs" id="adminTabs">
+          <button class="admin-tab active" data-tab="inscriptions">Inscriptions étudiantes</button>
+        </nav>
+        <button class="admin-logout" id="logoutBtn">Déconnexion</button>
+      </div>
+    </header>
+
+    <!-- Panel : Inscriptions étudiantes -->
+    <main class="admin-main" id="panelInscriptions">
+
+      <!-- Stats -->
+      <div class="admin-stats-row">
+        <div class="admin-stat">
+          <span class="admin-stat__val" id="statInscrits">—</span>
+          <span class="admin-stat__lbl">inscrits</span>
+        </div>
+        <div class="admin-stat">
+          <span class="admin-stat__val" id="statPersonnes">—</span>
+          <span class="admin-stat__lbl">personnes attendues</span>
+        </div>
+        <div class="admin-stat admin-stat--highlight">
+          <span class="admin-stat__val" id="statDate">—</span>
+          <span class="admin-stat__lbl">prochain rendez-vous</span>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="admin-toolbar">
+        <div class="admin-toolbar__left">
+          <select class="admin-select" id="filterDate">
+            <option value="">Toutes les dates</option>
+          </select>
+          <select class="admin-select" id="filterStatut">
+            <option value="">Tous les statuts</option>
+            <option value="confirmé">Confirmé</option>
+            <option value="rappel_envoyé">Rappel envoyé</option>
+            <option value="présent">Présent</option>
+            <option value="absent">Absent</option>
+          </select>
+        </div>
+        <div class="admin-toolbar__right">
+          <button class="admin-btn admin-btn--outline" id="exportBtn">↓ Exporter CSV</button>
+          <button class="admin-btn admin-btn--primary" id="refreshBtn">↻ Actualiser</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="inscriptionsTable">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Genre</th>
+              <th>Université</th>
+              <th class="text-center">Pers.</th>
+              <th>Téléphone</th>
+              <th>Email</th>
+              <th>Inscrit le</th>
+              <th>Date RDV</th>
+              <th class="text-center">Statut</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inscriptionsBody"></tbody>
+        </table>
+        <div class="admin-empty" id="adminEmpty" hidden>
+          <p>Aucune inscription pour cette sélection.</p>
+        </div>
+        <div class="admin-loading" id="adminLoading">
+          <div class="admin-spinner"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="scripts/admin.js"></script>
+</body>
+</html>
