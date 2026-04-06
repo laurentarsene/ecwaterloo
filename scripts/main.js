@@ -5,19 +5,31 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // Nav: mobile toggle
-const toggle = document.getElementById('navToggle');
-const links  = document.getElementById('navLinks');
+const toggle    = document.getElementById('navToggle');
+const mobileNav = document.getElementById('mobileNav');
+const mobileNavClose = document.getElementById('mobileNavClose');
 
-toggle.addEventListener('click', () => {
-  const open = links.classList.toggle('is-open');
-  toggle.setAttribute('aria-expanded', open);
-});
+function openMobileNav() {
+  mobileNav.classList.add('is-open');
+  mobileNav.setAttribute('aria-hidden', 'false');
+  toggle.classList.add('is-open');
+  toggle.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
 
-links.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => {
-    links.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
-  });
+function closeMobileNav() {
+  mobileNav.classList.remove('is-open');
+  mobileNav.setAttribute('aria-hidden', 'true');
+  toggle.classList.remove('is-open');
+  toggle.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+
+toggle.addEventListener('click', openMobileNav);
+mobileNavClose.addEventListener('click', closeMobileNav);
+
+mobileNav.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', closeMobileNav);
 });
 
 // ─── Modal inscription étudiants ───
@@ -261,3 +273,216 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
 revealEls.forEach(el => observer.observe(el));
+
+// Workflow: progress line + ink-drop circle reveal
+const workflowObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const step = entry.target;
+    step.classList.add('is-active');
+    const circle = step.querySelector('[data-circle-reveal]');
+    if (circle) setTimeout(() => circle.classList.add('is-active'), 200);
+    workflowObserver.unobserve(step);
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.workflow-step').forEach(el => workflowObserver.observe(el));
+
+// ─── Back to top ────────────────────────────────────────────
+const backToTopBtn = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  backToTopBtn.classList.toggle('is-visible', window.scrollY > 400);
+}, { passive: true });
+backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// ─── Chatbot ────────────────────────────────────────────────
+(function () {
+  const TREE = {
+    start: {
+      bot: "Bonjour 👋 Comment puis-je vous orienter ?",
+      choices: [
+        { label: "J'ai besoin d'aide",   next: 'need_help' },
+        { label: "Je suis étudiant·e",   next: 'student'   },
+        { label: "Devenir bénévole",     next: 'volunteer' },
+        { label: "Soutenir l'ECW",       next: 'donate'    }
+      ]
+    },
+    need_help: {
+      bot: "Quel type d'aide vous faut-il ?",
+      choices: [
+        { label: "Alimentation",       next: 'help_food'  },
+        { label: "Logement / Admin",   next: 'help_admin' },
+        { label: "Emploi",             next: 'help_job'   },
+        { label: "Autre besoin",       next: 'help_other' }
+      ]
+    },
+    help_food:  { bot: "Nos distributions se font sur rendez-vous chaque semaine. N'hésitez pas à nous contacter.", action: { label: "Prendre rendez-vous →", href: "#rdv" }, choices: [] },
+    help_admin: { bot: "Logement, justice, démarches admin… Nos bénévoles vous accompagnent à chaque étape.", action: { label: "Prendre rendez-vous →", href: "#rdv" }, choices: [] },
+    help_job:   { bot: "Aide au CV, préparation aux entretiens, mise en relation avec des employeurs.", action: { label: "Prendre rendez-vous →", href: "#rdv" }, choices: [] },
+    help_other: { bot: "Appelez-nous ou passez nous voir. Nous trouverons ensemble la meilleure solution.", action: { label: "Nous appeler", href: "tel:+32465927366" }, choices: [] },
+    student: {
+      bot: "Chaque premier jeudi du mois, nos portes s'ouvrent aux étudiant·e·s pour 5€ symboliques.",
+      choices: [
+        { label: "M'inscrire",     next: 'student_signup' },
+        { label: "En savoir plus", next: 'student_info'   }
+      ]
+    },
+    student_signup: { bot: "L'inscription prend 30 secondes. Rendez-vous sur la section étudiants !", action: { label: "S'inscrire →", href: "#etudiants" }, choices: [] },
+    student_info:   { bot: "Tous les détails sont sur la page dédiée : horaires, adresse, règles.", action: { label: "Voir la section →", href: "#etudiants" }, choices: [] },
+    volunteer: {
+      bot: "Génial ! Aucune compétence particulière requise — juste de la bonne volonté.",
+      choices: [
+        { label: "Comment ça fonctionne ?", next: 'volunteer_how'  },
+        { label: "Je suis partant·e !",     next: 'volunteer_join' }
+      ]
+    },
+    volunteer_how:  { bot: "Chaque bénévole est formé et accompagné. Une réunion d'intégration est organisée régulièrement.", action: { label: "En savoir plus →", href: "#benevoles" }, choices: [] },
+    volunteer_join: { bot: "Super ! Rendez-vous sur notre page bénévoles pour rejoindre l'équipe.", action: { label: "Rejoindre l'équipe →", href: "#benevoles" }, choices: [] },
+    donate: {
+      bot: "Merci pour votre générosité 🙏 Comment souhaitez-vous nous aider ?",
+      choices: [
+        { label: "Don financier",      next: 'donate_money' },
+        { label: "Don en nature",      next: 'donate_goods' },
+        { label: "Parler de nous",     next: 'donate_share' }
+      ]
+    },
+    donate_money: { bot: "Chaque don, même modeste, fait une vraie différence. Retrouvez notre IBAN sur la page soutien.", action: { label: "Faire un don →", href: "#soutenir" }, choices: [] },
+    donate_goods: { bot: "Vêtements, nourriture, matériel scolaire… Contactez-nous pour organiser un dépôt.", action: { label: "Nous contacter →", href: "#contact" }, choices: [] },
+    donate_share: { bot: "Parlez de nous autour de vous ! La visibilité nous aide énormément.", action: { label: "Découvrir l'ECW →", href: "#mission" }, choices: [] }
+  };
+
+  const trigger    = document.getElementById('chatTrigger');
+  const panel      = document.getElementById('chatPanel');
+  const closeBtn   = document.getElementById('chatClose');
+  const messagesEl = document.getElementById('chatMessages');
+  const choicesEl  = document.getElementById('chatChoices');
+  const backBtn    = document.getElementById('chatBack');
+
+  let isOpen = false;
+  let history = []; // [{ nodeId, userLabel }]
+  let initialized = false;
+
+  function openChat() {
+    isOpen = true;
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+    trigger.querySelector('.chat-trigger__icon--open').style.display  = 'none';
+    trigger.querySelector('.chat-trigger__icon--close').style.display = '';
+    trigger.querySelector('.chat-trigger__label').textContent = 'Fermer';
+    if (!initialized) { initialized = true; showNode('start', null); }
+  }
+
+  function closeChat() {
+    isOpen = false;
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+    trigger.querySelector('.chat-trigger__icon--open').style.display  = '';
+    trigger.querySelector('.chat-trigger__icon--close').style.display = 'none';
+    trigger.querySelector('.chat-trigger__label').textContent = 'Aide';
+  }
+
+  trigger.addEventListener('click', () => isOpen ? closeChat() : openChat());
+  closeBtn.addEventListener('click', closeChat);
+
+  function showNode(nodeId, userLabel) {
+    history.push({ nodeId, userLabel });
+    if (userLabel) addMsg('user', userLabel);
+    const typing = addTyping();
+    setTimeout(() => {
+      typing.remove();
+      const node = TREE[nodeId];
+      addMsg('bot', node.bot);
+      if (node.action) addAction(node.action);
+      renderChoices(node.choices);
+      renderBack();
+      scrollBottom();
+    }, 650);
+  }
+
+  function goBack() {
+    if (history.length <= 1) return;
+    history.pop();
+    rebuildFromHistory();
+  }
+
+  function rebuildFromHistory() {
+    const saved = [...history];
+    history = [];
+    messagesEl.innerHTML = '';
+    saved.forEach(({ nodeId, userLabel }, i) => {
+      const node = TREE[nodeId];
+      if (userLabel) {
+        const el = document.createElement('div');
+        el.className = 'chat-msg chat-msg--user';
+        el.style.animation = 'none';
+        el.textContent = userLabel;
+        messagesEl.appendChild(el);
+      }
+      const el = document.createElement('div');
+      el.className = 'chat-msg chat-msg--bot';
+      el.style.animation = 'none';
+      el.textContent = node.bot;
+      messagesEl.appendChild(el);
+      if (node.action && i === saved.length - 1) addAction(node.action);
+      history.push({ nodeId, userLabel });
+    });
+    const lastNode = TREE[saved[saved.length - 1].nodeId];
+    renderChoices(lastNode.choices);
+    renderBack();
+    scrollBottom();
+  }
+
+  function addMsg(role, text) {
+    const el = document.createElement('div');
+    el.className = `chat-msg chat-msg--${role}`;
+    el.textContent = text;
+    messagesEl.appendChild(el);
+    scrollBottom();
+    return el;
+  }
+
+  function addAction(action) {
+    const el = document.createElement('div');
+    el.className = 'chat-msg chat-msg--action';
+    const a = document.createElement('a');
+    a.href = action.href;
+    a.textContent = action.label;
+    if (action.href.startsWith('#')) a.addEventListener('click', closeChat);
+    el.appendChild(a);
+    messagesEl.appendChild(el);
+  }
+
+  function addTyping() {
+    const el = document.createElement('div');
+    el.className = 'chat-typing';
+    el.innerHTML = '<span></span><span></span><span></span>';
+    messagesEl.appendChild(el);
+    scrollBottom();
+    return el;
+  }
+
+  function renderChoices(choices) {
+    choicesEl.innerHTML = '';
+    choices.forEach((c, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'chat-choice';
+      btn.textContent = c.label;
+      btn.style.animationDelay = `${i * 55}ms`;
+      btn.addEventListener('click', () => {
+        choicesEl.querySelectorAll('.chat-choice').forEach(b => { b.disabled = true; });
+        showNode(c.next, c.label);
+      });
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function renderBack() {
+    backBtn.hidden = history.length <= 1;
+  }
+
+  backBtn.addEventListener('click', goBack);
+
+  function scrollBottom() {
+    setTimeout(() => { messagesEl.scrollTop = messagesEl.scrollHeight; }, 50);
+  }
+})();
