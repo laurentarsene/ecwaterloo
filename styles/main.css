@@ -900,7 +900,7 @@ strong { color: inherit; font-weight: 600; }
 .mobile-nav {
   position: fixed;
   inset: 0;
-  z-index: 99;
+  z-index: 101;
   background: var(--bg);
   display: flex;
   flex-direction: column;
