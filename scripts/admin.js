@@ -266,10 +266,10 @@ function formatDateFr(date) {
 }
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
-document.querySelectorAll('.admin-tab').forEach(tab => {
+document.querySelectorAll('.dash__tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+    document.querySelectorAll('.dash__tab').forEach(t => t.classList.remove('is-active'));
+    tab.classList.add('is-active');
     const target = tab.dataset.tab;
     document.getElementById('panelInscriptions').hidden = target !== 'inscriptions';
     document.getElementById('panelParametres').hidden   = target !== 'parametres';

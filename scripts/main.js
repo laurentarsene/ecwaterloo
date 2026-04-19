@@ -747,6 +747,66 @@ function splitIntoWords(el) {
 })();
 
 /* ══════════════════════════════════════════════════════════════
+   SCROLL PROGRESS + SIDE NAV
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const progressFill = document.getElementById('scrollProgressFill');
+  const sideNav = document.getElementById('sideNav');
+  if (!progressFill && !sideNav) return;
+
+  const sideLinks = sideNav ? [...sideNav.querySelectorAll('[data-side-link]')] : [];
+  const sections = sideLinks.map(a => {
+    const id = a.getAttribute('href').replace('#', '');
+    return { link: a, id, el: id === 'top' ? document.body : document.getElementById(id) };
+  }).filter(s => s.el);
+
+  // Sections à fond sombre pour adapter la couleur de la sidenav
+  const darkIds = new Set(['services', 'etudiants', 'contact']);
+  const darkEls = [...darkIds].map(id => document.getElementById(id)).filter(Boolean);
+
+  const update = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const p = docHeight > 0 ? scrollTop / docHeight : 0;
+
+    if (progressFill) progressFill.style.width = (p * 100).toFixed(2) + '%';
+
+    // Montre la sidenav après avoir passé le hero
+    if (sideNav) {
+      const past = scrollTop > window.innerHeight * 0.5;
+      sideNav.classList.toggle('is-visible', past);
+    }
+
+    // Détection de section active (centre viewport)
+    if (sections.length) {
+      const midY = scrollTop + window.innerHeight * 0.4;
+      let activeId = sections[0].id;
+      for (const s of sections) {
+        const el = s.id === 'top' ? document.body : s.el;
+        const rect = el.getBoundingClientRect();
+        const top = rect.top + scrollTop;
+        if (top <= midY) activeId = s.id;
+      }
+      sections.forEach(s => s.link.classList.toggle('is-active', s.id === activeId));
+    }
+
+    // Sidenav sur fond sombre ?
+    if (sideNav) {
+      const navCenter = window.innerHeight / 2;
+      const onDark = darkEls.some(el => {
+        const r = el.getBoundingClientRect();
+        return r.top < navCenter && r.bottom > navCenter;
+      });
+      sideNav.classList.toggle('on-dark', onDark);
+    }
+  };
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
+
+/* ══════════════════════════════════════════════════════════════
    BACK TO TOP
    ══════════════════════════════════════════════════════════════ */
 (function () {

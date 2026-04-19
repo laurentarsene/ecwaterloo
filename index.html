@@ -28,6 +28,26 @@
     <div class="cursor__ring"></div>
   </div>
 
+  <!-- ══════════ SCROLL PROGRESS ══════════ -->
+  <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress__fill" id="scrollProgressFill"></div></div>
+
+  <!-- ══════════ NAV LATÉRALE ══════════ -->
+  <nav class="sidenav" aria-label="Aller à une section" id="sideNav">
+    <ul>
+      <li><a href="#top" data-side-link="top"><span class="sidenav__dot"></span><span class="sidenav__label">Accueil</span></a></li>
+      <li><a href="#manifesto" data-side-link="manifesto"><span class="sidenav__dot"></span><span class="sidenav__label">Un mot</span></a></li>
+      <li><a href="#histoire" data-side-link="histoire"><span class="sidenav__dot"></span><span class="sidenav__label">Notre histoire</span></a></li>
+      <li><a href="#services" data-side-link="services"><span class="sidenav__dot"></span><span class="sidenav__label">Ce qu'on fait</span></a></li>
+      <li><a href="#workflow" data-side-link="workflow"><span class="sidenav__dot"></span><span class="sidenav__label">Comment ça se passe</span></a></li>
+      <li><a href="#temps-forts" data-side-link="temps-forts"><span class="sidenav__dot"></span><span class="sidenav__label">Temps forts</span></a></li>
+      <li><a href="#etudiants" data-side-link="etudiants"><span class="sidenav__dot"></span><span class="sidenav__label">Étudiants</span></a></li>
+      <li><a href="#rdv" data-side-link="rdv"><span class="sidenav__dot"></span><span class="sidenav__label">Rendez-vous</span></a></li>
+      <li><a href="#benevoles" data-side-link="benevoles"><span class="sidenav__dot"></span><span class="sidenav__label">Bénévoles</span></a></li>
+      <li><a href="#soutenir" data-side-link="soutenir"><span class="sidenav__dot"></span><span class="sidenav__label">Soutenir</span></a></li>
+      <li><a href="#contact" data-side-link="contact"><span class="sidenav__dot"></span><span class="sidenav__label">Contact</span></a></li>
+    </ul>
+  </nav>
+
   <!-- ══════════ PRELOADER ══════════ -->
   <div class="preloader" id="preloader" aria-hidden="true">
     <div class="preloader__inner">
@@ -42,9 +62,14 @@
   <!-- ══════════ NAV ══════════ -->
   <nav class="nav" id="nav">
     <div class="nav__inner">
-      <a href="#top" class="nav__logo" aria-label="Espace Convivial de Waterloo">
-        <img src="assets/images/ecw-logo.png" alt="ECW" class="nav__logo-img">
-        <span class="nav__logo-text"><em>Espace</em>&nbsp;Convivial<span class="nav__logo-dot"></span></span>
+      <a href="#top" class="nav__logo" aria-label="Espace Convivial de Waterloo — accueil">
+        <span class="nav__logo-mark" aria-hidden="true">
+          <img src="assets/images/ecw-logo.png" alt="" class="nav__logo-img">
+        </span>
+        <span class="nav__logo-copy">
+          <span class="nav__logo-brand"><em>Espace</em> Convivial</span>
+          <span class="nav__logo-sub">Waterloo · ASBL</span>
+        </span>
       </a>
       <ul class="nav__links" id="navLinks">
         <li><a href="#histoire" data-nav-link>Histoire</a></li>

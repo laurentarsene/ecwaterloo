@@ -8,75 +8,107 @@
   <link rel="icon" type="image/png" href="assets/images/ecw-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/admin.css">
 </head>
 <body>
 
   <!-- ══════════ LOGIN ══════════ -->
-  <div id="loginScreen" class="login-screen">
-    <div class="login-card">
-      <img src="assets/images/ecw-logo.png" alt="Espace Convivial de Waterloo" class="login-logo">
-      <h1 class="login-title">Espace<br>Admin</h1>
+  <div id="loginScreen" class="login">
+    <div class="login__bg" aria-hidden="true">
+      <div class="login__blob login__blob--1"></div>
+      <div class="login__blob login__blob--2"></div>
+    </div>
+    <div class="login__card">
+      <a href="index.html" class="login__home" aria-label="Retour au site">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Retour au site
+      </a>
+      <div class="login__brand">
+        <span class="login__mark" aria-hidden="true">
+          <img src="assets/images/ecw-logo.png" alt="" class="login__mark-img">
+        </span>
+        <div class="login__brand-text">
+          <span class="login__brand-name"><em>Espace</em> Convivial</span>
+          <span class="login__brand-sub">Waterloo · ASBL</span>
+        </div>
+      </div>
+      <h1 class="login__title">Espace <em>admin</em></h1>
+      <p class="login__desc">Connexion réservée à l'équipe.</p>
       <form id="loginForm" novalidate>
-        <div class="login-group">
-          <label class="login-label" for="loginEmail">Email</label>
-          <input class="login-input" type="email" id="loginEmail" autocomplete="email" placeholder="admin@ecwaterloo.com" required>
+        <div class="login__group">
+          <label class="login__label" for="loginEmail">Email</label>
+          <input class="login__input" type="email" id="loginEmail" autocomplete="email" placeholder="admin@ecwaterloo.com" required>
         </div>
-        <div class="login-group">
-          <label class="login-label" for="loginPassword">Mot de passe</label>
-          <input class="login-input" type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••" required>
+        <div class="login__group">
+          <label class="login__label" for="loginPassword">Mot de passe</label>
+          <input class="login__input" type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••" required>
         </div>
-        <p class="login-error" id="loginError"></p>
-        <button type="submit" class="login-btn" id="loginBtn">Connexion</button>
+        <p class="login__error" id="loginError"></p>
+        <button type="submit" class="login__btn" id="loginBtn">
+          <span>Se connecter</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
       </form>
     </div>
   </div>
 
   <!-- ══════════ DASHBOARD ══════════ -->
-  <div id="dashboard" class="dashboard" hidden>
+  <div id="dashboard" class="dash" hidden>
 
-    <!-- Header -->
-    <header class="admin-header">
-      <div class="admin-header__inner">
-        <div class="admin-header__brand">
-          <img src="assets/images/ecw-logo.png" alt="ECW" height="26">
-          <span class="admin-badge">Admin</span>
-        </div>
-        <nav class="admin-tabs" id="adminTabs">
-          <button class="admin-tab active" data-tab="inscriptions">Inscriptions étudiantes</button>
-          <button class="admin-tab" data-tab="parametres">Paramètres</button>
+    <header class="dash__header">
+      <div class="dash__header-inner">
+        <a href="index.html" class="dash__brand" aria-label="Retour au site">
+          <span class="dash__mark" aria-hidden="true">
+            <img src="assets/images/ecw-logo.png" alt="" class="dash__mark-img">
+          </span>
+          <div class="dash__brand-text">
+            <span class="dash__brand-name"><em>Espace</em> Convivial</span>
+            <span class="dash__brand-tag">Admin</span>
+          </div>
+        </a>
+        <nav class="dash__tabs" id="adminTabs" aria-label="Sections">
+          <button class="dash__tab is-active" data-tab="inscriptions">Inscriptions</button>
+          <button class="dash__tab" data-tab="parametres">Paramètres</button>
         </nav>
-        <button class="admin-logout" id="logoutBtn">Déconnexion</button>
+        <button class="dash__logout" id="logoutBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Déconnexion
+        </button>
       </div>
     </header>
 
-    <!-- Panel : Inscriptions étudiantes -->
-    <main class="admin-main" id="panelInscriptions">
+    <!-- Panel : Inscriptions -->
+    <main class="dash__main" id="panelInscriptions">
 
-      <!-- Stats -->
-      <div class="admin-stats-row">
-        <div class="admin-stat">
-          <span class="admin-stat__val" id="statInscrits">—</span>
-          <span class="admin-stat__lbl">inscrits</span>
-        </div>
-        <div class="admin-stat">
-          <span class="admin-stat__val" id="statPersonnes">—</span>
-          <span class="admin-stat__lbl">personnes attendues</span>
-        </div>
-        <div class="admin-stat admin-stat--highlight">
-          <span class="admin-stat__val" id="statDate">—</span>
-          <span class="admin-stat__lbl">prochain rendez-vous</span>
+      <div class="dash__heading">
+        <div>
+          <span class="dash__kicker">Inscriptions étudiantes</span>
+          <h1 class="dash__title">Vue <em>d'ensemble</em></h1>
         </div>
       </div>
 
-      <!-- Toolbar -->
-      <div class="admin-toolbar">
-        <div class="admin-toolbar__left">
-          <select class="admin-select" id="filterDate">
+      <div class="stats">
+        <div class="stat">
+          <span class="stat__val" id="statInscrits">—</span>
+          <span class="stat__lbl">inscrit·e·s</span>
+        </div>
+        <div class="stat">
+          <span class="stat__val" id="statPersonnes">—</span>
+          <span class="stat__lbl">personnes attendues</span>
+        </div>
+        <div class="stat stat--accent">
+          <span class="stat__val" id="statDate">—</span>
+          <span class="stat__lbl">prochain rendez-vous</span>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar__left">
+          <select class="input" id="filterDate">
             <option value="">Toutes les dates</option>
           </select>
-          <select class="admin-select" id="filterStatut">
+          <select class="input" id="filterStatut">
             <option value="">Tous les statuts</option>
             <option value="confirmé">Confirmé</option>
             <option value="rappel_envoyé">Rappel envoyé</option>
@@ -84,15 +116,20 @@
             <option value="absent">Absent</option>
           </select>
         </div>
-        <div class="admin-toolbar__right">
-          <button class="admin-btn admin-btn--outline" id="exportBtn">↓ Exporter CSV</button>
-          <button class="admin-btn admin-btn--primary" id="refreshBtn">↻ Actualiser</button>
+        <div class="toolbar__right">
+          <button class="btn btn--ghost" id="exportBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exporter CSV
+          </button>
+          <button class="btn btn--primary" id="refreshBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Actualiser
+          </button>
         </div>
       </div>
 
-      <!-- Table -->
-      <div class="admin-table-wrap">
-        <table class="admin-table" id="inscriptionsTable">
+      <div class="table-wrap">
+        <table class="table" id="inscriptionsTable">
           <thead>
             <tr>
               <th>Nom</th>
@@ -109,26 +146,35 @@
           </thead>
           <tbody id="inscriptionsBody"></tbody>
         </table>
-        <div class="admin-empty" id="adminEmpty" hidden>
+        <div class="empty" id="adminEmpty" hidden>
           <p>Aucune inscription pour cette sélection.</p>
         </div>
-        <div class="admin-loading" id="adminLoading">
-          <div class="admin-spinner"></div>
+        <div class="loading" id="adminLoading">
+          <div class="spinner"></div>
         </div>
       </div>
 
     </main>
+
     <!-- Panel : Paramètres -->
-    <main class="admin-main" id="panelParametres" hidden>
-      <div class="admin-settings-card">
-        <h2 class="admin-settings-title">Fenêtre d'inscription</h2>
-        <p class="admin-settings-desc">Définit combien de jours avant le premier jeudi du mois les inscriptions s'ouvrent sur le site. En dehors de cette fenêtre, le bouton est désactivé avec un message de compte à rebours.</p>
-        <div class="admin-settings-row">
-          <input type="number" class="admin-input" id="settingJours" min="1" max="30" value="3">
-          <span class="admin-settings-unit">jours avant le premier jeudi</span>
-          <button class="admin-btn admin-btn--primary" id="saveSettings">Enregistrer</button>
+    <main class="dash__main" id="panelParametres" hidden>
+
+      <div class="dash__heading">
+        <div>
+          <span class="dash__kicker">Paramètres</span>
+          <h1 class="dash__title">Configuration du <em>site</em></h1>
         </div>
-        <p class="admin-settings-feedback" id="settingsFeedback"></p>
+      </div>
+
+      <div class="settings">
+        <h2 class="settings__title">Fenêtre d'inscription</h2>
+        <p class="settings__desc">Nombre de jours avant le premier jeudi du mois où les inscriptions s'ouvrent publiquement. En dehors, le bouton est désactivé avec un compte à rebours.</p>
+        <div class="settings__row">
+          <input type="number" class="input input--num" id="settingJours" min="1" max="30" value="3">
+          <span class="settings__unit">jours avant le premier jeudi</span>
+          <button class="btn btn--primary" id="saveSettings">Enregistrer</button>
+        </div>
+        <p class="settings__feedback" id="settingsFeedback"></p>
       </div>
     </main>
 

@@ -332,34 +332,74 @@ ul, ol { list-style: none; }
 .nav__logo {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.65rem;
   color: var(--ink);
+  transition: transform 0.4s var(--ease);
 }
-.nav__logo-img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-.nav__logo-text {
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: -0.01em;
+.nav__logo:hover { transform: translateX(-2px); }
+
+.nav__logo-mark {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  justify-content: center;
+  width: 34px; height: 34px;
+  background: var(--ink);
+  border-radius: 50%;
+  flex-shrink: 0;
 }
-.nav__logo-text em {
+.nav__logo-mark::after {
+  content: '';
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 7px; height: 7px;
+  background: var(--coral);
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+}
+.nav__logo-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.nav.is-scrolled .nav__logo-mark::after { border-color: rgba(245, 239, 227, 0.95); }
+
+.nav__logo-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  line-height: 1;
+}
+.nav__logo-brand {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.nav__logo-brand em {
   font-family: var(--f-serif);
   font-style: italic;
   font-weight: 400;
+  font-variation-settings: "opsz" 144;
+  color: var(--coral);
+  margin-right: 0.1rem;
 }
-.nav__logo-dot {
-  display: inline-block;
-  width: 4px; height: 4px;
-  background: var(--coral);
-  border-radius: 50%;
-  margin-left: 0.3rem;
+.nav__logo-sub {
+  font-family: var(--f-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 520px) {
+  .nav__logo-sub { display: none; }
+  .nav__logo-brand { font-size: 0.85rem; }
+  .nav__logo-mark { width: 30px; height: 30px; }
+  .nav__logo-img { width: 19px; height: 19px; }
 }
 
 .nav__links {
@@ -2288,6 +2328,105 @@ ul, ol { list-style: none; }
 .no-js .hero__amp { transform: translateY(0); }
 .no-js .hero__actions,
 .no-js .hero__scroll { opacity: 1; transform: none; }
+
+/* ══════════════════════════════════════════════════════════════
+   SCROLL PROGRESS
+   ══════════════════════════════════════════════════════════════ */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(21, 17, 13, 0.06);
+  z-index: 101;
+  pointer-events: none;
+}
+.scroll-progress__fill {
+  height: 100%;
+  width: 0%;
+  background: var(--coral);
+  transition: width 0.1s linear;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SIDENAV — points latéraux
+   ══════════════════════════════════════════════════════════════ */
+.sidenav {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+}
+.sidenav.is-visible { opacity: 1; pointer-events: auto; }
+
+.sidenav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0;
+}
+.sidenav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  padding-right: 0.3rem;
+  justify-content: flex-end;
+  position: relative;
+  color: var(--ink);
+}
+.sidenav__dot {
+  width: 6px; height: 6px;
+  background: var(--ink);
+  border-radius: 50%;
+  opacity: 0.3;
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), background 0.3s var(--ease);
+}
+.sidenav a:hover .sidenav__dot { opacity: 0.75; transform: scale(1.4); }
+.sidenav a.is-active .sidenav__dot {
+  opacity: 1;
+  background: var(--coral);
+  transform: scale(1.7);
+  box-shadow: 0 0 0 3px rgba(224, 83, 47, 0.15);
+}
+
+.sidenav__label {
+  font-family: var(--f-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+  pointer-events: none;
+  white-space: nowrap;
+  order: -1;
+  padding: 0.3rem 0.65rem;
+  background: var(--paper);
+  border: 1px solid rgba(21, 17, 13, 0.08);
+  border-radius: 999px;
+  box-shadow: 0 8px 20px -8px rgba(21, 17, 13, 0.15);
+}
+.sidenav a:hover .sidenav__label,
+.sidenav a.is-active .sidenav__label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Sur fond sombre (services / etudiants / contact) */
+.sidenav.on-dark .sidenav__dot { background: var(--paper); }
+.sidenav.on-dark a.is-active .sidenav__dot {
+  background: var(--coral);
+  box-shadow: 0 0 0 3px rgba(224, 83, 47, 0.2);
+}
+
+@media (max-width: 1100px) {
+  .sidenav { display: none; }
+}
 
 /* ══════════════════════════════════════════════════════════════
    MOMENTS — bandeau photos
