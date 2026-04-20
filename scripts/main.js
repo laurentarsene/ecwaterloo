@@ -529,6 +529,30 @@ function splitIntoWords(el) {
     stagger: 0.04,
     scrollTrigger: { trigger: '.moments', start: 'top 85%' }
   });
+
+  // Gazette : cover + info
+  const gazCover = document.querySelector('.gaz__cover');
+  if (gazCover) {
+    gsap.from(gazCover, {
+      y: 40, opacity: 0, rotation: -5, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: '.gaz__feature', start: 'top 75%' }
+    });
+    gsap.from('.gaz__sticker', {
+      scale: 0, rotation: 0, duration: 0.7, ease: 'back.out(2)',
+      delay: 0.4,
+      scrollTrigger: { trigger: '.gaz__feature', start: 'top 75%' }
+    });
+    gsap.from('.gaz__info > *', {
+      y: 20, opacity: 0, duration: 0.7, ease: 'power3.out',
+      stagger: 0.08,
+      scrollTrigger: { trigger: '.gaz__info', start: 'top 80%' }
+    });
+    gsap.from('.gaz__issue', {
+      x: -20, opacity: 0, duration: 0.6, ease: 'power3.out',
+      stagger: 0.1,
+      scrollTrigger: { trigger: '.gaz__issues', start: 'top 85%' }
+    });
+  }
 })();
 
 /* ══════════════════════════════════════════════════════════════
@@ -744,6 +768,65 @@ function splitIntoWords(el) {
     successEl.hidden = false;
     document.getElementById('successDate').textContent = nextThursdayStr;
   });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   NAV DROPDOWNS
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const items = document.querySelectorAll('.nav__item--drop');
+  if (!items.length) return;
+
+  let closeTimer;
+
+  const closeAll = () => items.forEach(i => {
+    i.classList.remove('is-open');
+    i.querySelector('.nav__link--drop')?.setAttribute('aria-expanded', 'false');
+  });
+
+  items.forEach(item => {
+    const btn = item.querySelector('.nav__link--drop');
+    const drop = item.querySelector('.nav__drop');
+    if (!btn || !drop) return;
+
+    const open = () => {
+      clearTimeout(closeTimer);
+      items.forEach(i => { if (i !== item) { i.classList.remove('is-open'); i.querySelector('.nav__link--drop')?.setAttribute('aria-expanded', 'false'); } });
+      item.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+    };
+    const scheduleClose = () => {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(() => {
+        item.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      }, 180);
+    };
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (item.classList.contains('is-open')) {
+        item.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        open();
+      }
+    });
+    item.addEventListener('mouseenter', open);
+    item.addEventListener('mouseleave', scheduleClose);
+
+    // Ferme après clic sur un item
+    drop.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      item.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }));
+  });
+
+  // Fermer en cliquant en dehors
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav__item--drop')) closeAll();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
 })();
 
 /* ══════════════════════════════════════════════════════════════
@@ -995,6 +1078,201 @@ function splitIntoWords(el) {
   function renderBack() { backBtn.hidden = history.length <= 1; }
   backBtn.addEventListener('click', goBack);
   function scrollBottom() { setTimeout(() => { messagesEl.scrollTop = messagesEl.scrollHeight; }, 50); }
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   GAZETTE READER — PDF.js flipbook
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const openBtn = document.getElementById('openGazette');
+  const reader = document.getElementById('gazetteReader');
+  const backdrop = document.getElementById('readerBackdrop');
+  const closeBtn = document.getElementById('closeGazette');
+  const prevBtn = document.getElementById('readerPrev');
+  const nextBtn = document.getElementById('readerNext');
+  const loading = document.getElementById('readerLoading');
+  const spread = document.getElementById('readerSpread');
+  const canvasL = document.getElementById('readerCanvasLeft');
+  const canvasR = document.getElementById('readerCanvasRight');
+  const curEl = document.getElementById('readerCurrentPage');
+  const totEl = document.getElementById('readerTotalPages');
+  if (!openBtn || !reader) return;
+
+  const PDFJS_VER = '3.11.174';
+  const CDN = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VER}`;
+
+  let pdfDoc = null;
+  let totalPages = 0;
+  let currentLeft = 1; // page index of the left page in the current spread
+  let renderToken = 0;
+  let loadedPdfUrl = null;
+
+  const loadScript = (src) => new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+
+  const ensurePdfJs = async () => {
+    if (window.pdfjsLib) return;
+    await loadScript(`${CDN}/build/pdf.min.js`);
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = `${CDN}/build/pdf.worker.min.js`;
+  };
+
+  const isMobile = () => window.matchMedia('(max-width: 700px)').matches;
+
+  const getDisplayScale = (page) => {
+    const vp = page.getViewport({ scale: 1 });
+    const stage = document.getElementById('readerStage');
+    const navGutter = isMobile() ? 0 : 140;
+    const stageW = stage.clientWidth - navGutter;
+    const stageH = stage.clientHeight - 16;
+    const maxW = isMobile() ? stageW : (stageW - 2) / 2;
+    const scaleW = maxW / vp.width;
+    const scaleH = stageH / vp.height;
+    return Math.min(scaleW, scaleH);
+  };
+
+  const renderToCanvas = async (pageNum, canvas) => {
+    if (!pdfDoc || pageNum < 1 || pageNum > totalPages) {
+      canvas.hidden = true;
+      return;
+    }
+    const page = await pdfDoc.getPage(pageNum);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const displayScale = getDisplayScale(page);
+    const renderScale = displayScale * dpr;
+    const renderVp = page.getViewport({ scale: renderScale });
+    const displayVp = page.getViewport({ scale: displayScale });
+    const ctx = canvas.getContext('2d');
+    canvas.width = renderVp.width;
+    canvas.height = renderVp.height;
+    canvas.style.width = displayVp.width + 'px';
+    canvas.style.height = displayVp.height + 'px';
+    await page.render({ canvasContext: ctx, viewport: renderVp }).promise;
+    canvas.hidden = false;
+  };
+
+  const showSpread = async () => {
+    if (!pdfDoc) return;
+    const token = ++renderToken;
+    spread.classList.add('is-changing');
+    loading.hidden = false;
+
+    // Determine which pages to show
+    // Page 1 alone (cover), then 2-3, 4-5, 6-7, 8 alone (back cover)
+    let leftPage, rightPage;
+    if (currentLeft === 1) {
+      leftPage = null; rightPage = 1;
+    } else if (currentLeft > totalPages) {
+      leftPage = totalPages; rightPage = null;
+    } else {
+      leftPage = currentLeft;
+      rightPage = currentLeft + 1 <= totalPages ? currentLeft + 1 : null;
+    }
+
+    // Détermine mono vs double spread
+    const single = isMobile() || !leftPage || !rightPage;
+    spread.classList.toggle('reader__spread--single', single);
+
+    if (isMobile()) {
+      // Toujours une seule page visible sur mobile
+      const page = rightPage || leftPage;
+      canvasL.hidden = true;
+      if (page) await renderToCanvas(page, canvasR);
+      else canvasR.hidden = true;
+    } else {
+      if (leftPage) await renderToCanvas(leftPage, canvasL);
+      else canvasL.hidden = true;
+      if (rightPage) await renderToCanvas(rightPage, canvasR);
+      else canvasR.hidden = true;
+    }
+
+    if (token !== renderToken) return;
+
+    // Update indicator
+    const visible = [leftPage, rightPage].filter(Boolean);
+    if (visible.length === 1) curEl.textContent = visible[0];
+    else curEl.textContent = `${visible[0]}–${visible[1]}`;
+
+    // Disable / enable nav buttons
+    prevBtn.disabled = currentLeft <= 1;
+    nextBtn.disabled = currentLeft >= totalPages;
+
+    loading.hidden = true;
+    spread.classList.remove('is-changing');
+  };
+
+  const next = () => {
+    if (currentLeft >= totalPages) return;
+    if (currentLeft === 1) currentLeft = 2;           // cover -> pages 2-3
+    else currentLeft = Math.min(currentLeft + 2, totalPages);
+    showSpread();
+  };
+
+  const prev = () => {
+    if (currentLeft <= 1) return;
+    if (currentLeft === 2) currentLeft = 1;           // pages 2-3 -> cover
+    else currentLeft = Math.max(currentLeft - 2, 1);
+    showSpread();
+  };
+
+  const openReader = async () => {
+    const url = openBtn.dataset.pdf;
+    reader.classList.add('is-open');
+    reader.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    loading.hidden = false;
+
+    try {
+      await ensurePdfJs();
+      if (loadedPdfUrl !== url) {
+        pdfDoc = await window.pdfjsLib.getDocument(url).promise;
+        totalPages = pdfDoc.numPages;
+        totEl.textContent = totalPages;
+        loadedPdfUrl = url;
+        currentLeft = 1;
+      }
+      await showSpread();
+    } catch (err) {
+      console.error('Gazette reader error:', err);
+      loading.hidden = true;
+    }
+  };
+
+  const closeReader = () => {
+    reader.classList.remove('is-open');
+    reader.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  openBtn.addEventListener('click', openReader);
+  closeBtn.addEventListener('click', closeReader);
+  backdrop.addEventListener('click', closeReader);
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    if (!reader.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeReader();
+    else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+
+  // Re-render on resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    if (!reader.classList.contains('is-open')) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(showSpread, 150);
+  });
+
+  // Click left / right half of the spread to navigate
+  spread.addEventListener('click', (e) => {
+    const r = spread.getBoundingClientRect();
+    const isLeftHalf = (e.clientX - r.left) < r.width / 2;
+    if (isLeftHalf) prev(); else next();
+  });
 })();
 
 /* ══════════════════════════════════════════════════════════════

@@ -40,6 +40,7 @@
       <li><a href="#services" data-side-link="services"><span class="sidenav__dot"></span><span class="sidenav__label">Ce qu'on fait</span></a></li>
       <li><a href="#workflow" data-side-link="workflow"><span class="sidenav__dot"></span><span class="sidenav__label">Comment ça se passe</span></a></li>
       <li><a href="#temps-forts" data-side-link="temps-forts"><span class="sidenav__dot"></span><span class="sidenav__label">Temps forts</span></a></li>
+      <li><a href="#gazette" data-side-link="gazette"><span class="sidenav__dot"></span><span class="sidenav__label">La gazette</span></a></li>
       <li><a href="#etudiants" data-side-link="etudiants"><span class="sidenav__dot"></span><span class="sidenav__label">Étudiants</span></a></li>
       <li><a href="#rdv" data-side-link="rdv"><span class="sidenav__dot"></span><span class="sidenav__label">Rendez-vous</span></a></li>
       <li><a href="#benevoles" data-side-link="benevoles"><span class="sidenav__dot"></span><span class="sidenav__label">Bénévoles</span></a></li>
@@ -66,11 +67,51 @@
         <span></span><span></span>
       </button>
       <ul class="nav__links" id="navLinks">
-        <li><a href="#histoire" data-nav-link>Histoire</a></li>
-        <li><a href="#services" data-nav-link>Ce qu'on fait</a></li>
-        <li><a href="#temps-forts" data-nav-link>Temps forts</a></li>
-        <li><a href="#etudiants" data-nav-link>Étudiants</a></li>
-        <li><a href="#soutenir" data-nav-link>Soutenir</a></li>
+        <li class="nav__item nav__item--drop" data-drop>
+          <button class="nav__link nav__link--drop" aria-expanded="false" aria-haspopup="true" aria-controls="drop-asbl">
+            L'asbl
+            <svg class="nav__link-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav__drop" id="drop-asbl" role="menu">
+            <a href="#histoire" role="menuitem" data-nav-link>
+              <span class="nav__drop-title">Notre histoire</span>
+              <span class="nav__drop-sub">Onze ans d'action, main dans la main.</span>
+            </a>
+            <a href="#services" role="menuitem" data-nav-link>
+              <span class="nav__drop-title">Ce qu'on fait</span>
+              <span class="nav__drop-sub">Six portes d'entrée, une seule équipe.</span>
+            </a>
+            <a href="#workflow" role="menuitem" data-nav-link>
+              <span class="nav__drop-title">Comment ça se passe</span>
+              <span class="nav__drop-sub">De l'accueil au suivi, en quatre étapes.</span>
+            </a>
+            <a href="#benevoles" role="menuitem" data-nav-link>
+              <span class="nav__drop-title">Les bénévoles</span>
+              <span class="nav__drop-sub">Zéro salarié, cent pour cent d'engagement.</span>
+            </a>
+          </div>
+        </li>
+        <li class="nav__item nav__item--drop" data-drop>
+          <button class="nav__link nav__link--drop" aria-expanded="false" aria-haspopup="true" aria-controls="drop-temps">
+            Temps forts
+            <svg class="nav__link-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav__drop" id="drop-temps" role="menu">
+            <a href="#temps-forts" role="menuitem" data-nav-link>
+              <span class="nav__drop-title">Nos activités</span>
+              <span class="nav__drop-sub">Potager, Magie de Noël, théâtre.</span>
+            </a>
+            <a href="#gazette" role="menuitem" data-nav-link>
+              <span class="nav__drop-title">La gazette</span>
+              <span class="nav__drop-sub">Notre journal imprimé, deux fois par an.</span>
+            </a>
+            <a href="#etudiants" role="menuitem" data-nav-link>
+              <span class="nav__drop-title">Épicerie étudiante</span>
+              <span class="nav__drop-sub">Chaque premier jeudi, pour 5€.</span>
+            </a>
+          </div>
+        </li>
+        <li><a href="#soutenir" class="nav__link" data-nav-link>Soutenir</a></li>
       </ul>
       <a href="#rdv" class="nav__cta" data-magnetic>
         <span>Prendre rendez-vous</span>
@@ -98,11 +139,12 @@
         <li><a href="#histoire"><span class="mobile-nav__num">01</span><span class="mobile-nav__label">Notre histoire</span></a></li>
         <li><a href="#services"><span class="mobile-nav__num">02</span><span class="mobile-nav__label">Ce qu'on fait</span></a></li>
         <li><a href="#temps-forts"><span class="mobile-nav__num">03</span><span class="mobile-nav__label">Temps forts</span></a></li>
-        <li><a href="#etudiants"><span class="mobile-nav__num">04</span><span class="mobile-nav__label">Étudiants</span></a></li>
-        <li><a href="#rdv"><span class="mobile-nav__num">05</span><span class="mobile-nav__label">Rendez-vous</span></a></li>
-        <li><a href="#benevoles"><span class="mobile-nav__num">06</span><span class="mobile-nav__label">Bénévoles</span></a></li>
-        <li><a href="#soutenir"><span class="mobile-nav__num">07</span><span class="mobile-nav__label">Soutenir</span></a></li>
-        <li><a href="#contact"><span class="mobile-nav__num">08</span><span class="mobile-nav__label">Contact</span></a></li>
+        <li><a href="#gazette"><span class="mobile-nav__num">04</span><span class="mobile-nav__label">La gazette</span></a></li>
+        <li><a href="#etudiants"><span class="mobile-nav__num">05</span><span class="mobile-nav__label">Étudiants</span></a></li>
+        <li><a href="#rdv"><span class="mobile-nav__num">06</span><span class="mobile-nav__label">Rendez-vous</span></a></li>
+        <li><a href="#benevoles"><span class="mobile-nav__num">07</span><span class="mobile-nav__label">Bénévoles</span></a></li>
+        <li><a href="#soutenir"><span class="mobile-nav__num">08</span><span class="mobile-nav__label">Soutenir</span></a></li>
+        <li><a href="#contact"><span class="mobile-nav__num">09</span><span class="mobile-nav__label">Contact</span></a></li>
       </ul>
       <div class="mobile-nav__foot">
         <a href="tel:+32465927366" class="mobile-nav__phone">0465 92 73 66</a>
@@ -610,6 +652,73 @@
     </div>
   </section>
 
+  <!-- ══════════ GAZETTE ══════════ -->
+  <section class="gaz" id="gazette">
+    <div class="container">
+      <header class="section-head">
+        <span class="section-kicker">Notre gazette</span>
+        <h2 class="section-title" data-split-lines>
+          On <em>écrit</em> aussi.<br>
+          Deux fois par an.
+        </h2>
+        <p class="section-sub">
+          Un journal qu'on imprime, fait avec nos moyens — pour raconter la vie de l'Espace, mettre
+          en lumière des bénévoles, et donner la parole à celles et ceux qu'on accompagne.
+        </p>
+      </header>
+
+      <div class="gaz__feature">
+        <div class="gaz__cover">
+          <div class="gaz__cover-frame">
+            <img src="assets/magazines/gazette-01-cover.jpg" alt="Couverture de la gazette conviviale — N°1" class="gaz__cover-img" loading="lazy">
+          </div>
+          <span class="gaz__sticker" style="--sticker: var(--sage)">dernière parution</span>
+          <span class="gaz__caption">format A4, agrafé, 8 pages</span>
+        </div>
+
+        <div class="gaz__info">
+          <span class="temps-index">04 — la gazette</span>
+          <h3 class="temps-title">La <em>gazette</em> conviviale</h3>
+          <p class="temps-desc">
+            Huit pages, tirées sur du vrai papier. Des portraits, des chroniques, des photos,
+            un peu d'humour, beaucoup de vraies histoires. On la distribue à l'épicerie
+            et lors des événements — et maintenant, <strong>tu peux la feuilleter ici-même</strong>.
+          </p>
+
+          <div class="gaz__actions">
+            <button class="btn btn--primary" id="openGazette" data-magnetic data-pdf="assets/magazines/gazette-01.pdf">
+              <span class="btn__label">Feuilleter la gazette</span>
+              <span class="btn__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+            </button>
+            <a href="assets/magazines/gazette-01.pdf" class="btn btn--ghost" download>
+              <span class="btn__label">Télécharger le PDF</span>
+              <span class="btn__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+            </a>
+          </div>
+
+          <ul class="gaz__issues">
+            <li class="gaz__issue gaz__issue--current">
+              <span class="gaz__issue-num">N°1</span>
+              <div class="gaz__issue-meta">
+                <span class="gaz__issue-title">Printemps 2026</span>
+                <span class="gaz__issue-sub">8 pages · notre tout premier numéro</span>
+              </div>
+              <span class="gaz__issue-tag">disponible</span>
+            </li>
+            <li class="gaz__issue gaz__issue--future">
+              <span class="gaz__issue-num">N°2</span>
+              <div class="gaz__issue-meta">
+                <span class="gaz__issue-title">Automne 2026</span>
+                <span class="gaz__issue-sub">en préparation, dans les tuyaux</span>
+              </div>
+              <span class="gaz__issue-tag gaz__issue-tag--soon">bientôt</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════════ ÉTUDIANTS ══════════ -->
   <section class="etu" id="etudiants">
     <div class="etu__bg" aria-hidden="true">
@@ -889,6 +998,7 @@
             <li><a href="#histoire">Notre histoire</a></li>
             <li><a href="#services">Ce qu'on fait</a></li>
             <li><a href="#temps-forts">Nos temps forts</a></li>
+            <li><a href="#gazette">La gazette</a></li>
             <li><a href="#etudiants">Étudiants</a></li>
             <li><a href="#benevoles">Bénévoles</a></li>
           </ul>
@@ -1031,6 +1141,52 @@
         <p class="sform__success-date" id="successDate"></p>
         <p class="sform__success-note">Un email de confirmation t'a été envoyé. N'oublie pas d'apporter tes <strong>5€</strong> le jour J.</p>
         <button type="button" class="btn btn--dark" id="closeSuccess">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ LECTEUR GAZETTE ══════════ -->
+  <div class="reader" id="gazetteReader" aria-hidden="true">
+    <div class="reader__backdrop" id="readerBackdrop"></div>
+    <div class="reader__shell" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+      <header class="reader__head">
+        <div class="reader__brand">
+          <span class="reader__kicker">Gazette conviviale</span>
+          <span class="reader__title" id="readerTitle">N°1 · Printemps 2026</span>
+        </div>
+        <div class="reader__indicator">
+          <span id="readerCurrentPage">1</span>
+          <span class="reader__indicator-sep">/</span>
+          <span id="readerTotalPages">—</span>
+        </div>
+        <div class="reader__toolbar">
+          <a href="assets/magazines/gazette-01.pdf" class="reader__tool" download title="Télécharger le PDF">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </a>
+          <button class="reader__close" id="closeGazette" aria-label="Fermer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="reader__stage" id="readerStage">
+        <button class="reader__nav reader__nav--prev" id="readerPrev" aria-label="Page précédente">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="reader__spread" id="readerSpread">
+          <canvas class="reader__page reader__page--left" id="readerCanvasLeft" aria-hidden="true" hidden></canvas>
+          <canvas class="reader__page reader__page--right" id="readerCanvasRight" aria-hidden="true" hidden></canvas>
+        </div>
+        <button class="reader__nav reader__nav--next" id="readerNext" aria-label="Page suivante">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="reader__loading" id="readerLoading" hidden>
+          <div class="reader__spinner"></div>
+        </div>
+      </div>
+
+      <div class="reader__footer">
+        <span class="reader__hint">← → pour naviguer · Échap pour fermer</span>
       </div>
     </div>
   </div>

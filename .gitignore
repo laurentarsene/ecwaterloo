@@ -2,6 +2,10 @@
 *.png
 *.jpg
 *.jpeg
+!assets/images/**/*.png
+!assets/images/**/*.jpg
+!assets/magazines/**/*.jpg
+!assets/magazines/**/*.png
 supabase/.temp/
 node_modules/
 Website for L'Epicerie Sociale/
