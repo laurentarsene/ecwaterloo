@@ -69,6 +69,7 @@
         </a>
         <nav class="dash__tabs" id="adminTabs" aria-label="Sections">
           <button class="dash__tab is-active" data-tab="inscriptions">Inscriptions</button>
+          <button class="dash__tab" data-tab="lutins">Lutins</button>
           <button class="dash__tab" data-tab="parametres">Paramètres</button>
         </nav>
         <button class="dash__logout" id="logoutBtn">
@@ -150,6 +151,85 @@
           <p>Aucune inscription pour cette sélection.</p>
         </div>
         <div class="loading" id="adminLoading">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Panel : Lutins -->
+    <main class="dash__main" id="panelLutins" hidden>
+
+      <div class="dash__heading">
+        <div>
+          <span class="dash__kicker">Opération Lutins &amp; Lutines</span>
+          <h1 class="dash__title">Les <em>lutins</em></h1>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat__val" id="statLutins">—</span>
+          <span class="stat__lbl">lutins inscrit·e·s</span>
+        </div>
+        <div class="stat">
+          <span class="stat__val" id="statLettresTotal">—</span>
+          <span class="stat__lbl">lettres demandées</span>
+        </div>
+        <div class="stat">
+          <span class="stat__val" id="statLettresAEnvoyer">—</span>
+          <span class="stat__lbl">lettres à envoyer</span>
+        </div>
+        <div class="stat stat--accent">
+          <span class="stat__val" id="statCadeauxRestants">—</span>
+          <span class="stat__lbl">cadeaux à récupérer</span>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar__left">
+          <select class="input" id="filterLutinStatut">
+            <option value="">Tous les statuts</option>
+            <option value="a_envoyer">Lettre à envoyer</option>
+            <option value="a_confirmer">Cadeau à confirmer</option>
+            <option value="a_recuperer">Cadeau à récupérer</option>
+            <option value="a_remettre">Cadeau à remettre</option>
+            <option value="termine">Terminé</option>
+          </select>
+        </div>
+        <div class="toolbar__right">
+          <button class="btn btn--ghost" id="exportLutinsBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exporter CSV
+          </button>
+          <button class="btn btn--primary" id="refreshLutinsBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Actualiser
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table" id="lutinsTable">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Contact</th>
+              <th class="text-center">Lettres</th>
+              <th class="text-center">Lettre<br>envoyée</th>
+              <th class="text-center">Cadeau<br>confirmé</th>
+              <th class="text-center">Cadeau<br>reçu</th>
+              <th class="text-center">Cadeau<br>remis</th>
+              <th>Notes</th>
+              <th>Inscrit le</th>
+            </tr>
+          </thead>
+          <tbody id="lutinsBody"></tbody>
+        </table>
+        <div class="empty" id="lutinsEmpty" hidden>
+          <p>Aucun lutin pour cette sélection.</p>
+        </div>
+        <div class="loading" id="lutinsLoading" hidden>
           <div class="spinner"></div>
         </div>
       </div>

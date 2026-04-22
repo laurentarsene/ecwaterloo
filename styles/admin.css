@@ -588,6 +588,72 @@ a { color: inherit; text-decoration: none; }
 }
 .action-btn--absent:hover { background: var(--danger); color: var(--paper); border-color: var(--danger); }
 
+/* Lutins : checkboxes + notes inline */
+.toggle-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(21, 17, 13, 0.18);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: transparent;
+  padding: 0;
+}
+.toggle-cell:hover {
+  border-color: rgba(21, 17, 13, 0.35);
+  background: rgba(21, 17, 13, 0.03);
+}
+.toggle-cell.is-on {
+  background: var(--success);
+  border-color: var(--success);
+  color: var(--paper);
+}
+.toggle-cell.is-on:hover {
+  background: var(--success);
+  filter: brightness(1.08);
+}
+.toggle-cell svg { display: block; }
+
+.note-input {
+  width: 100%;
+  min-width: 180px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.82rem;
+  color: var(--ink);
+  transition: all 0.15s;
+}
+.note-input:hover { background: rgba(21, 17, 13, 0.03); }
+.note-input:focus {
+  outline: none;
+  background: var(--paper);
+  border-color: rgba(21, 17, 13, 0.15);
+}
+.note-input.is-saving { opacity: 0.5; }
+
+.td-contact {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.td-contact a { color: inherit; display: block; }
+.td-contact a:hover { color: var(--coral); }
+.td-contact .td-contact__wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  color: #128c7e;
+  margin-left: 0.3rem;
+}
+
 /* Empty + loading */
 .empty {
   padding: 4rem 2rem;

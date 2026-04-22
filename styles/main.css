@@ -2084,6 +2084,34 @@ a.nav__link.is-active { color: var(--coral); }
 
 .sform__nav { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
 .sform__nav .btn { flex: 1; justify-content: center; }
+.sform__nav--single { justify-content: stretch; }
+.sform__nav--single .btn { flex: 1; }
+
+.sform__label-hint {
+  font-weight: 400;
+  color: var(--ink-muted, rgba(21, 17, 13, 0.55));
+  font-size: 0.8rem;
+  margin-left: 0.3rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.sform__lead {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink-muted, rgba(21, 17, 13, 0.7));
+  margin: 0 0 1.5rem;
+}
+
+.sform__error {
+  font-size: 0.85rem;
+  color: var(--coral);
+  margin: -0.4rem 0 1rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(224, 83, 47, 0.08);
+  border-radius: 8px;
+  border-left: 2px solid var(--coral);
+}
 
 .sform__success { text-align: center; padding: 1rem 0; }
 .sform__success-icon {

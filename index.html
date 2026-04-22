@@ -613,10 +613,10 @@
             </div>
           </div>
 
-          <a href="mailto:infos.ecwaterloo@gmail.com?subject=Op%C3%A9ration%20Lutins%20%26%20Lutines" class="btn btn--primary" data-magnetic>
+          <button type="button" class="btn btn--primary" id="openLutinForm" data-magnetic>
             <span class="btn__label">Je veux être lutin·e cette année</span>
             <span class="btn__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-          </a>
+          </button>
         </div>
       </article>
 
@@ -1141,6 +1141,74 @@
         <p class="sform__success-date" id="successDate"></p>
         <p class="sform__success-note">Un email de confirmation t'a été envoyé. N'oublie pas d'apporter tes <strong>5€</strong> le jour J.</p>
         <button type="button" class="btn btn--dark" id="closeSuccess">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ MODAL INSCRIPTION LUTINS ══════════ -->
+  <div class="smodal" id="lutinModal" aria-hidden="true">
+    <div class="smodal__backdrop" id="lutinModalBackdrop"></div>
+    <div class="smodal__dialog" role="dialog" aria-modal="true" aria-labelledby="lutinModalTitle">
+      <button class="smodal__close" id="closeLutinModal" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <form id="lutinForm" class="sform" novalidate>
+        <div class="sform__step is-active">
+          <p class="sform__kicker">Opération Lutins &amp; Lutines</p>
+          <h2 class="sform__title" id="lutinModalTitle">Deviens <em>lutin·e</em></h2>
+          <p class="sform__lead">Laisse-nous tes coordonnées et le nombre de lettres d'enfant que tu souhaites. On te recontacte par WhatsApp pour la suite.</p>
+
+          <div class="sform__row">
+            <div class="sform__group">
+              <label class="sform__label" for="lutinPrenom">Prénom</label>
+              <input class="sform__input" type="text" id="lutinPrenom" name="prenom" autocomplete="given-name" placeholder="Marie">
+            </div>
+            <div class="sform__group">
+              <label class="sform__label" for="lutinNom">Nom</label>
+              <input class="sform__input" type="text" id="lutinNom" name="nom" autocomplete="family-name" placeholder="Dupont">
+            </div>
+          </div>
+
+          <div class="sform__group">
+            <label class="sform__label" for="lutinTel">Téléphone <span class="sform__label-hint">(recommandé — pour WhatsApp)</span></label>
+            <input class="sform__input" type="tel" id="lutinTel" name="telephone" autocomplete="tel" placeholder="+32 470 00 00 00">
+          </div>
+
+          <div class="sform__group">
+            <label class="sform__label" for="lutinEmail">Email <span class="sform__label-hint">(ou email si tu préfères)</span></label>
+            <input class="sform__input" type="email" id="lutinEmail" name="email" autocomplete="email" placeholder="marie@exemple.com">
+          </div>
+
+          <div class="sform__group">
+            <label class="sform__label">Combien de lettres veux-tu recevoir&nbsp;?</label>
+            <div class="sform__stepper">
+              <button type="button" class="sform__stepper-btn" id="lutinStepperMinus" aria-label="Réduire">−</button>
+              <span class="sform__stepper-val" id="lutinStepperVal">1</span>
+              <button type="button" class="sform__stepper-btn" id="lutinStepperPlus" aria-label="Augmenter">+</button>
+            </div>
+            <input type="hidden" name="nb_lettres" id="hiddenNbLettres" value="1">
+          </div>
+
+          <p class="sform__error" id="lutinFormError" hidden></p>
+
+          <div class="sform__nav sform__nav--single">
+            <button type="submit" class="btn btn--primary">
+              <span class="btn__label">Je m'inscris comme lutin·e</span>
+              <span class="btn__icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="sform__success" id="lutinSuccess" hidden>
+        <div class="sform__success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="sform__kicker">Merci&nbsp;!</p>
+        <h2 class="sform__title">À <em>bientôt&nbsp;!</em></h2>
+        <p class="sform__success-note">On te recontacte par WhatsApp avec la (ou les) lettre(s) d'enfant. Merci de faire partie de cette belle aventure.</p>
+        <button type="button" class="btn btn--dark" id="closeLutinSuccess">Fermer</button>
       </div>
     </div>
   </div>

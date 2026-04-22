@@ -771,6 +771,133 @@ function splitIntoWords(el) {
 })();
 
 /* ══════════════════════════════════════════════════════════════
+   FORMULAIRE LUTINS (Opération Lutins & Lutines — Noël)
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const overlay = document.getElementById('lutinModal');
+  const openBtn = document.getElementById('openLutinForm');
+  if (!overlay || !openBtn) return;
+  if (typeof supabase === 'undefined' || typeof SUPABASE_URL === 'undefined') return;
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const backdrop = document.getElementById('lutinModalBackdrop');
+  const closeBtn = document.getElementById('closeLutinModal');
+  const form = document.getElementById('lutinForm');
+  const successEl = document.getElementById('lutinSuccess');
+  const errorEl = document.getElementById('lutinFormError');
+
+  const prenomInput = document.getElementById('lutinPrenom');
+  const nomInput = document.getElementById('lutinNom');
+  const telInput = document.getElementById('lutinTel');
+  const emailInput = document.getElementById('lutinEmail');
+  const hiddenNb = document.getElementById('hiddenNbLettres');
+  const stepperVal = document.getElementById('lutinStepperVal');
+  const minusBtn = document.getElementById('lutinStepperMinus');
+  const plusBtn = document.getElementById('lutinStepperPlus');
+
+  let nbLettres = 1;
+  const MAX_LETTRES = 10;
+
+  function updateStepper() {
+    stepperVal.textContent = nbLettres;
+    hiddenNb.value = nbLettres;
+    minusBtn.disabled = nbLettres <= 1;
+    plusBtn.disabled = nbLettres >= MAX_LETTRES;
+  }
+  minusBtn.addEventListener('click', () => { if (nbLettres > 1) { nbLettres--; updateStepper(); } });
+  plusBtn.addEventListener('click', () => { if (nbLettres < MAX_LETTRES) { nbLettres++; updateStepper(); } });
+  updateStepper();
+
+  function openModal() {
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    form.hidden = false;
+    successEl.hidden = true;
+    errorEl.hidden = true;
+  }
+  function closeModal() {
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+  backdrop?.addEventListener('click', closeModal);
+  document.getElementById('closeLutinSuccess')?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal(); });
+
+  function clearErrors() {
+    [prenomInput, nomInput, telInput, emailInput].forEach(el => el.classList.remove('sform__input--error'));
+    errorEl.hidden = true;
+    errorEl.textContent = '';
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.hidden = false;
+  }
+
+  function validate() {
+    clearErrors();
+    let ok = true;
+
+    if (!prenomInput.value.trim()) { prenomInput.classList.add('sform__input--error'); ok = false; }
+    if (!nomInput.value.trim()) { nomInput.classList.add('sform__input--error'); ok = false; }
+
+    const tel = telInput.value.trim();
+    const email = emailInput.value.trim();
+
+    if (!tel && !email) {
+      telInput.classList.add('sform__input--error');
+      emailInput.classList.add('sform__input--error');
+      showError('Merci d\'indiquer au moins un téléphone ou un email.');
+      ok = false;
+    } else if (email && !/\S+@\S+\.\S+/.test(email)) {
+      emailInput.classList.add('sform__input--error');
+      showError('L\'email ne semble pas valide.');
+      ok = false;
+    }
+
+    if (!ok && errorEl.hidden) showError('Merci de remplir les champs requis.');
+    return ok;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const submitBtn = form.querySelector('[type="submit"]');
+    submitBtn.disabled = true;
+    const origLabel = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="btn__label">Envoi…</span>';
+
+    const data = {
+      prenom: prenomInput.value.trim(),
+      nom: nomInput.value.trim(),
+      telephone: telInput.value.trim() || null,
+      email: emailInput.value.trim() || null,
+      nb_lettres: nbLettres,
+    };
+
+    const { error: insertError } = await sb.from('inscriptions_lutins').insert([data]);
+    if (insertError) {
+      console.error(insertError);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origLabel;
+      showError('Oups — une erreur est survenue. Réessaie ou écris-nous à infos.ecwaterloo@gmail.com');
+      return;
+    }
+
+    form.hidden = true;
+    successEl.hidden = false;
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════
    NAV DROPDOWNS
    ══════════════════════════════════════════════════════════════ */
 (function () {
