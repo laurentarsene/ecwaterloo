@@ -1835,6 +1835,24 @@ a.nav__link.is-active { color: var(--coral); }
 }
 .footer__bottom em { font-family: var(--f-serif); font-style: italic; color: var(--coral); }
 
+.footer__admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(245, 239, 227, 0.45);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(245, 239, 227, 0.12);
+  border-radius: 999px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.footer__admin:hover {
+  color: var(--coral);
+  border-color: rgba(224, 83, 47, 0.5);
+  background: rgba(224, 83, 47, 0.06);
+}
+
 @media (max-width: 900px) {
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .footer__brand { grid-column: 1 / -1; }
