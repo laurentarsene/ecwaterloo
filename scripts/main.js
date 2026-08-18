@@ -131,9 +131,9 @@ function splitIntoWords(el) {
     const els = typeof targets === 'string' ? document.querySelectorAll(targets) : targets;
     if (!els || !els.length) return;
     gsap.from(els, {
-      y: 28, opacity: 0, duration: .8, ease: 'power3.out',
-      stagger: opts.stagger ?? .08,
-      scrollTrigger: { trigger: opts.trigger || els[0], start: opts.start || 'top 85%' }
+      y: 22, opacity: 0, duration: .6, ease: 'power3.out',
+      stagger: opts.stagger ?? .06,
+      scrollTrigger: { trigger: opts.trigger || els[0], start: opts.start || 'top 92%' }
     });
   };
 
@@ -141,9 +141,9 @@ function splitIntoWords(el) {
   document.querySelectorAll('[data-split-lines]').forEach(el => {
     splitIntoWords(el);
     const words = el.querySelectorAll('.word');
-    gsap.fromTo(words, { y: 24, opacity: 0 }, {
-      y: 0, opacity: 1, duration: .8, ease: 'expo.out', stagger: .035,
-      scrollTrigger: { trigger: el, start: 'top 85%' }
+    gsap.fromTo(words, { y: 18, opacity: 0 }, {
+      y: 0, opacity: 1, duration: .6, ease: 'expo.out', stagger: .025,
+      scrollTrigger: { trigger: el, start: 'top 92%' }
     });
   });
 
@@ -162,7 +162,7 @@ function splitIntoWords(el) {
   });
 
   document.querySelectorAll('.section-kicker, .section-sub').forEach(el => {
-    gsap.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
+    gsap.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 95%' } });
   });
 
   // Compteurs
@@ -602,185 +602,6 @@ function splitIntoWords(el) {
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   CHATBOT — arbre conversationnel
-   ══════════════════════════════════════════════════════════════ */
-(function () {
-  const TREE = {
-    start: {
-      bot: "Bonjour 👋 Comment puis-je vous orienter ?",
-      choices: [
-        { label: "J'ai besoin d'aide", next: 'need_help' },
-        { label: "Je suis étudiant·e", next: 'student' },
-        { label: "Devenir bénévole", next: 'volunteer' },
-        { label: "Soutenir l'ECW", next: 'donate' }
-      ]
-    },
-    need_help: {
-      bot: "Quel type d'aide vous faut-il ?",
-      choices: [
-        { label: "Alimentation", next: 'help_food' },
-        { label: "Logement / Admin", next: 'help_admin' },
-        { label: "Emploi", next: 'help_job' },
-        { label: "Autre besoin", next: 'help_other' }
-      ]
-    },
-    help_food: { bot: "Nos distributions se font sur rendez-vous chaque semaine. N'hésitez pas à nous contacter.", action: { label: "Prendre rendez-vous →", href: "#rdv" }, choices: [] },
-    help_admin: { bot: "Logement, justice, démarches admin… Nos bénévoles vous accompagnent à chaque étape.", action: { label: "Prendre rendez-vous →", href: "#rdv" }, choices: [] },
-    help_job: { bot: "Aide au CV, préparation aux entretiens, mise en relation avec des employeurs.", action: { label: "Prendre rendez-vous →", href: "#rdv" }, choices: [] },
-    help_other: { bot: "Appelez-nous ou passez nous voir. Nous trouverons ensemble la meilleure solution.", action: { label: "Nous appeler", href: "tel:+32465927366" }, choices: [] },
-    student: {
-      bot: "Chaque premier jeudi du mois, nos portes s'ouvrent aux étudiant·e·s pour 5€ symboliques.",
-      choices: [
-        { label: "M'inscrire", next: 'student_signup' },
-        { label: "En savoir plus", next: 'student_info' }
-      ]
-    },
-    student_signup: { bot: "L'inscription prend 30 secondes. Rendez-vous sur la section étudiants !", action: { label: "S'inscrire →", href: "#etudiants" }, choices: [] },
-    student_info: { bot: "Tous les détails sont sur la page dédiée : horaires, adresse, règles.", action: { label: "Voir la section →", href: "#etudiants" }, choices: [] },
-    volunteer: {
-      bot: "Génial ! Aucune compétence particulière requise — juste de la bonne volonté.",
-      choices: [
-        { label: "Comment ça fonctionne ?", next: 'volunteer_how' },
-        { label: "Je suis partant·e !", next: 'volunteer_join' }
-      ]
-    },
-    volunteer_how: { bot: "Chaque bénévole est formé et accompagné. Une réunion d'intégration est organisée régulièrement.", action: { label: "En savoir plus →", href: "#benevoles" }, choices: [] },
-    volunteer_join: { bot: "Super ! Rendez-vous sur notre page bénévoles pour rejoindre l'équipe.", action: { label: "Rejoindre l'équipe →", href: "#benevoles" }, choices: [] },
-    donate: {
-      bot: "Merci pour votre générosité 🙏 Comment souhaitez-vous nous aider ?",
-      choices: [
-        { label: "Don financier", next: 'donate_money' },
-        { label: "Don en nature", next: 'donate_goods' },
-        { label: "Parler de nous", next: 'donate_share' }
-      ]
-    },
-    donate_money: { bot: "Chaque don, même modeste, fait une vraie différence. Découvrez les différents montants sur la page soutien.", action: { label: "Faire un don →", href: "#soutenir" }, choices: [] },
-    donate_goods: { bot: "Vêtements, nourriture, matériel scolaire… Contactez-nous pour organiser un dépôt.", action: { label: "Nous contacter →", href: "#contact" }, choices: [] },
-    donate_share: { bot: "Parlez de nous autour de vous ! La visibilité nous aide énormément.", action: { label: "Découvrir l'ECW →", href: "#histoire" }, choices: [] }
-  };
-
-  const trigger = document.getElementById('chatTrigger');
-  const panel = document.getElementById('chatPanel');
-  const closeBtn = document.getElementById('chatClose');
-  const messagesEl = document.getElementById('chatMessages');
-  const choicesEl = document.getElementById('chatChoices');
-  const backBtn = document.getElementById('chatBack');
-  if (!trigger || !panel) return;
-
-  let isOpen = false, history = [], initialized = false;
-
-  function openChat() {
-    isOpen = true;
-    panel.classList.add('is-open');
-    panel.setAttribute('aria-hidden', 'false');
-    trigger.querySelector('.chat__trigger-icon--open').style.display = 'none';
-    trigger.querySelector('.chat__trigger-icon--close').style.display = '';
-    trigger.querySelector('.chat__trigger-label').textContent = 'Fermer';
-    if (!initialized) { initialized = true; showNode('start', null); }
-  }
-  function closeChat() {
-    isOpen = false;
-    panel.classList.remove('is-open');
-    panel.setAttribute('aria-hidden', 'true');
-    trigger.querySelector('.chat__trigger-icon--open').style.display = '';
-    trigger.querySelector('.chat__trigger-icon--close').style.display = 'none';
-    trigger.querySelector('.chat__trigger-label').textContent = 'Aide';
-  }
-
-  trigger.addEventListener('click', () => isOpen ? closeChat() : openChat());
-  closeBtn.addEventListener('click', closeChat);
-
-  function showNode(nodeId, userLabel) {
-    history.push({ nodeId, userLabel });
-    if (userLabel) addMsg('user', userLabel);
-    const typing = addTyping();
-    setTimeout(() => {
-      typing.remove();
-      const node = TREE[nodeId];
-      addMsg('bot', node.bot);
-      if (node.action) addAction(node.action);
-      renderChoices(node.choices);
-      renderBack();
-      scrollBottom();
-    }, 650);
-  }
-  function goBack() {
-    if (history.length <= 1) return;
-    history.pop();
-    rebuild();
-  }
-  function rebuild() {
-    const saved = [...history];
-    history = [];
-    messagesEl.innerHTML = '';
-    saved.forEach(({ nodeId, userLabel }, i) => {
-      const node = TREE[nodeId];
-      if (userLabel) {
-        const el = document.createElement('div');
-        el.className = 'chat-msg chat-msg--user';
-        el.style.animation = 'none';
-        el.textContent = userLabel;
-        messagesEl.appendChild(el);
-      }
-      const el = document.createElement('div');
-      el.className = 'chat-msg chat-msg--bot';
-      el.style.animation = 'none';
-      el.textContent = node.bot;
-      messagesEl.appendChild(el);
-      if (node.action && i === saved.length - 1) addAction(node.action);
-      history.push({ nodeId, userLabel });
-    });
-    const lastNode = TREE[saved[saved.length - 1].nodeId];
-    renderChoices(lastNode.choices);
-    renderBack();
-    scrollBottom();
-  }
-  function addMsg(role, text) {
-    const el = document.createElement('div');
-    el.className = `chat-msg chat-msg--${role}`;
-    el.textContent = text;
-    messagesEl.appendChild(el);
-    scrollBottom();
-    return el;
-  }
-  function addAction(action) {
-    const el = document.createElement('div');
-    el.className = 'chat-msg chat-msg--action';
-    const a = document.createElement('a');
-    a.href = action.href;
-    a.textContent = action.label;
-    if (action.href.startsWith('#')) a.addEventListener('click', closeChat);
-    el.appendChild(a);
-    messagesEl.appendChild(el);
-  }
-  function addTyping() {
-    const el = document.createElement('div');
-    el.className = 'chat-typing';
-    el.innerHTML = '<span></span><span></span><span></span>';
-    messagesEl.appendChild(el);
-    scrollBottom();
-    return el;
-  }
-  function renderChoices(choices) {
-    choicesEl.innerHTML = '';
-    choices.forEach((c, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'chat-choice';
-      btn.textContent = c.label;
-      btn.style.animationDelay = `${i * 55}ms`;
-      btn.addEventListener('click', () => {
-        choicesEl.querySelectorAll('.chat-choice').forEach(b => { b.disabled = true; });
-        showNode(c.next, c.label);
-      });
-      choicesEl.appendChild(btn);
-    });
-  }
-  function renderBack() { backBtn.hidden = history.length <= 1; }
-  backBtn.addEventListener('click', goBack);
-  function scrollBottom() { setTimeout(() => { messagesEl.scrollTop = messagesEl.scrollHeight; }, 50); }
-})();
-
-/* ══════════════════════════════════════════════════════════════
    GAZETTE READER — PDF.js flipbook
    ══════════════════════════════════════════════════════════════ */
 (function () {
@@ -796,6 +617,7 @@ function splitIntoWords(el) {
   const canvasR = document.getElementById('readerCanvasRight');
   const curEl = document.getElementById('readerCurrentPage');
   const totEl = document.getElementById('readerTotalPages');
+  const thumbsEl = document.getElementById('readerThumbs');
   if (!openBtn || !reader) return;
 
   const PDFJS_VER = '3.11.174';
@@ -803,16 +625,17 @@ function splitIntoWords(el) {
 
   let pdfDoc = null;
   let totalPages = 0;
-  let currentLeft = 1; // page index of the left page in the current spread
+  let currentLeft = 1;      // page de gauche de la double page courante
   let renderToken = 0;
   let loadedPdfUrl = null;
+  let activeTasks = [];     // rendus PDF.js en cours (annulables)
+  let lastFocus = null;
 
   const loadScript = (src) => new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = src; s.onload = resolve; s.onerror = reject;
     document.head.appendChild(s);
   });
-
   const ensurePdfJs = async () => {
     if (window.pdfjsLib) return;
     await loadScript(`${CDN}/build/pdf.min.js`);
@@ -824,106 +647,153 @@ function splitIntoWords(el) {
   const getDisplayScale = (page) => {
     const vp = page.getViewport({ scale: 1 });
     const stage = document.getElementById('readerStage');
-    const navGutter = isMobile() ? 0 : 140;
+    const navGutter = isMobile() ? 0 : 150;
     const stageW = stage.clientWidth - navGutter;
-    const stageH = stage.clientHeight - 16;
+    const stageH = stage.clientHeight - 24;
     const maxW = isMobile() ? stageW : (stageW - 2) / 2;
-    const scaleW = maxW / vp.width;
-    const scaleH = stageH / vp.height;
-    return Math.min(scaleW, scaleH);
+    return Math.min(maxW / vp.width, stageH / vp.height);
   };
 
-  const renderToCanvas = async (pageNum, canvas) => {
-    if (!pdfDoc || pageNum < 1 || pageNum > totalPages) {
-      canvas.hidden = true;
-      return;
-    }
+  const cancelActive = async () => {
+    const tasks = activeTasks;
+    activeTasks = [];
+    tasks.forEach(t => { try { t.cancel(); } catch (_) {} });
+    // Attendre que PDF.js libère les canvas avant de relancer un rendu
+    await Promise.allSettled(tasks.map(t => t.promise));
+  };
+
+  const renderToCanvas = async (pageNum, canvas, token) => {
+    if (!pdfDoc || pageNum < 1 || pageNum > totalPages) { canvas.hidden = true; return; }
     const page = await pdfDoc.getPage(pageNum);
+    if (token !== renderToken) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const displayScale = getDisplayScale(page);
-    const renderScale = displayScale * dpr;
-    const renderVp = page.getViewport({ scale: renderScale });
+    const renderVp = page.getViewport({ scale: displayScale * dpr });
     const displayVp = page.getViewport({ scale: displayScale });
     const ctx = canvas.getContext('2d');
     canvas.width = renderVp.width;
     canvas.height = renderVp.height;
     canvas.style.width = displayVp.width + 'px';
     canvas.style.height = displayVp.height + 'px';
-    await page.render({ canvasContext: ctx, viewport: renderVp }).promise;
+    const task = page.render({ canvasContext: ctx, viewport: renderVp });
+    activeTasks.push(task);
+    try { await task.promise; }
+    catch (err) { if (err?.name === 'RenderingCancelledException') return; throw err; }
+    if (token !== renderToken) return;
     canvas.hidden = false;
+  };
+
+  const pagesFor = (left) => {
+    if (left === 1) return [null, 1];
+    if (left > totalPages) return [totalPages, null];
+    return [left, left + 1 <= totalPages ? left + 1 : null];
   };
 
   const showSpread = async () => {
     if (!pdfDoc) return;
     const token = ++renderToken;
+    await cancelActive();
+    if (token !== renderToken) return;
     spread.classList.add('is-changing');
-    loading.hidden = false;
+    const slowTimer = setTimeout(() => { if (token === renderToken) loading.hidden = false; }, 260);
 
-    // Determine which pages to show
-    // Page 1 alone (cover), then 2-3, 4-5, 6-7, 8 alone (back cover)
-    let leftPage, rightPage;
-    if (currentLeft === 1) {
-      leftPage = null; rightPage = 1;
-    } else if (currentLeft > totalPages) {
-      leftPage = totalPages; rightPage = null;
-    } else {
-      leftPage = currentLeft;
-      rightPage = currentLeft + 1 <= totalPages ? currentLeft + 1 : null;
-    }
-
-    // Détermine mono vs double spread
+    const [leftPage, rightPage] = pagesFor(currentLeft);
     const single = isMobile() || !leftPage || !rightPage;
     spread.classList.toggle('reader__spread--single', single);
 
-    if (isMobile()) {
-      // Toujours une seule page visible sur mobile
-      const page = rightPage || leftPage;
-      canvasL.hidden = true;
-      if (page) await renderToCanvas(page, canvasR);
-      else canvasR.hidden = true;
-    } else {
-      if (leftPage) await renderToCanvas(leftPage, canvasL);
-      else canvasL.hidden = true;
-      if (rightPage) await renderToCanvas(rightPage, canvasR);
-      else canvasR.hidden = true;
+    try {
+      if (isMobile()) {
+        const page = rightPage || leftPage;
+        canvasL.hidden = true;
+        if (page) await renderToCanvas(page, canvasR, token); else canvasR.hidden = true;
+      } else {
+        await Promise.all([
+          leftPage ? renderToCanvas(leftPage, canvasL, token) : (canvasL.hidden = true, Promise.resolve()),
+          rightPage ? renderToCanvas(rightPage, canvasR, token) : (canvasR.hidden = true, Promise.resolve()),
+        ]);
+      }
+    } catch (err) {
+      console.error('Gazette reader error:', err);
     }
-
+    clearTimeout(slowTimer);
     if (token !== renderToken) return;
 
-    // Update indicator
     const visible = [leftPage, rightPage].filter(Boolean);
-    if (visible.length === 1) curEl.textContent = visible[0];
-    else curEl.textContent = `${visible[0]}–${visible[1]}`;
-
-    // Disable / enable nav buttons
+    curEl.textContent = visible.length === 1 ? visible[0] : `${visible[0]}–${visible[1]}`;
     prevBtn.disabled = currentLeft <= 1;
     nextBtn.disabled = currentLeft >= totalPages;
-
+    updateThumbs(visible);
     loading.hidden = true;
     spread.classList.remove('is-changing');
   };
 
+  const goTo = (left) => { currentLeft = left; showSpread(); };
   const next = () => {
     if (currentLeft >= totalPages) return;
-    if (currentLeft === 1) currentLeft = 2;           // cover -> pages 2-3
-    else currentLeft = Math.min(currentLeft + 2, totalPages);
-    showSpread();
+    goTo(currentLeft === 1 ? 2 : Math.min(currentLeft + 2, totalPages));
   };
-
   const prev = () => {
     if (currentLeft <= 1) return;
-    if (currentLeft === 2) currentLeft = 1;           // pages 2-3 -> cover
-    else currentLeft = Math.max(currentLeft - 2, 1);
-    showSpread();
+    goTo(currentLeft === 2 ? 1 : Math.max(currentLeft - 2, 1));
+  };
+  const leftFor = (pageNum) => {
+    if (pageNum <= 1) return 1;
+    return pageNum % 2 === 0 ? pageNum : pageNum - 1;
+  };
+
+  /* Miniatures */
+  const buildThumbs = async () => {
+    if (!thumbsEl || !pdfDoc || thumbsEl.dataset.built === loadedPdfUrl) return;
+    thumbsEl.innerHTML = '';
+    thumbsEl.dataset.built = loadedPdfUrl;
+    for (let p = 1; p <= totalPages; p++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'reader__thumb';
+      btn.dataset.page = p;
+      btn.setAttribute('aria-label', `Aller à la page ${p}`);
+      const c = document.createElement('canvas');
+      btn.appendChild(c);
+      const lbl = document.createElement('span');
+      lbl.textContent = p;
+      btn.appendChild(lbl);
+      btn.addEventListener('click', () => goTo(leftFor(p)));
+      thumbsEl.appendChild(btn);
+    }
+    // Rendu séquentiel en basse résolution
+    for (let p = 1; p <= totalPages; p++) {
+      try {
+        const page = await pdfDoc.getPage(p);
+        const vp = page.getViewport({ scale: 1 });
+        const scale = 72 / vp.height;
+        const rvp = page.getViewport({ scale: scale * 2 });
+        const c = thumbsEl.querySelector(`[data-page="${p}"] canvas`);
+        if (!c) return;
+        c.width = rvp.width; c.height = rvp.height;
+        c.style.height = '72px'; c.style.width = (rvp.width / 2) + 'px';
+        await page.render({ canvasContext: c.getContext('2d'), viewport: rvp }).promise;
+      } catch (_) {}
+    }
+  };
+  const updateThumbs = (visible) => {
+    if (!thumbsEl) return;
+    thumbsEl.querySelectorAll('.reader__thumb').forEach(b => {
+      const on = visible.includes(parseInt(b.dataset.page, 10));
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+    const active = thumbsEl.querySelector('.reader__thumb.is-active');
+    active?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   };
 
   const openReader = async () => {
+    lastFocus = document.activeElement;
     const url = openBtn.dataset.pdf;
     reader.classList.add('is-open');
     reader.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     loading.hidden = false;
-
+    closeBtn.focus();
     try {
       await ensurePdfJs();
       if (loadedPdfUrl !== url) {
@@ -934,6 +804,7 @@ function splitIntoWords(el) {
         currentLeft = 1;
       }
       await showSpread();
+      buildThumbs();
     } catch (err) {
       console.error('Gazette reader error:', err);
       loading.hidden = true;
@@ -941,9 +812,11 @@ function splitIntoWords(el) {
   };
 
   const closeReader = () => {
+    cancelActive();
     reader.classList.remove('is-open');
     reader.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    lastFocus?.focus?.();
   };
 
   openBtn.addEventListener('click', openReader);
@@ -955,11 +828,12 @@ function splitIntoWords(el) {
   document.addEventListener('keydown', (e) => {
     if (!reader.classList.contains('is-open')) return;
     if (e.key === 'Escape') closeReader();
-    else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(1); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(leftFor(totalPages)); }
   });
 
-  // Re-render on resize
   let resizeTimer;
   window.addEventListener('resize', () => {
     if (!reader.classList.contains('is-open')) return;
@@ -967,10 +841,19 @@ function splitIntoWords(el) {
     resizeTimer = setTimeout(showSpread, 150);
   });
 
-  // Click left / right half of the spread to navigate
+  // Clic moitié gauche / droite pour tourner la page
   spread.addEventListener('click', (e) => {
     const r = spread.getBoundingClientRect();
-    const isLeftHalf = (e.clientX - r.left) < r.width / 2;
-    if (isLeftHalf) prev(); else next();
+    if ((e.clientX - r.left) < r.width / 2) prev(); else next();
   });
+
+  // Swipe tactile
+  let touchX = null;
+  spread.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+  spread.addEventListener('touchend', (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+  }, { passive: true });
 })();

@@ -17,51 +17,39 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body class="no-js">
 
-  <a class="skip" href="#services">Aller au contenu</a>
+  <a class="skip" href="#aide">Aller au contenu</a>
 
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="s-blob" viewBox="0 0 160 170"><path d="M78 2c38-6 78 30 80 76 2 44-30 84-72 90C42 174 4 142 1 96 -2 52 34 9 78 2Z"/></symbol>
+    <symbol id="s-drop" viewBox="0 0 90 170"><path d="M52 2c26 34 42 78 32 116-9 34-40 56-64 50C-4 162-4 120 8 84 18 52 34 22 52 2Z"/></symbol>
+    <symbol id="s-bean" viewBox="0 0 170 130"><path d="M18 22C40-4 84-6 122 12c40 20 56 62 40 92-16 30-60 34-100 18C22 106-6 62 18 22Z"/></symbol>
+    <symbol id="s-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"/></symbol>
+  </svg>
+
+  
   <!-- ══════════ NAV ══════════ -->
   <header class="nav" id="nav">
     <div class="nav__inner">
       <a href="#top" class="nav__logo" aria-label="Espace Convivial de Waterloo — accueil">
         <img src="assets/images/ecw-logo.png" alt="Espace Convivial de Waterloo" class="nav__logo-img">
       </a>
-
-      <ul class="nav__links" id="navLinks">
-        <li class="nav__item nav__item--drop" data-drop>
-          <button class="nav__link nav__link--drop" aria-expanded="false" aria-haspopup="true" aria-controls="drop-asbl">
-            L'asbl
-            <svg class="nav__caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="nav__drop" id="drop-asbl" role="menu">
-            <a href="#services" role="menuitem" data-nav-link><span class="nav__drop-title">Ce qu'on fait</span><span class="nav__drop-sub">Six portes d'entrée, une seule équipe.</span></a>
-            <a href="#histoire" role="menuitem" data-nav-link><span class="nav__drop-title">Notre histoire</span><span class="nav__drop-sub">Onze ans d'action, main dans la main.</span></a>
-            <a href="#workflow" role="menuitem" data-nav-link><span class="nav__drop-title">Comment ça se passe</span><span class="nav__drop-sub">De l'accueil au suivi, en quatre étapes.</span></a>
-            <a href="#benevoles" role="menuitem" data-nav-link><span class="nav__drop-title">Les bénévoles</span><span class="nav__drop-sub">Zéro salarié, cent pour cent d'engagement.</span></a>
-          </div>
-        </li>
-        <li class="nav__item nav__item--drop" data-drop>
-          <button class="nav__link nav__link--drop" aria-expanded="false" aria-haspopup="true" aria-controls="drop-temps">
-            Temps forts
-            <svg class="nav__caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="nav__drop" id="drop-temps" role="menu">
-            <a href="#temps-forts" role="menuitem" data-nav-link><span class="nav__drop-title">Nos activités</span><span class="nav__drop-sub">Potager, Magie de Noël, théâtre.</span></a>
-            <a href="#gazette" role="menuitem" data-nav-link><span class="nav__drop-title">La gazette</span><span class="nav__drop-sub">Notre journal imprimé, deux fois par an.</span></a>
-            <a href="#etudiants" role="menuitem" data-nav-link><span class="nav__drop-title">Épicerie étudiante</span><span class="nav__drop-sub">Chaque premier jeudi, pour 5€.</span></a>
-          </div>
-        </li>
-        <li class="nav__item"><a href="#soutenir" class="nav__link" data-nav-link>Soutenir</a></li>
-        <li class="nav__item"><a href="#contact" class="nav__link" data-nav-link>Contact</a></li>
-      </ul>
-
+      <nav aria-label="Navigation principale">
+        <ul class="nav__links" id="navLinks">
+          <li class="nav__item"><a href="#aide" class="nav__link" data-nav-link>Besoin d'aide</a></li>
+          <li class="nav__item"><a href="#etudiants" class="nav__link" data-nav-link>Étudiants</a></li>
+          <li class="nav__item"><a href="#aider" class="nav__link" data-nav-link>Aider</a></li>
+          <li class="nav__item"><a href="#asbl" class="nav__link" data-nav-link>Qui sommes-nous</a></li>
+          <li class="nav__item"><a href="#contact" class="nav__link" data-nav-link>Contact</a></li>
+        </ul>
+      </nav>
       <div class="nav__right">
-        <a href="#soutenir" class="nav__pill nav__pill--ghost">Faire un don</a>
+        <a href="tel:+32465927366" class="nav__pill nav__pill--ghost">0465 92 73 66</a>
         <a href="#rdv" class="nav__pill">Prendre rendez-vous</a>
         <button class="nav__toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileNav">
           <span></span><span></span>
@@ -80,22 +68,19 @@
         </button>
       </div>
       <ul class="mnav__menu">
-        <li><a href="#services">Ce qu'on fait</a></li>
-        <li><a href="#histoire">Notre histoire</a></li>
-        <li><a href="#temps-forts">Temps forts</a></li>
-        <li><a href="#gazette">La gazette</a></li>
-        <li><a href="#etudiants">Étudiants</a></li>
-        <li><a href="#benevoles">Bénévoles</a></li>
-        <li><a href="#soutenir">Soutenir</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#aide"><span class="mnav__num">01</span>Besoin d'aide</a></li>
+        <li><a href="#etudiants"><span class="mnav__num">02</span>Étudiants</a></li>
+        <li><a href="#aider"><span class="mnav__num">03</span>Aider</a></li>
+        <li><a href="#asbl"><span class="mnav__num">04</span>Qui sommes-nous</a></li>
+        <li><a href="#contact"><span class="mnav__num">05</span>Contact</a></li>
       </ul>
       <div class="mnav__actions">
         <a href="#rdv" class="btn btn--dark">Prendre rendez-vous</a>
-        <a href="#soutenir" class="btn btn--light">Faire un don</a>
+        <a href="tel:+32465927366" class="btn btn--light">Appeler : 0465 92 73 66</a>
       </div>
       <div class="mnav__foot">
-        <a href="tel:+32465927366">0465 92 73 66</a>
         <a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a>
+        <span>Waterloo, Belgique</span>
       </div>
     </div>
   </div>
@@ -104,6 +89,10 @@
 
   <!-- ══════════ HERO ══════════ -->
   <section class="sheet hero" id="hero">
+    <svg class="deco deco--teal deco--hero-1" aria-hidden="true"><use href="#s-blob"/></svg>
+    <svg class="deco deco--lime deco--hero-2" aria-hidden="true"><use href="#s-drop"/></svg>
+    <svg class="deco deco--coral deco--hero-3" aria-hidden="true"><use href="#s-dot"/></svg>
+    <svg class="deco deco--navy deco--hero-4" aria-hidden="true"><use href="#s-bean"/></svg>
     <div class="hero__inner">
       <span class="pill pill--kicker hero__kicker" data-intro>
         <span class="pill__dot"></span>
@@ -128,51 +117,56 @@
       </div>
 
       <p class="hero__sub" data-intro>
-        Alimentation, logement, emploi, santé, papiers, finances&nbsp;: une vingtaine de bénévoles
-        s'occupent de tout ce qui aide une famille à se remettre debout.
+        Colis alimentaires, logement, emploi, santé, papiers, budget&nbsp;: une vingtaine de bénévoles
+        vous accueillent, vous écoutent et vous accompagnent — gratuitement, sans jugement.
       </p>
 
       <div class="hero__actions" data-intro>
         <a href="#rdv" class="btn btn--dark">Prendre rendez-vous</a>
-        <a href="#services" class="btn btn--light">Découvrir l'asbl</a>
+        <a href="tel:+32465927366" class="btn btn--light">Appeler : 0465 92 73 66</a>
       </div>
     </div>
   </section>
 
-  <!-- ══════════ CHIFFRES ══════════ -->
-  <section class="sheet sheet--flat impact" aria-label="Quelques chiffres">
-    <div class="impact__row">
-      <div class="impact__item"><span class="impact__num" data-count="11" data-suffix="+">0</span><span class="impact__label">années d'action</span></div>
-      <div class="impact__item"><span class="impact__num" data-count="1000" data-suffix="+">0</span><span class="impact__label">personnes aidées</span></div>
-      <div class="impact__item"><span class="impact__num" data-count="100" data-suffix="%">0</span><span class="impact__label">bénévoles</span></div>
-      <div class="impact__item"><span class="impact__num">0</span><span class="impact__label">salarié</span></div>
-      <div class="impact__item"><span class="impact__num" data-count="6">0</span><span class="impact__label">portes d'entrée</span></div>
-    </div>
+  <!-- ══════════ PORTES D'ENTRÉE ══════════ -->
+  <section class="doors" aria-label="Par où commencer">
+    <a href="#aide" class="door" style="--tile: var(--teal-soft); --tile-ink: var(--teal-deep)">
+      <span class="door__num">01</span>
+      <svg class="deco deco--teal door__shape" aria-hidden="true"><use href="#s-blob"/></svg>
+      <span class="door__title">Je cherche de l'aide</span>
+      <span class="door__desc">Alimentation, logement, emploi, santé, papiers, budget. On commence par un café.</span>
+      <span class="door__cta">Voir comment on aide <i>→</i></span>
+    </a>
+    <a href="#etudiants" class="door" style="--tile: var(--butter-soft); --tile-ink: var(--butter-deep)">
+      <span class="door__num">02</span>
+      <svg class="deco deco--lime door__shape" aria-hidden="true"><use href="#s-drop"/></svg>
+      <span class="door__title">Je suis étudiant·e</span>
+      <span class="door__desc">L'épicerie t'ouvre ses portes chaque premier jeudi du mois, pour 5€.</span>
+      <span class="door__cta">M'inscrire <i>→</i></span>
+    </a>
+    <a href="#aider" class="door" style="--tile: var(--coral-soft); --tile-ink: var(--coral-deep)">
+      <span class="door__num">03</span>
+      <svg class="deco deco--coral door__shape door__shape--dot" aria-hidden="true"><use href="#s-dot"/></svg>
+      <span class="door__title">Je veux aider</span>
+      <span class="door__desc">Donner un peu de temps, un don, ou devenir lutin·e à Noël. Tout compte.</span>
+      <span class="door__cta">Voir comment aider <i>→</i></span>
+    </a>
   </section>
 
-  <!-- ══════════ MANIFESTE ══════════ -->
-  <section class="manifesto" id="manifesto">
-    <div class="container container--narrow">
-      <p class="manifesto__text" data-reveal-words>
-        On a commencé simple&nbsp;: une épicerie, des colis, un bonjour.
-        Et puis on a écouté. Ce qu'on a entendu a changé ce qu'on fait.
-        Aujourd'hui, on s'occupe de tout ce qui aide une famille à se remettre debout.
-      </p>
-      <div class="manifesto__signature">
-        <img src="assets/images/ecw-icon.png" alt="" class="manifesto__avatar">
-        <span class="manifesto__name">Wivine &amp; l'équipe</span>
-        <span class="manifesto__role">bénévoles depuis 2015</span>
-      </div>
-    </div>
-  </section>
+  <!-- ══════════ CHAPITRE 01 ══════════ -->
+  <div class="chapter" id="aide">
+    <span class="chapter__num">01</span>
+    <h2 class="chapter__title">Besoin d'aide&nbsp;?</h2>
+    <p class="chapter__text">Voici ce qu'on fait, comment ça se passe, et comment prendre rendez-vous.</p>
+  </div>
 
   <!-- ══════════ SERVICES — bento ══════════ -->
   <section class="services" id="services">
     <div class="container">
       <header class="section-head section-head--center">
-        <span class="section-kicker">Ce qu'on fait</span>
-        <h2 class="section-title" data-split-lines>Six portes d'entrée. Une seule équipe.</h2>
-        <p class="section-sub">On ne dit pas non à grand-chose. Si c'est dans nos cordes, on fait. Si c'est pas dans nos cordes, on connaît quelqu'un.</p>
+        <span class="section-kicker">Ce qu'on fait pour vous</span>
+        <h2 class="section-title" data-split-lines>Six domaines. Une seule équipe.</h2>
+        <p class="section-sub">Quel que soit le problème, on regarde ensemble par où commencer. Si ce n'est pas dans nos cordes, on connaît quelqu'un.</p>
       </header>
 
       <div class="services__grid">
@@ -246,50 +240,13 @@
     </div>
   </section>
 
-  <!-- ══════════ HISTOIRE ══════════ -->
-  <section class="sheet histoire" id="histoire">
-    <div class="histoire__grid">
-      <div class="histoire__text">
-        <span class="section-kicker">Notre histoire</span>
-        <h2 class="section-title section-title--left" data-split-lines>Onze ans qu'on bricole ce qui tient.</h2>
-        <p class="lead" data-reveal-words>
-          On a ouvert les portes en 2014. Créé l'ASBL en 2015. Depuis, aucun salarié — que des bénévoles,
-          à plein temps dans leur cœur et à temps libre sur leur semaine.
-        </p>
-        <p class="body">
-          Au début, c'était une distribution alimentaire, une fois par semaine. Puis des gens nous ont raconté
-          le reste&nbsp;: le loyer en retard, la lettre pas comprise, le rendez-vous médical loupé, l'entretien
-          d'embauche qui angoisse. On s'est dit qu'on ne pouvait pas écouter sans agir.
-        </p>
-        <p class="body">
-          Alors on a ajouté&nbsp;: logement, papiers, emploi, santé. Pas par stratégie — par réponse à ce qu'on
-          entendait. Aujourd'hui des milliers de familles sont passées par ici. La plupart sont reparties debout.
-        </p>
-
-        <ol class="timeline" aria-label="Jalons">
-          <li><span class="timeline__year">2014</span><span class="timeline__label">Ouverture des portes</span></li>
-          <li><span class="timeline__year">2015</span><span class="timeline__label">Création officielle de l'ASBL</span></li>
-          <li><span class="timeline__year">2018</span><span class="timeline__label">Élargissement des services</span></li>
-          <li><span class="timeline__year">2020</span><span class="timeline__label">Adaptation pendant la crise</span></li>
-          <li><span class="timeline__year">2023</span><span class="timeline__label">Épicerie étudiante mensuelle</span></li>
-          <li class="is-now"><span class="timeline__year">2026</span><span class="timeline__label">Plus de 1000 personnes accompagnées</span></li>
-        </ol>
-      </div>
-
-      <div class="histoire__visual">
-        <div class="blob blob--a"><img src="https://images.unsplash.com/photo-1542323228-002ac256e7b8?w=1000&q=80" alt="Bénévoles rassemblés" loading="lazy"></div>
-        <div class="blob blob--b"><img src="https://images.unsplash.com/photo-1497604401993-f2e922e5cb0a?w=800&q=80" alt="Le jardin en été" loading="lazy"></div>
-        <span class="pill pill--float histoire__pill">depuis 2014, à Waterloo</span>
-      </div>
-    </div>
-  </section>
-
   <!-- ══════════ WORKFLOW ══════════ -->
   <section class="workflow" id="workflow">
     <div class="container">
       <header class="section-head section-head--center">
         <span class="section-kicker">Comment ça se passe</span>
         <h2 class="section-title" data-split-lines>Venez comme vous êtes. On s'occupe du reste.</h2>
+        <p class="section-sub">Quatre étapes, toujours à votre rythme. Rien n'est décidé sans vous.</p>
       </header>
 
       <div class="wf">
@@ -321,106 +278,39 @@
     </div>
   </section>
 
-  <!-- ══════════ TEMPS FORTS ══════════ -->
-  <section class="sheet sheet--dark temps" id="temps-forts">
-    <div class="container">
-      <header class="section-head section-head--center">
-        <span class="section-kicker">Nos temps forts</span>
-        <h2 class="section-title" data-split-lines>Trois rendez-vous qu'on ne raterait pour rien au monde.</h2>
-        <p class="section-sub">Au-delà de l'épicerie et de l'accompagnement, il y a ces moments qu'on fabrique nous-mêmes, avec nos moyens et beaucoup d'envie.</p>
-      </header>
-
-      <div class="temps__grid">
-        <!-- 01 : Potager -->
-        <article class="temps-item">
-          <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&q=80" alt="Potager collectif — rangs de légumes" loading="lazy" class="temps-item__img">
-          <span class="temps-item__tag">toute l'année</span>
-          <div class="glass temps-item__glass">
-            <span class="temps-item__index">01 — potager</span>
-            <h3 class="temps-item__title">Le potager collectif</h3>
-            <p class="temps-item__desc">Un grand potager entretenu à la main. Les légumes partent directement à l'épicerie — donnés aux familles, ou vendus à prix symbolique. Un atelier à ciel ouvert où l'on discute en arrachant des mauvaises herbes.</p>
-            <div class="temps-item__stats">
-              <span><b>100%</b> bio &amp; local</span>
-              <span><b>4</b> saisons</span>
-              <span><b>∞</b> mains</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- 02 : Magie de Noël -->
-        <article class="temps-item temps-item--tall">
-          <img src="https://images.unsplash.com/photo-1608755728617-aefab37d2edd?w=1200&q=80" alt="Table de fête de Noël" loading="lazy" class="temps-item__img">
-          <span class="temps-item__tag">décembre</span>
-          <div class="glass temps-item__glass">
-            <span class="temps-item__index">02 — magie de noël</span>
-            <h3 class="temps-item__title">La Magie de Noël</h3>
-            <p class="temps-item__desc">Chaque décembre, on refuse que Noël soit un jour comme un autre pour nos familles. Un traiteur prépare un <strong>vrai menu de fête</strong>. Et l'<strong>Opération Lutins &amp; Lutines</strong>&nbsp;: tu reçois la lettre d'un enfant au Père Noël, tu choisis son cadeau, on le lui remet.</p>
-            <button type="button" class="btn btn--light btn--sm" id="openLutinForm">Je veux être lutin·e cette année</button>
-          </div>
-        </article>
-
-        <!-- 03 : Théâtre -->
-        <article class="temps-item">
-          <img src="https://images.unsplash.com/photo-1503095396549-807759245b35?w=1200&q=80" alt="Salle de théâtre" loading="lazy" class="temps-item__img">
-          <span class="temps-item__tag">une fois par an</span>
-          <div class="glass temps-item__glass">
-            <span class="temps-item__index">03 — théâtre</span>
-            <h3 class="temps-item__title">Notre pièce annuelle</h3>
-            <p class="temps-item__desc">Une fois par an, on investit la salle Jules Bastin à Waterloo. Deux représentations, deux fois salle pleine. Les bénéfices soutiennent directement notre action — venir voir la pièce, c'est applaudir deux fois.</p>
-            <div class="temps-item__stats">
-              <span><b>2</b> représentations</span>
-              <span><b>Jules Bastin</b> Waterloo</span>
-              <span><b>100%</b> pour l'ECW</span>
-            </div>
-          </div>
-        </article>
-      </div>
+  <!-- ══════════ RENDEZ-VOUS ══════════ -->
+  <section class="sheet rdv" id="rdv">
+    <svg class="deco deco--navy deco--rdv-1" aria-hidden="true"><use href="#s-bean"/></svg>
+    <header class="section-head section-head--center">
+      <span class="section-kicker">Prendre rendez-vous</span>
+      <h2 class="section-title" data-split-lines>Un café, une écoute, et on voit ensemble.</h2>
+      <p class="section-sub">Choisissez un créneau ci-dessous, ou appelez le <a href="tel:+32465927366"><strong>0465 92 73 66</strong></a>. Rencontre individuelle, confidentielle, gratuite.</p>
+    </header>
+    <div class="rdv__wrap">
+      <iframe
+        src="https://cal.eu/epicerie-sociale-de-waterloo-e.c.w-vcjwji/rendez-vous?embed=true"
+        class="rdv__frame"
+        title="Prendre rendez-vous — Espace Convivial de Waterloo"
+        loading="lazy"
+      ></iframe>
     </div>
   </section>
 
-  <!-- ══════════ GAZETTE ══════════ -->
-  <section class="sheet gaz" id="gazette">
-    <div class="gaz__grid">
-      <div class="gaz__cover">
-        <img src="assets/magazines/gazette-01-cover.jpg" alt="Couverture de la gazette conviviale — N°1" class="gaz__cover-img" loading="lazy">
-        <span class="pill pill--float gaz__pill" style="--tag: var(--lime-deep)">dernière parution</span>
-      </div>
-
-      <div class="gaz__info">
-        <span class="section-kicker">La gazette</span>
-        <h2 class="section-title section-title--left" data-split-lines>On écrit aussi. Deux fois par an.</h2>
-        <p class="lead">
-          Huit pages, tirées sur du vrai papier. Des portraits, des chroniques, des photos, un peu d'humour,
-          beaucoup de vraies histoires. On la distribue à l'épicerie et lors des événements — et tu peux la feuilleter ici-même.
-        </p>
-
-        <div class="gaz__actions">
-          <button class="btn btn--dark" id="openGazette" data-pdf="assets/magazines/gazette-01.pdf">Feuilleter la gazette</button>
-          <a href="assets/magazines/gazette-01.pdf" class="btn btn--light" download>Télécharger le PDF</a>
-        </div>
-
-        <ul class="gaz__issues">
-          <li class="gaz__issue">
-            <span class="gaz__issue-num">N°1</span>
-            <span class="gaz__issue-title">Printemps 2026 <small>· 8 pages, notre tout premier numéro</small></span>
-            <span class="tag tag--ok">disponible</span>
-          </li>
-          <li class="gaz__issue gaz__issue--future">
-            <span class="gaz__issue-num">N°2</span>
-            <span class="gaz__issue-title">Automne 2026 <small>· en préparation</small></span>
-            <span class="tag">bientôt</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </section>
+  <!-- ══════════ CHAPITRE 02 ══════════ -->
+  <div class="chapter" id="etudiants">
+    <span class="chapter__num">02</span>
+    <h2 class="chapter__title">Étudiant·e&nbsp;?</h2>
+    <p class="chapter__text">Une épicerie rien que pour toi, une fois par mois.</p>
+  </div>
 
   <!-- ══════════ ÉTUDIANTS ══════════ -->
-  <section class="sheet sheet--butter etu" id="etudiants">
+  <section class="sheet sheet--butter etu" id="epicerie-etudiante">
+    <svg class="deco deco--teal deco--etu-1" aria-hidden="true"><use href="#s-blob"/></svg>
+    <svg class="deco deco--coral deco--etu-2" aria-hidden="true"><use href="#s-dot"/></svg>
     <div class="etu__grid">
       <div class="etu__text">
         <span class="section-kicker">Épicerie étudiante</span>
-        <h2 class="section-title section-title--left" data-split-lines>Étudiant·e&nbsp;? On pense à toi.</h2>
+        <h2 class="section-title section-title--left" data-split-lines>L'épicerie t'ouvre ses portes chaque mois.</h2>
         <p class="lead">
           Chaque <strong>premier jeudi du mois</strong>, nos portes te sont grandes ouvertes pour <strong>5€</strong>.
           Parce qu'entre le loyer et les cours, manger ne devrait pas être ce qui te stresse.
@@ -450,22 +340,12 @@
     </div>
   </section>
 
-  <!-- ══════════ RENDEZ-VOUS ══════════ -->
-  <section class="sheet rdv" id="rdv">
-    <header class="section-head section-head--center">
-      <span class="section-kicker">Prendre rendez-vous</span>
-      <h2 class="section-title" data-split-lines>Un café, une écoute, et on voit ensemble.</h2>
-      <p class="section-sub">Rencontre individuelle, confidentielle, sans engagement. Trente minutes pour poser ce qui pèse.</p>
-    </header>
-    <div class="rdv__wrap">
-      <iframe
-        src="https://cal.eu/epicerie-sociale-de-waterloo-e.c.w-vcjwji/rendez-vous?embed=true"
-        class="rdv__frame"
-        title="Prendre rendez-vous — Espace Convivial de Waterloo"
-        loading="lazy"
-      ></iframe>
-    </div>
-  </section>
+  <!-- ══════════ CHAPITRE 03 ══════════ -->
+  <div class="chapter" id="aider">
+    <span class="chapter__num">03</span>
+    <h2 class="chapter__title">Envie d'aider&nbsp;?</h2>
+    <p class="chapter__text">Du temps, un don, ou une lettre d'enfant à Noël. Chaque geste arrive à destination.</p>
+  </div>
 
   <!-- ══════════ BÉNÉVOLES ══════════ -->
   <section class="benev" id="benevoles">
@@ -484,15 +364,15 @@
         </div>
 
         <div class="benev__text">
-          <span class="section-kicker">Rejoindre l'équipe</span>
+          <span class="section-kicker">Donner du temps</span>
           <h2 class="section-title section-title--left" data-split-lines>Sans les bénévoles, rien de tout ça.</h2>
           <p class="lead">
-            Zéro salarié, une vingtaine de bénévoles, tous profils confondus. Chacun·e apporte ce qu'il a&nbsp;:
-            un peu de temps, une compétence, une voiture, une langue, deux bras.
+            Zéro salarié, une vingtaine de bénévoles. Chacun·e apporte ce qu'il a&nbsp;: une heure par semaine,
+            une compétence, une voiture, une langue, deux bras.
           </p>
           <p class="body">
-            On cherche en permanence des renforts&nbsp;: logistique, accompagnement, cuisine, transport,
-            administratif, traduction, jardinage… Si vous hésitez, venez quand même boire un café — on trouvera.
+            On cherche des renforts pour la logistique, l'accompagnement, la cuisine, le transport, l'administratif,
+            la traduction, le jardin… Pas besoin de savoir faire quoi que ce soit de spécial. Venez boire un café, on trouvera.
           </p>
           <ol class="benev__steps">
             <li><span>01</span>Vous nous contactez (téléphone ou email)</li>
@@ -511,10 +391,12 @@
 
   <!-- ══════════ SOUTENIR ══════════ -->
   <section class="sheet soutenir" id="soutenir">
+    <svg class="deco deco--lime deco--sout-1" aria-hidden="true"><use href="#s-drop"/></svg>
+    <svg class="deco deco--coral deco--sout-2" aria-hidden="true"><use href="#s-dot"/></svg>
     <header class="section-head section-head--center">
-      <span class="section-kicker">Nous soutenir</span>
+      <span class="section-kicker">Faire un don</span>
       <h2 class="section-title" data-split-lines>Un euro, ici, c'est un euro qui arrive.</h2>
-      <p class="section-sub">Pas de salaire, pas de frais gonflés. Ce que vous donnez finit dans un colis, un ticket de bus pour un rendez-vous, un cadeau pour un enfant, du chauffage pour la permanence.</p>
+      <p class="section-sub">Pas de salaire, pas de frais cachés. Votre don finit dans un colis, un ticket de bus, un cadeau pour un enfant ou le chauffage de la permanence. Paiement sécurisé par Stripe.</p>
     </header>
 
     <div class="soutenir__grid">
@@ -546,10 +428,183 @@
     </div>
   </section>
 
+  <!-- ══════════ LUTINS ══════════ -->
+  <section class="sheet sheet--dark lutins" id="lutins">
+    <svg class="deco deco--coral deco--lut-1" aria-hidden="true"><use href="#s-dot"/></svg>
+    <svg class="deco deco--lime deco--lut-2" aria-hidden="true"><use href="#s-drop"/></svg>
+    <div class="lutins__grid">
+      <img src="https://images.unsplash.com/photo-1608755728617-aefab37d2edd?w=1000&q=80" alt="Cadeaux emballés pour Noël" class="lutins__img" loading="lazy">
+      <div class="lutins__text">
+        <span class="section-kicker">Chaque décembre</span>
+        <h2 class="section-title section-title--left" data-split-lines>Devenez lutin·e de Noël.</h2>
+        <p class="lead">
+          Vous recevez la lettre d'un enfant au Père Noël. Vous choisissez son cadeau, vous le déposez à l'épicerie.
+          On s'occupe de le lui remettre. C'est notre moment préféré de l'année.
+        </p>
+        <button type="button" class="btn btn--light" id="openLutinForm">Je veux être lutin·e cette année</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CHAPITRE 04 ══════════ -->
+  <div class="chapter" id="asbl">
+    <span class="chapter__num">04</span>
+    <h2 class="chapter__title">Qui sommes-nous&nbsp;?</h2>
+    <p class="chapter__text">Une ASBL de quartier, 100% bénévole, depuis 2014.</p>
+  </div>
+
+  <!-- ══════════ HISTOIRE ══════════ -->
+  <section class="sheet histoire" id="histoire">
+    <svg class="deco deco--lime deco--hist-1" aria-hidden="true"><use href="#s-drop"/></svg>
+    <div class="histoire__grid">
+      <div class="histoire__text">
+        <span class="section-kicker">Notre histoire</span>
+        <h2 class="section-title section-title--left" data-split-lines>Depuis 2014, à Waterloo.</h2>
+        <p class="lead">
+          On a commencé simple&nbsp;: une épicerie, des colis, un bonjour. Et puis on a écouté.
+        </p>
+        <p class="body">
+          Les gens nous racontaient le reste&nbsp;: le loyer en retard, la lettre pas comprise, le rendez-vous
+          médical loupé. Alors on a ajouté le logement, les papiers, l'emploi, la santé — pas par stratégie,
+          par réponse à ce qu'on entendait.
+        </p>
+        <p class="body">
+          Aujourd'hui, l'ASBL tourne avec une vingtaine de bénévoles et zéro salarié. Plus de mille personnes
+          sont passées par ici. La plupart sont reparties debout.
+        </p>
+
+        <ol class="timeline" aria-label="Jalons">
+          <li><span class="timeline__year">2014</span><span class="timeline__label">Ouverture des portes</span></li>
+          <li><span class="timeline__year">2015</span><span class="timeline__label">Création officielle de l'ASBL</span></li>
+          <li><span class="timeline__year">2018</span><span class="timeline__label">Élargissement des services</span></li>
+          <li><span class="timeline__year">2020</span><span class="timeline__label">Adaptation pendant la crise</span></li>
+          <li><span class="timeline__year">2023</span><span class="timeline__label">Épicerie étudiante mensuelle</span></li>
+          <li class="is-now"><span class="timeline__year">2026</span><span class="timeline__label">Plus de 1000 personnes accompagnées</span></li>
+        </ol>
+      </div>
+
+      <div class="histoire__visual">
+        <div class="blob blob--a"><img src="https://images.unsplash.com/photo-1542323228-002ac256e7b8?w=1000&q=80" alt="Bénévoles rassemblés" loading="lazy"></div>
+        <div class="blob blob--b"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Un repas partagé" loading="lazy"></div>
+        <span class="pill pill--float histoire__pill">depuis 2014, à Waterloo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CHIFFRES ══════════ -->
+  <section class="sheet sheet--flat impact" aria-label="Quelques chiffres">
+    <div class="impact__row">
+      <div class="impact__item"><span class="impact__num" data-count="11" data-suffix="+">0</span><span class="impact__label">années d'action</span></div>
+      <div class="impact__item"><span class="impact__num" data-count="1000" data-suffix="+">0</span><span class="impact__label">personnes aidées</span></div>
+      <div class="impact__item"><span class="impact__num" data-count="100" data-suffix="%">0</span><span class="impact__label">bénévoles</span></div>
+      <div class="impact__item"><span class="impact__num">0</span><span class="impact__label">salarié</span></div>
+      <div class="impact__item"><span class="impact__num" data-count="6">0</span><span class="impact__label">portes d'entrée</span></div>
+    </div>
+  </section>
+
+  <!-- ══════════ TEMPS FORTS ══════════ -->
+  <section class="sheet sheet--dark temps" id="temps-forts">
+    <div class="container">
+      <header class="section-head section-head--center">
+        <span class="section-kicker">Nos temps forts</span>
+        <h2 class="section-title" data-split-lines>Trois rendez-vous qu'on ne raterait pour rien au monde.</h2>
+        <p class="section-sub">Au-delà de l'épicerie, il y a ces moments qu'on fabrique nous-mêmes, avec nos moyens et beaucoup d'envie.</p>
+      </header>
+
+      <div class="temps__grid">
+        <!-- 01 : Potager -->
+        <article class="temps-item">
+          <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&q=80" alt="Potager collectif — rangs de légumes" loading="lazy" class="temps-item__img">
+          <span class="temps-item__tag">toute l'année</span>
+          <div class="glass temps-item__glass">
+            <span class="temps-item__index">01 — potager</span>
+            <h3 class="temps-item__title">Le potager collectif</h3>
+            <p class="temps-item__desc">Un grand potager entretenu à la main. Les légumes partent directement à l'épicerie — donnés aux familles, ou vendus à prix symbolique. Un atelier à ciel ouvert où l'on discute en arrachant des mauvaises herbes.</p>
+            <div class="temps-item__stats">
+              <span><b>100%</b> bio &amp; local</span>
+              <span><b>4</b> saisons</span>
+              <span><b>∞</b> mains</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 02 : Magie de Noël -->
+        <article class="temps-item temps-item--tall">
+          <img src="https://images.unsplash.com/photo-1608755728617-aefab37d2edd?w=1200&q=80" alt="Table de fête de Noël" loading="lazy" class="temps-item__img">
+          <span class="temps-item__tag">décembre</span>
+          <div class="glass temps-item__glass">
+            <span class="temps-item__index">02 — magie de noël</span>
+            <h3 class="temps-item__title">La Magie de Noël</h3>
+            <p class="temps-item__desc">Chaque décembre, on refuse que Noël soit un jour comme un autre pour nos familles. Un traiteur prépare un <strong>vrai menu de fête</strong>. Et l'<strong>Opération Lutins &amp; Lutines</strong>&nbsp;: tu reçois la lettre d'un enfant au Père Noël, tu choisis son cadeau, on le lui remet.</p>
+            <a href="#lutins" class="btn btn--light btn--sm">Devenir lutin·e</a>
+          </div>
+        </article>
+
+        <!-- 03 : Théâtre -->
+        <article class="temps-item">
+          <img src="https://images.unsplash.com/photo-1503095396549-807759245b35?w=1200&q=80" alt="Salle de théâtre" loading="lazy" class="temps-item__img">
+          <span class="temps-item__tag">une fois par an</span>
+          <div class="glass temps-item__glass">
+            <span class="temps-item__index">03 — théâtre</span>
+            <h3 class="temps-item__title">Notre pièce annuelle</h3>
+            <p class="temps-item__desc">Une fois par an, on investit la salle Jules Bastin à Waterloo. Deux représentations, deux fois salle pleine. Les bénéfices soutiennent directement notre action — venir voir la pièce, c'est applaudir deux fois.</p>
+            <div class="temps-item__stats">
+              <span><b>2</b> représentations</span>
+              <span><b>Jules Bastin</b> Waterloo</span>
+              <span><b>100%</b> pour l'ECW</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ GAZETTE ══════════ -->
+  <section class="sheet gaz" id="gazette">
+    <svg class="deco deco--teal deco--gaz-1" aria-hidden="true"><use href="#s-blob"/></svg>
+    <div class="gaz__grid">
+      <div class="gaz__cover">
+        <img src="assets/magazines/gazette-01-cover.jpg" alt="Couverture de la gazette conviviale — N°1" class="gaz__cover-img" loading="lazy">
+        <span class="pill pill--float gaz__pill" style="--tag: var(--lime-deep)">dernière parution</span>
+      </div>
+
+      <div class="gaz__info">
+        <span class="section-kicker">La gazette</span>
+        <h2 class="section-title section-title--left" data-split-lines>On écrit aussi. Deux fois par an.</h2>
+        <p class="lead">
+          Huit pages sur du vrai papier&nbsp;: portraits, chroniques, photos, un peu d'humour, beaucoup de vraies histoires.
+          Feuilletez-la ici, ou emportez-la à l'épicerie.
+        </p>
+
+        <div class="gaz__actions">
+          <button class="btn btn--dark" id="openGazette" data-pdf="assets/magazines/gazette-01.pdf">Feuilleter la gazette</button>
+          <a href="assets/magazines/gazette-01.pdf" class="btn btn--light" download>Télécharger le PDF</a>
+        </div>
+
+        <ul class="gaz__issues">
+          <li class="gaz__issue">
+            <span class="gaz__issue-num">N°1</span>
+            <span class="gaz__issue-title">Printemps 2026 <small>· 8 pages, notre tout premier numéro</small></span>
+            <span class="tag tag--ok">disponible</span>
+          </li>
+          <li class="gaz__issue gaz__issue--future">
+            <span class="gaz__issue-num">N°2</span>
+            <span class="gaz__issue-title">Automne 2026 <small>· en préparation</small></span>
+            <span class="tag">bientôt</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════════ CONTACT / CTA ══════════ -->
   <section class="sheet contact" id="contact">
+    <svg class="deco deco--teal deco--ct-1" aria-hidden="true"><use href="#s-blob"/></svg>
+    <svg class="deco deco--lime deco--ct-2" aria-hidden="true"><use href="#s-drop"/></svg>
+    <svg class="deco deco--coral deco--ct-3" aria-hidden="true"><use href="#s-dot"/></svg>
+    <svg class="deco deco--navy deco--ct-4" aria-hidden="true"><use href="#s-bean"/></svg>
     <div class="contact__cta">
-      <div class="contact__icon" aria-hidden="true">🤝</div>
+      <div class="contact__icon" aria-hidden="true"><img src="assets/images/ecw-icon.png" alt=""></div>
       <h2 class="section-title" data-split-lines>Besoin d'aide&nbsp;? Envie d'aider&nbsp;? Notre porte est ouverte.</h2>
       <div class="contact__actions">
         <a href="mailto:infos.ecwaterloo@gmail.com" class="btn btn--dark">Nous écrire</a>
@@ -583,13 +638,12 @@
           <p>Espace Convivial de Waterloo — ASBL 100% bénévole depuis 2015.</p>
         </div>
         <nav class="footer__nav" aria-label="Navigation du pied de page">
-          <a href="#services">Ce qu'on fait</a>
-          <a href="#histoire">Histoire</a>
-          <a href="#temps-forts">Temps forts</a>
-          <a href="#gazette">Gazette</a>
+          <a href="#aide">Besoin d'aide</a>
           <a href="#etudiants">Étudiants</a>
-          <a href="#benevoles">Bénévoles</a>
-          <a href="#soutenir">Soutenir</a>
+          <a href="#aider">Aider</a>
+          <a href="#asbl">Qui sommes-nous</a>
+          <a href="#gazette">Gazette</a>
+          <a href="#contact">Contact</a>
         </nav>
       </div>
       <div class="footer__bottom">
@@ -607,6 +661,7 @@
 
   </main>
 
+  
   <!-- ══════════ MODAL INSCRIPTION ÉTUDIANTS ══════════ -->
   <div class="smodal" id="studentModal" aria-hidden="true">
     <div class="smodal__backdrop" id="studentModalBackdrop"></div>
@@ -822,8 +877,9 @@
         </div>
       </div>
 
+      <div class="reader__thumbs" id="readerThumbs" aria-label="Pages"></div>
       <div class="reader__footer">
-        <span class="reader__hint">← → pour naviguer · Échap pour fermer</span>
+        <span class="reader__hint">← → pour tourner les pages · Échap pour fermer</span>
       </div>
     </div>
   </div>
@@ -833,32 +889,7 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
 
-  <!-- ══════════ CHATBOT ══════════ -->
-  <div class="chat" id="chatWidget">
-    <div class="chat__panel" id="chatPanel" aria-hidden="true" role="dialog" aria-label="Assistant ECW">
-      <div class="chat__head">
-        <div class="chat__head-title">
-          <div class="chat__dot"></div>
-          <span>Assistant ECW</span>
-        </div>
-        <button class="chat__close" id="chatClose" aria-label="Fermer">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="chat__messages" id="chatMessages"></div>
-      <div class="chat__input">
-        <div class="chat__choices" id="chatChoices"></div>
-        <button class="chat__back" id="chatBack" hidden>← Précédent</button>
-      </div>
-    </div>
-    <button class="chat__trigger" id="chatTrigger" aria-label="Ouvrir l'assistant">
-      <svg class="chat__trigger-icon--open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      <svg class="chat__trigger-icon--close" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      <span class="chat__trigger-label">Aide</span>
-    </button>
-  </div>
-
-  <script src="config.js"></script>
+    <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
