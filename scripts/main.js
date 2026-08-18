@@ -138,14 +138,23 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     const countdown = document.getElementById('studentCountdown');
     if (!btn) return;
 
+    const numEl = document.getElementById('studentCountNum');
+    const lblEl = document.getElementById('studentCountLbl');
     if (daysUntilOpen > 0) {
       btn.disabled = true;
       btn.classList.add('btn--disabled');
-      if (countdown) {
+      btn.textContent = 'Inscriptions pas encore ouvertes';
+      if (countdown && numEl && lblEl) {
         const j = daysUntilOpen;
-        countdown.textContent = `Inscriptions ouvertes dans ${j} jour${j > 1 ? 's' : ''} · ${nextThursdayStr}`;
+        numEl.textContent = j;
+        lblEl.textContent = j > 1 ? "jours avant l'ouverture des inscriptions" : "jour avant l'ouverture des inscriptions";
         countdown.hidden = false;
       }
+    } else if (countdown && numEl && lblEl) {
+      numEl.textContent = daysUntil;
+      lblEl.textContent = (daysUntil > 1 ? 'jours' : 'jour') + ' avant le jeudi · inscriptions ouvertes';
+      countdown.classList.add('is-open');
+      countdown.hidden = false;
     }
   }
   initButtonState();

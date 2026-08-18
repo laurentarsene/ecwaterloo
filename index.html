@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css?v=5">
 </head>
 <body class="no-js">
 
@@ -169,11 +169,36 @@
         <p class="section-sub">Venez comme vous êtes. Quatre étapes, à votre rythme — rien n'est décidé sans vous.</p>
       </div>
       <ol class="steps">
-        <li class="step"><span class="step__num">1</span><h4>Accueil &amp; écoute</h4><p>Vous poussez la porte, on vous offre un café, on écoute.</p><span class="step__meta">≈ 45 min, en tête-à-tête</span></li>
-        <li class="step"><span class="step__num">2</span><h4>Évaluation globale</h4><p>On fait le tour de votre situation, pour connecter les choses.</p><span class="step__meta">Bilan complet, confidentiel</span></li>
-        <li class="step"><span class="step__num">3</span><h4>Plan d'action</h4><p>Un plan réaliste, étape par étape. Vous gardez la main.</p><span class="step__meta">Sur-mesure, validé ensemble</span></li>
-        <li class="step"><span class="step__num">4</span><h4>Suivi continu</h4><p>Un bénévole référent, des points réguliers. On ne lâche personne.</p><span class="step__meta">Aussi longtemps qu'il le faut</span></li>
+        <li class="step">
+          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 18h26v12a10 10 0 0 1-10 10H18A10 10 0 0 1 8 30Z"/><path d="M34 22h3a5 5 0 0 1 0 10h-3"/><path d="M15 6c0 3 3 3 3 6M22 6c0 3 3 3 3 6"/></svg>
+          <span class="step__num">Étape 1</span>
+          <h4>Vous poussez la porte</h4>
+          <p>Un café, une conversation. On écoute, sans formulaire.</p>
+          <span class="step__meta">≈ 45 min · en tête-à-tête</span>
+        </li>
+        <li class="step">
+          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="3"/><path d="M16 16h16M16 24h16M16 32h10"/></svg>
+          <span class="step__num">Étape 2</span>
+          <h4>On fait le point ensemble</h4>
+          <p>Alimentation, logement, emploi, santé, papiers, budget&nbsp;: on regarde tout, pour relier les choses.</p>
+          <span class="step__meta">Bilan complet · confidentiel</span>
+        </li>
+        <li class="step">
+          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 40 20 30l8 6 12-14"/><path d="M32 22h8v8"/></svg>
+          <span class="step__num">Étape 3</span>
+          <h4>On décide d'un plan</h4>
+          <p>Réaliste, étape par étape. C'est vous qui tranchez.</p>
+          <span class="step__meta">Sur-mesure · validé avec vous</span>
+        </li>
+        <li class="step">
+          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 24a16 16 0 0 1 32 0"/><path d="M8 24v10a3 3 0 0 0 3 3h3V22h-3a3 3 0 0 0-3 2ZM40 24v10a3 3 0 0 1-3 3h-3V22h3a3 3 0 0 1 3 2Z"/></svg>
+          <span class="step__num">Étape 4</span>
+          <h4>On reste là</h4>
+          <p>Un bénévole référent, des points réguliers, un coup de fil quand ça coince.</p>
+          <span class="step__meta">Aussi longtemps qu'il le faut</span>
+        </li>
       </ol>
+      <p class="workflow__note"><strong>Première visite&nbsp;:</strong> rien à préparer, rien à apporter. Vous venez, on discute.</p>
     </div>
   </section>
 
@@ -198,19 +223,23 @@
     <div class="wrap etu__grid">
       <div class="etu__text">
         <h3 class="section-title">L'épicerie étudiante</h3>
-        <p class="lead">Une fois par mois, l'épicerie t'est ouverte pour 5€. Parce qu'entre le loyer et les cours, manger ne devrait pas être ce qui te stresse.</p>
+        <p class="lead">Une fois par mois, l'épicerie est ouverte aux étudiant·es.</p>
         <dl class="etu__facts">
-          <div><dt>Quand</dt><dd>Le premier jeudi du mois.</dd></div>
-          <div><dt>Où</dt><dd>À l'épicerie, à Waterloo — l'adresse exacte t'est envoyée par email.</dd></div>
-          <div><dt>Prix</dt><dd>5€ par personne, à apporter le jour même.</dd></div>
-          <div><dt>Comment</dt><dd>Inscription en ligne obligatoire, en 30 secondes. Puis tu viens avec tes 5€ et un sac.</dd></div>
+          <div><dt>Quand</dt><dd>1<sup>er</sup> jeudi du mois</dd></div>
+          <div><dt>Prix</dt><dd>5€ <small>par personne</small></dd></div>
+          <div><dt>Où</dt><dd>Waterloo <small>adresse envoyée par email</small></dd></div>
+          <div><dt>Comment</dt><dd>Inscription en ligne <small>30 secondes, obligatoire</small></dd></div>
         </dl>
+        <p class="etu__bring">Le jour J&nbsp;: tes 5€ et un sac.</p>
       </div>
       <div class="etu__card">
         <p class="etu__card-label">Prochaine date</p>
         <p class="etu__card-date" id="nextThursdayCard">—</p>
+        <div class="etu__count" id="studentCountdown" hidden>
+          <span class="etu__count-num" id="studentCountNum">—</span>
+          <span class="etu__count-lbl" id="studentCountLbl">jours avant l'ouverture des inscriptions</span>
+        </div>
         <button type="button" class="btn btn--primary" id="openStudentForm">Je m'inscris</button>
-        <p class="etu__countdown" id="studentCountdown" hidden></p>
         <p class="etu__card-note">Les absents non excusés ne pourront plus s'inscrire par la suite.</p>
       </div>
     </div>
@@ -618,6 +647,6 @@
 
     <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="scripts/main.js"></script>
+  <script src="scripts/main.js?v=5"></script>
 </body>
 </html>
