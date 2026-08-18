@@ -718,3 +718,55 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
   }, { passive: true });
 })();
+
+/* ══════════════════════════════════════════════════════════════
+   CARTE — l'épicerie (Leaflet + tuiles CARTO)
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const el = document.getElementById('map');
+  if (!el || typeof L === 'undefined') return;
+  const pos = [50.71443, 4.38369]; // Rue de la Station 139A, 1410 Waterloo
+  const map = L.map(el, { scrollWheelZoom: false, zoomControl: true, attributionControl: true }).setView(pos, 16);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19, subdomains: 'abcd',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  }).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd', pane: 'shadowPane' }).addTo(map);
+  const icon = L.divIcon({ className: 'map-pin', iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -14] });
+  L.marker(pos, { icon, title: "Espace Convivial de Waterloo" }).addTo(map)
+    .bindPopup('<b>Espace Convivial de Waterloo</b><br>Rue de la Station 139A<br>1410 Waterloo<br><a href="https://www.google.com/maps/dir/?api=1&destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Itinéraire →</a>');
+  // Léger décalage pour laisser respirer le marqueur
+  map.panBy([0, -20], { animate: false });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   GAZETTE — page souple (bandes emboîtées)
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const page = document.querySelector('.book__page');
+  if (!page || prefersReducedMotion) return;
+  const coverImg = page.querySelector('.book__cover-img');
+  const coverUrl = coverImg ? new URL(coverImg.getAttribute('src'), location.href).href : null;
+  if (!coverUrl) return;
+  const N = 14, total = -52; // degrés cumulés en fin de course
+  let parent = page;
+  for (let i = 0; i < N; i++) {
+    const s = document.createElement('span');
+    s.className = 'strip';
+    s.style.backgroundImage = `url("${coverUrl}")`;
+    if (i === 0) s.style.width = `${100 / N}%`;
+    s.style.setProperty('--bs', `${N * 100}%`);
+    s.style.setProperty('--bp', `${(i / (N - 1)) * 100}%`);
+    s.style.setProperty('--sw', `${100 / N}%`);
+    // courbe : les premières bandes tournent peu, la fin s'enroule davantage
+    const t = (i + 1) / N;
+    const cum = total * (1 - Math.pow(1 - t, 1.6));
+    const prev = i === 0 ? 0 : total * (1 - Math.pow(1 - i / N, 1.6));
+    s.style.setProperty('--a', `${(cum - prev).toFixed(3)}deg`);
+    s.style.setProperty('--d', `${i * 22}ms`);
+    s.style.setProperty('--shade', (0.03 + t * 0.22).toFixed(3));
+    parent.appendChild(s);
+    parent = s;
+  }
+  page.classList.add('is-split');
+})();
