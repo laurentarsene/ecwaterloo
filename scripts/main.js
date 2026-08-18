@@ -1,60 +1,17 @@
 /* ══════════════════════════════════════════════════════════════
    ECW — main.js
-   Interactions + animations (GSAP optionnel)
    ══════════════════════════════════════════════════════════════ */
 
 document.body.classList.remove('no-js');
-
-const hasGSAP = typeof gsap !== 'undefined';
-if (hasGSAP && typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ══════════════════════════════════════════════════════════════
-   INTRO HERO — révélation en cascade (CSS-driven)
+   NAV — mobile + lien actif
    ══════════════════════════════════════════════════════════════ */
 (function () {
-  const intro = [...document.querySelectorAll('[data-intro]')];
-  const cards = [...document.querySelectorAll('.fan__card')];
-  const tags = [...document.querySelectorAll('.fan__tag')];
-
-  intro.forEach((el, i) => {
-    el.style.transition = 'opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1)';
-    el.style.transitionDelay = `${0.05 + i * 0.12}s`;
-  });
-  cards.forEach((el, i) => {
-    el.style.transition = 'opacity .8s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1)';
-    el.style.transitionDelay = `${0.35 + i * 0.07}s`;
-  });
-  tags.forEach((el) => { el.style.opacity = '0'; el.style.transition = 'opacity .6s ease'; });
-
-  const start = () => {
-    document.body.classList.add('is-ready');
-    setTimeout(() => tags.forEach(el => { el.style.opacity = '1'; }), 900);
-    // Nettoie les delays pour que le hover des cartes reste réactif
-    setTimeout(() => {
-      intro.forEach(el => { el.style.transition = ''; el.style.transitionDelay = ''; });
-      cards.forEach(el => { el.style.transition = ''; el.style.transitionDelay = ''; });
-    }, 1800);
-  };
-
-  if (document.readyState === 'complete') requestAnimationFrame(start);
-  else window.addEventListener('load', () => requestAnimationFrame(start), { once: true });
-  // Failsafe : jamais plus de 2.5s masqué
-  setTimeout(() => { if (!document.body.classList.contains('is-ready')) start(); }, 2500);
-})();
-
-/* ══════════════════════════════════════════════════════════════
-   NAV — scroll + mobile + active
-   ══════════════════════════════════════════════════════════════ */
-(function () {
-  const nav = document.getElementById('nav');
   const toggle = document.getElementById('navToggle');
   const mobileNav = document.getElementById('mobileNav');
   const mobileClose = document.getElementById('mobileNavClose');
-
-  const onScroll = () => nav && nav.classList.toggle('is-scrolled', window.scrollY > 24);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
 
   const openMobile = () => {
     if (!mobileNav) return;
@@ -62,6 +19,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     mobileNav.setAttribute('aria-hidden', 'false');
     toggle?.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
+    mobileClose?.focus();
   };
   const closeMobile = () => {
     if (!mobileNav) return;
@@ -69,6 +27,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     mobileNav.setAttribute('aria-hidden', 'true');
     toggle?.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
+    toggle?.focus();
   };
   toggle?.addEventListener('click', openMobile);
   mobileClose?.addEventListener('click', closeMobile);
@@ -76,135 +35,55 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   mobileNav?.addEventListener('click', (e) => { if (e.target === mobileNav) closeMobile(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileNav?.classList.contains('is-open')) closeMobile(); });
 
-  // Lien actif
-  const links = document.querySelectorAll('[data-nav-link]');
-  const sections = [...links].map(l => l.getAttribute('href')).filter(h => h?.startsWith('#')).map(id => document.querySelector(id)).filter(Boolean);
-  if ('IntersectionObserver' in window && sections.length) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          const id = '#' + e.target.id;
-          links.forEach(l => l.classList.toggle('is-active', l.getAttribute('href') === id));
-        }
-      });
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    sections.forEach(s => io.observe(s));
-  }
+  // Lien actif selon le chapitre visible
+  const links = [...document.querySelectorAll('[data-nav-link]')];
+  const targets = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  const update = () => {
+    const y = window.scrollY + window.innerHeight * 0.35;
+    let active = null;
+    targets.forEach(t => { if (t.getBoundingClientRect().top + window.scrollY <= y) active = t; });
+    links.forEach(l => l.classList.toggle('is-active', active && l.getAttribute('href') === '#' + active.id));
+  };
+  window.addEventListener('scroll', update, { passive: true });
+  update();
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   SPLIT — mots
-   ══════════════════════════════════════════════════════════════ */
-function splitIntoWords(el) {
-  if (el.dataset.split === 'done') return;
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
-  const textNodes = [];
-  let n;
-  while ((n = walker.nextNode())) textNodes.push(n);
-  textNodes.forEach(tn => {
-    const parts = tn.nodeValue.split(/([ \t\r\n]+)/);
-    const frag = document.createDocumentFragment();
-    parts.forEach(p => {
-      if (/^[ \t\r\n]+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
-      if (!p.length) return;
-      const span = document.createElement('span');
-      span.className = 'word';
-      span.textContent = p;
-      frag.appendChild(span);
-    });
-    tn.parentNode.replaceChild(frag, tn);
-  });
-  el.dataset.split = 'done';
-}
-
-/* ══════════════════════════════════════════════════════════════
-   SCROLL ANIMATIONS (GSAP)
+   APPARITION + COMPTEURS
    ══════════════════════════════════════════════════════════════ */
 (function () {
-  if (!hasGSAP || prefersReducedMotion || typeof ScrollTrigger === 'undefined') {
-    // Sans animation : afficher directement les valeurs finales
-    document.querySelectorAll('[data-count]').forEach(el => { el.textContent = el.dataset.count + (el.dataset.suffix || ''); });
+  const counters = [...document.querySelectorAll('[data-count]')];
+  const finalize = (el) => { el.innerHTML = el.dataset.count + (el.dataset.suffix || ''); };
+
+  if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+    counters.forEach(finalize);
     return;
   }
 
-  const rise = (targets, opts = {}) => {
-    const els = typeof targets === 'string' ? document.querySelectorAll(targets) : targets;
-    if (!els || !els.length) return;
-    gsap.from(els, {
-      y: 22, opacity: 0, duration: .6, ease: 'power3.out',
-      stagger: opts.stagger ?? .06,
-      scrollTrigger: { trigger: opts.trigger || els[0], start: opts.start || 'top 92%' }
-    });
-  };
-
-  // Titres : mot par mot
-  document.querySelectorAll('[data-split-lines]').forEach(el => {
-    splitIntoWords(el);
-    const words = el.querySelectorAll('.word');
-    gsap.fromTo(words, { y: 18, opacity: 0 }, {
-      y: 0, opacity: 1, duration: .6, ease: 'expo.out', stagger: .025,
-      scrollTrigger: { trigger: el, start: 'top 92%' }
-    });
-  });
-
-  // Paragraphes : allumage progressif
-  document.querySelectorAll('[data-reveal-words]').forEach(el => {
-    splitIntoWords(el);
-    const words = el.querySelectorAll('.word');
-    words.forEach(w => w.classList.add('word--dim'));
-    ScrollTrigger.create({
-      trigger: el, start: 'top 80%', end: 'bottom 55%', scrub: .6,
-      onUpdate: (self) => {
-        const cutoff = Math.ceil(self.progress * words.length);
-        words.forEach((w, i) => w.classList.toggle('is-lit', i < cutoff));
-      }
-    });
-  });
-
-  document.querySelectorAll('.section-kicker, .section-sub').forEach(el => {
-    gsap.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 95%' } });
-  });
+  // Sections : léger fondu à l'entrée
+  const targets = document.querySelectorAll('.door, .service, .step, .don, .temps-item, .figure, .etu__card, .gaz__cover');
+  targets.forEach(el => el.classList.add('reveal'));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  targets.forEach(el => io.observe(el));
 
   // Compteurs
-  document.querySelectorAll('[data-count]').forEach(el => {
-    const target = parseInt(el.dataset.count, 10);
-    const suffix = el.dataset.suffix || '';
-    const obj = { v: 0 };
-    ScrollTrigger.create({
-      trigger: el, start: 'top 90%', once: true,
-      onEnter: () => gsap.to(obj, { v: target, duration: 1.6, ease: 'power3.out', onUpdate: () => { el.textContent = Math.floor(obj.v) + suffix; } })
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      const el = e.target, target = parseInt(el.dataset.count, 10), suffix = el.dataset.suffix || '';
+      const t0 = performance.now(), dur = 1200;
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / dur), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        el.innerHTML = v + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
     });
-  });
-
-  rise('.impact__item', { trigger: '.impact', stagger: .06 });
-  rise('.manifesto__signature', { stagger: 0 });
-  document.querySelectorAll('.services__grid, .wf, .temps__grid, .soutenir__grid, .contact__grid').forEach(grid => {
-    rise(grid.children, { trigger: grid, start: 'top 80%', stagger: .08 });
-  });
-  rise('.timeline li', { trigger: '.timeline', stagger: .05 });
-  rise('.etu__steps li', { trigger: '.etu__steps', stagger: .06 });
-  rise('.benev__steps li', { trigger: '.benev__steps', stagger: .06 });
-  rise('.gaz__issue', { trigger: '.gaz__issues', stagger: .1 });
-  rise('.soutenir__free', { stagger: 0, start: 'top 90%' });
-
-  // Visuels : blobs, cover, carte étudiante, photo bénévoles
-  gsap.from('.blob', { scale: .85, opacity: 0, duration: 1.1, ease: 'power3.out', stagger: .15, scrollTrigger: { trigger: '.histoire__visual', start: 'top 80%' } });
-  gsap.from('.gaz__cover', { y: 40, opacity: 0, rotation: -8, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.gaz__grid', start: 'top 78%' } });
-  gsap.from('.etu__card', { y: 40, opacity: 0, rotation: 4, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.etu__card', start: 'top 82%' } });
-  gsap.from('.etu__card-stat', { scale: .9, opacity: 0, duration: .5, ease: 'back.out(1.6)', stagger: .06, scrollTrigger: { trigger: '.etu__card-stats', start: 'top 88%' } });
-  gsap.from('.benev__visual', { y: 40, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.benev__grid', start: 'top 78%' } });
-  gsap.from('.benev__badge', { scale: .8, opacity: 0, duration: .6, ease: 'back.out(1.8)', stagger: .15, delay: .3, scrollTrigger: { trigger: '.benev__visual', start: 'top 75%' } });
-  gsap.from('.contact__icon', { scale: .6, opacity: 0, duration: .7, ease: 'back.out(1.8)', scrollTrigger: { trigger: '.contact__cta', start: 'top 85%' } });
-
-  // Parallaxe douce sur les photos des temps forts
-  document.querySelectorAll('.temps-item__img').forEach(img => {
-    gsap.to(img, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
-  });
-
-  // Étapes workflow : active au centre
-  document.querySelectorAll('.wf__step').forEach(step => {
-    ScrollTrigger.create({ trigger: step, start: 'top 60%', end: 'bottom 40%', toggleClass: { targets: step, className: 'is-active' } });
-  });
+  }, { rootMargin: '0px 0px -10% 0px' });
+  counters.forEach(el => cio.observe(el));
 })();
 
 /* ══════════════════════════════════════════════════════════════
@@ -531,64 +410,6 @@ function splitIntoWords(el) {
   });
 })();
 
-/* ══════════════════════════════════════════════════════════════
-   NAV DROPDOWNS
-   ══════════════════════════════════════════════════════════════ */
-(function () {
-  const items = document.querySelectorAll('.nav__item--drop');
-  if (!items.length) return;
-
-  let closeTimer;
-
-  const closeAll = () => items.forEach(i => {
-    i.classList.remove('is-open');
-    i.querySelector('.nav__link--drop')?.setAttribute('aria-expanded', 'false');
-  });
-
-  items.forEach(item => {
-    const btn = item.querySelector('.nav__link--drop');
-    const drop = item.querySelector('.nav__drop');
-    if (!btn || !drop) return;
-
-    const open = () => {
-      clearTimeout(closeTimer);
-      items.forEach(i => { if (i !== item) { i.classList.remove('is-open'); i.querySelector('.nav__link--drop')?.setAttribute('aria-expanded', 'false'); } });
-      item.classList.add('is-open');
-      btn.setAttribute('aria-expanded', 'true');
-    };
-    const scheduleClose = () => {
-      clearTimeout(closeTimer);
-      closeTimer = setTimeout(() => {
-        item.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-      }, 180);
-    };
-
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (item.classList.contains('is-open')) {
-        item.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-      } else {
-        open();
-      }
-    });
-    item.addEventListener('mouseenter', open);
-    item.addEventListener('mouseleave', scheduleClose);
-
-    // Ferme après clic sur un item
-    drop.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      item.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
-    }));
-  });
-
-  // Fermer en cliquant en dehors
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav__item--drop')) closeAll();
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
-})();
 /* ══════════════════════════════════════════════════════════════
    BACK TO TOP
    ══════════════════════════════════════════════════════════════ */
