@@ -206,7 +206,14 @@ strong { font-weight: 600; }
 @media (max-width: 860px) { .etu__grid { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .etu__facts div { grid-template-columns: 1fr; gap: .2rem; } }
 
+.roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; margin: .25rem 0 1.5rem; max-width: 30rem; }
+.roles li { padding: .55rem 0; border-bottom: 1px solid var(--line); font-size: .98rem; }
+
 /* Lutins */
+.lutins__steps { margin: 1.25rem 0 1.75rem; max-width: 30rem; }
+.lutins__steps li { display: grid; grid-template-columns: 2.25rem 1fr; gap: .75rem; align-items: baseline; padding: .6rem 0; border-top: 1px solid rgba(31,48,56,.25); font-size: 1.02rem; }
+.lutins__steps li:last-child { border-bottom: 1px solid rgba(31,48,56,.25); }
+.lutins__steps span { font-weight: 500; font-size: 1.1rem; }
 .lutins__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
 .lutins .lead { max-width: 32rem; }
 @media (max-width: 860px) { .lutins__grid { grid-template-columns: 1fr; } }
