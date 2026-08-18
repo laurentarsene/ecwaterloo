@@ -674,6 +674,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   };
 
   openBtn.addEventListener('click', openReader);
+  document.getElementById('openGazetteCover')?.addEventListener('click', openReader);
   closeBtn.addEventListener('click', closeReader);
   backdrop.addEventListener('click', closeReader);
   prevBtn.addEventListener('click', prev);
