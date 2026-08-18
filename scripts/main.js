@@ -474,6 +474,28 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     swipeDistance: 20,
   });
   flip.loadFromHTML(el.querySelectorAll('.flip__page'));
+
+  // Petit clin d'œil : au premier passage à l'écran, le coin de la page
+  // se corne puis se repose — on comprend qu'on peut l'attraper.
+  if (prefersReducedMotion || !('IntersectionObserver' in window)) return;
+  let teased = false;
+  const teaser = () => {
+    const r = el.getBoundingClientRect();
+    const x0 = r.right - 8, y0 = r.bottom - 8;
+    const pts = [];
+    for (let i = 0; i <= 10; i++) pts.push([x0 - i * 9, y0 - i * 2.5]);        // le coin se corne
+    for (let i = 10; i >= 0; i--) pts.push([x0 - i * 9, y0 - i * 2.5]);        // et se repose
+    pts.forEach(([x, y], i) => setTimeout(() => {
+      el.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: x, clientY: y }));
+      if (i === pts.length - 1) el.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true, clientX: -100, clientY: -100 }));
+    }, i * 55));
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !teased) { teased = true; setTimeout(teaser, 500); io.disconnect(); }
+    });
+  }, { threshold: 0.5 });
+  io.observe(el);
 })();
 
 /* ══════════════════════════════════════════════════════════════
@@ -536,7 +558,6 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     for (let n = 1; n <= totalPages; n++) {
       const d = document.createElement('div');
       d.className = 'rpage rpage--loading';
-      if (n === 1 || n === totalPages) d.dataset.density = 'hard';
       holders.push(d);
       bookEl.appendChild(d);
     }

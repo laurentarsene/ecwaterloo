@@ -281,7 +281,7 @@ strong { font-weight: 600; }
 .timeline li:last-child span { color: var(--coral-d); }
 @media (max-width: 860px) { .histoire__grid { grid-template-columns: 1fr; } .facts { grid-template-columns: 1fr 1fr; } .facts div:nth-child(odd) { border-left: 0; padding-left: 0; } }
 
-.gaz { padding-top: var(--sec); padding-bottom: var(--sec); overflow: hidden; }
+.gaz { padding-top: var(--sec); padding-bottom: var(--sec); }
 .gaz__grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; }
 .gaz__cover { padding: 1rem 2rem 0 0; }
 .pile { position: relative; width: 100%; max-width: 460px; }
@@ -289,8 +289,10 @@ strong { font-weight: 600; }
 .pile__issue--1 { inset: 0; width: 100%; transform: rotate(3.5deg) translate(20px, 14px); z-index: 0; transition: transform .6s var(--ease); }
 .pile__issue--1 img { display: block; width: 100%; border: 1px solid var(--line); box-shadow: 0 24px 40px -22px rgba(31,48,56,.45); filter: brightness(.97); }
 .pile__issue--1:hover, .pile__issue--1:focus-visible { transform: rotate(5deg) translate(30px, 20px); }
-.flip { position: relative; z-index: 1; width: 100%; }
-.flip .stf__parent { margin: 0; }
+.flip { position: relative; z-index: 1; width: 100%; perspective: 2200px; cursor: grab; transition: transform .5s var(--ease); }
+.pile:hover .flip { transform: translateY(-5px); }
+.flip:active { cursor: grabbing; }
+.flip .stf__parent { margin: 0; perspective: 2200px; }
 .flip .stf__block { box-shadow: 0 30px 50px -22px rgba(31,48,56,.5); }
 .flip__page { background: var(--white); border: 1px solid var(--line); overflow: hidden; }
 .flip__page img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -433,7 +435,9 @@ strong { font-weight: 600; }
 .reader__close:hover { background: var(--coral); border-color: var(--coral); color: var(--ink); }
 .reader__stage { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; padding: .5rem; }
 .reader__spread { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; transition: opacity .25s; }
-.reader__book { position: relative; }
+.reader__book { position: relative; perspective: 2600px; cursor: grab; }
+.reader__book:active { cursor: grabbing; }
+
 .reader__book .rpage { background: var(--white); overflow: hidden; }
 .reader__book .rpage img, .reader__book .rpage canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
 .reader__book .rpage--loading { background: #eef2f2; }
