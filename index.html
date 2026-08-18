@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=10">
+  <link rel="stylesheet" href="styles/main.css?v=11">
 </head>
 <body class="no-js">
 
@@ -391,17 +391,33 @@
   <section class="gaz wrap" id="gazette">
     <div class="gaz__grid">
       <div class="gaz__cover">
-        <button type="button" class="gaz__cover-btn" id="openGazetteCover" aria-label="Feuilleter la gazette"><img src="assets/magazines/gazette-01-cover.jpg" alt="Couverture de la gazette conviviale — N°1" loading="lazy"></button>
+        <button type="button" class="gaz__cover-btn" id="openGazetteCover" data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026" aria-label="Feuilleter la gazette N°2"><img src="assets/magazines/gazette-02-cover.jpg" alt="Couverture de la gazette conviviale — N°2, juillet 2026" loading="lazy"></button>
       </div>
       <div class="gaz__info">
-        <p class="eyebrow">La gazette conviviale · N°1, printemps 2026</p>
+        <p class="eyebrow">La gazette conviviale</p>
         <h3 class="section-title">On écrit aussi. Deux fois par an.</h3>
-        <p class="lead">Huit pages sur du vrai papier&nbsp;: portraits, chroniques, photos, beaucoup de vraies histoires.</p>
+        <p class="lead">Portraits, chroniques, photos, beaucoup de vraies histoires. Sur du vrai papier — et ici.</p>
         <div class="actions">
-          <button class="btn btn--primary" id="openGazette" data-pdf="assets/magazines/gazette-01.pdf">Feuilleter la gazette</button>
-          <a href="assets/magazines/gazette-01.pdf" class="btn btn--outline" download>Télécharger le PDF</a>
+          <button class="btn btn--primary" id="openGazette" data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026">Feuilleter le dernier numéro</button>
         </div>
-        <p class="gaz__next">Prochain numéro&nbsp;: automne 2026.</p>
+        <ul class="gaz__issues">
+          <li class="gaz__issue">
+            <span class="gaz__issue-num">N°2</span>
+            <span class="gaz__issue-title">Juillet 2026 <small>20 pages</small></span>
+            <span class="gaz__issue-actions">
+              <button type="button" class="gaz__link" data-open-gazette data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026">Feuilleter</button>
+              <a href="assets/magazines/gazette-02.pdf" class="gaz__link" download>PDF</a>
+            </span>
+          </li>
+          <li class="gaz__issue">
+            <span class="gaz__issue-num">N°1</span>
+            <span class="gaz__issue-title">Printemps 2026 <small>8 pages</small></span>
+            <span class="gaz__issue-actions">
+              <button type="button" class="gaz__link" data-open-gazette data-pdf="assets/magazines/gazette-01.pdf" data-title="N°1 · Printemps 2026">Feuilleter</button>
+              <a href="assets/magazines/gazette-01.pdf" class="gaz__link" download>PDF</a>
+            </span>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
@@ -623,7 +639,7 @@
       <header class="reader__head">
         <div class="reader__brand">
           <span class="reader__kicker">Gazette conviviale</span>
-          <span class="reader__title" id="readerTitle">N°1 · Printemps 2026</span>
+          <span class="reader__title" id="readerTitle">—</span>
         </div>
         <div class="reader__indicator">
           <span id="readerCurrentPage">1</span>
@@ -631,7 +647,7 @@
           <span id="readerTotalPages">—</span>
         </div>
         <div class="reader__toolbar">
-          <a href="assets/magazines/gazette-01.pdf" class="reader__tool" download title="Télécharger le PDF">
+          <a href="assets/magazines/gazette-02.pdf" class="reader__tool" id="readerDownload" download title="Télécharger le PDF">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </a>
           <button class="reader__close" id="closeGazette" aria-label="Fermer">
@@ -665,6 +681,6 @@
 
     <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="scripts/main.js?v=7"></script>
+  <script src="scripts/main.js?v=8"></script>
 </body>
 </html>

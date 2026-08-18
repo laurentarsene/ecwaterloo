@@ -640,9 +640,14 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     active?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   };
 
-  const openReader = async () => {
+  const titleEl = document.getElementById('readerTitle');
+  const dlEl = document.getElementById('readerDownload');
+  const openReader = async (e) => {
     lastFocus = document.activeElement;
-    const url = openBtn.dataset.pdf;
+    const src = e?.currentTarget?.dataset?.pdf ? e.currentTarget : openBtn;
+    const url = src.dataset.pdf;
+    if (titleEl) titleEl.textContent = src.dataset.title || '';
+    if (dlEl) dlEl.href = url;
     reader.classList.add('is-open');
     reader.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -675,6 +680,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 
   openBtn.addEventListener('click', openReader);
   document.getElementById('openGazetteCover')?.addEventListener('click', openReader);
+  document.querySelectorAll('[data-open-gazette]').forEach(b => b.addEventListener('click', openReader));
   closeBtn.addEventListener('click', closeReader);
   backdrop.addEventListener('click', closeReader);
   prevBtn.addEventListener('click', prev);
