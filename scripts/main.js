@@ -456,7 +456,28 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   GAZETTE READER — PDF.js flipbook
+   GAZETTE — aperçu flipbook sur la page (StPageFlip)
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const el = document.getElementById('gazFlip');
+  if (!el || typeof St === 'undefined') return;
+  const W = 910, H = 1286; // ratio A4 des scans
+  const flip = new St.PageFlip(el, {
+    width: W, height: H,
+    size: 'stretch',
+    minWidth: 240, maxWidth: 560, minHeight: 320, maxHeight: 900,
+    usePortrait: true,
+    showCover: true,
+    maxShadowOpacity: 0.35,
+    flippingTime: 800,
+    mobileScrollSupport: true,
+    swipeDistance: 20,
+  });
+  flip.loadFromHTML(el.querySelectorAll('.flip__page'));
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   GAZETTE READER — livre plein écran (PDF.js + StPageFlip)
    ══════════════════════════════════════════════════════════════ */
 (function () {
   const openBtn = document.getElementById('openGazette');
@@ -466,140 +487,108 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   const prevBtn = document.getElementById('readerPrev');
   const nextBtn = document.getElementById('readerNext');
   const loading = document.getElementById('readerLoading');
-  const spread = document.getElementById('readerSpread');
-  const canvasL = document.getElementById('readerCanvasLeft');
-  const canvasR = document.getElementById('readerCanvasRight');
+  const bookEl = document.getElementById('readerBook');
+  const stage = document.getElementById('readerStage');
   const curEl = document.getElementById('readerCurrentPage');
   const totEl = document.getElementById('readerTotalPages');
   const thumbsEl = document.getElementById('readerThumbs');
-  if (!openBtn || !reader) return;
+  const titleEl = document.getElementById('readerTitle');
+  const dlEl = document.getElementById('readerDownload');
+  if (!reader || !bookEl || typeof St === 'undefined') return;
 
   const PDFJS_VER = '3.11.174';
   const CDN = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VER}`;
 
-  let pdfDoc = null;
-  let totalPages = 0;
-  let currentLeft = 1;      // page de gauche de la double page courante
-  let renderToken = 0;
-  let loadedPdfUrl = null;
-  let activeTasks = [];     // rendus PDF.js en cours (annulables)
-  let lastFocus = null;
+  let pdfDoc = null, totalPages = 0, loadedPdfUrl = null;
+  let flip = null, pageRatio = 910 / 1286;
+  let lastFocus = null, sessionToken = 0;
 
-  const loadScript = (src) => new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = resolve; s.onerror = reject;
-    document.head.appendChild(s);
-  });
+  const loadScript = (src) => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
   const ensurePdfJs = async () => {
     if (window.pdfjsLib) return;
     await loadScript(`${CDN}/build/pdf.min.js`);
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = `${CDN}/build/pdf.worker.min.js`;
   };
 
-  const isMobile = () => window.matchMedia('(max-width: 700px)').matches;
-
-  const getDisplayScale = (page) => {
-    const vp = page.getViewport({ scale: 1 });
-    const stage = document.getElementById('readerStage');
-    const navGutter = isMobile() ? 0 : 150;
-    const stageW = stage.clientWidth - navGutter;
-    const stageH = stage.clientHeight - 24;
-    const maxW = isMobile() ? stageW : (stageW - 2) / 2;
-    return Math.min(maxW / vp.width, stageH / vp.height);
+  const renderPageImg = async (n, scaleH) => {
+    const page = await pdfDoc.getPage(n);
+    const vp1 = page.getViewport({ scale: 1 });
+    const scale = scaleH / vp1.height;
+    const vp = page.getViewport({ scale });
+    const canvas = document.createElement('canvas');
+    canvas.width = vp.width; canvas.height = vp.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    return canvas;
   };
 
-  const cancelActive = async () => {
-    const tasks = activeTasks;
-    activeTasks = [];
-    tasks.forEach(t => { try { t.cancel(); } catch (_) {} });
-    // Attendre que PDF.js libère les canvas avant de relancer un rendu
-    await Promise.allSettled(tasks.map(t => t.promise));
-  };
+  const buildBook = async (token) => {
+    // taille disponible
+    const isMobile = window.matchMedia('(max-width: 700px)').matches;
+    const availH = stage.clientHeight - 24;
+    const availW = stage.clientWidth - (isMobile ? 16 : 150);
+    let pageH = availH;
+    let pageW = pageH * pageRatio;
+    const need = isMobile ? pageW : pageW * 2;
+    if (need > availW) { const k = availW / need; pageW *= k; pageH *= k; }
 
-  const renderToCanvas = async (pageNum, canvas, token) => {
-    if (!pdfDoc || pageNum < 1 || pageNum > totalPages) { canvas.hidden = true; return; }
-    const page = await pdfDoc.getPage(pageNum);
-    if (token !== renderToken) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const displayScale = getDisplayScale(page);
-    const renderVp = page.getViewport({ scale: displayScale * dpr });
-    const displayVp = page.getViewport({ scale: displayScale });
-    const ctx = canvas.getContext('2d');
-    canvas.width = renderVp.width;
-    canvas.height = renderVp.height;
-    canvas.style.width = displayVp.width + 'px';
-    canvas.style.height = displayVp.height + 'px';
-    const task = page.render({ canvasContext: ctx, viewport: renderVp });
-    activeTasks.push(task);
-    try { await task.promise; }
-    catch (err) { if (err?.name === 'RenderingCancelledException') return; throw err; }
-    if (token !== renderToken) return;
-    canvas.hidden = false;
-  };
-
-  const pagesFor = (left) => {
-    if (left === 1) return [null, 1];
-    if (left > totalPages) return [totalPages, null];
-    return [left, left + 1 <= totalPages ? left + 1 : null];
-  };
-
-  const showSpread = async () => {
-    if (!pdfDoc) return;
-    const token = ++renderToken;
-    await cancelActive();
-    if (token !== renderToken) return;
-    spread.classList.add('is-changing');
-    const slowTimer = setTimeout(() => { if (token === renderToken) loading.hidden = false; }, 260);
-
-    const [leftPage, rightPage] = pagesFor(currentLeft);
-    const single = isMobile() || !leftPage || !rightPage;
-    spread.classList.toggle('reader__spread--single', single);
-
-    try {
-      if (isMobile()) {
-        const page = rightPage || leftPage;
-        canvasL.hidden = true;
-        if (page) await renderToCanvas(page, canvasR, token); else canvasR.hidden = true;
-      } else {
-        await Promise.all([
-          leftPage ? renderToCanvas(leftPage, canvasL, token) : (canvasL.hidden = true, Promise.resolve()),
-          rightPage ? renderToCanvas(rightPage, canvasR, token) : (canvasR.hidden = true, Promise.resolve()),
-        ]);
-      }
-    } catch (err) {
-      console.error('Gazette reader error:', err);
+    bookEl.innerHTML = '';
+    const holders = [];
+    for (let n = 1; n <= totalPages; n++) {
+      const d = document.createElement('div');
+      d.className = 'rpage rpage--loading';
+      if (n === 1 || n === totalPages) d.dataset.density = 'hard';
+      holders.push(d);
+      bookEl.appendChild(d);
     }
-    clearTimeout(slowTimer);
-    if (token !== renderToken) return;
 
-    const visible = [leftPage, rightPage].filter(Boolean);
-    curEl.textContent = visible.length === 1 ? visible[0] : `${visible[0]}–${visible[1]}`;
-    prevBtn.disabled = currentLeft <= 1;
-    nextBtn.disabled = currentLeft >= totalPages;
-    updateThumbs(visible);
+    if (flip) { try { flip.destroy(); } catch (_) {} flip = null; }
+    flip = new St.PageFlip(bookEl, {
+      width: Math.round(pageW), height: Math.round(pageH),
+      size: 'fixed',
+      usePortrait: isMobile,
+      showCover: true,
+      maxShadowOpacity: 0.4,
+      flippingTime: 700,
+      mobileScrollSupport: false,
+      swipeDistance: 16,
+    });
+    flip.loadFromHTML(holders);
+    flip.on('flip', (e) => updateIndicator(e.data));
+    updateIndicator(0);
+
+    // rendu progressif : pages visibles d'abord, puis le reste
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const order = [];
+    for (let n = 1; n <= totalPages; n++) order.push(n);
+    for (const n of order) {
+      if (token !== sessionToken) return;
+      const canvas = await renderPageImg(n, pageH * dpr);
+      if (token !== sessionToken) return;
+      const holder = holders[n - 1];
+      holder.classList.remove('rpage--loading');
+      holder.innerHTML = '';
+      holder.appendChild(canvas);
+      if (n === 2) loading.hidden = true;
+    }
     loading.hidden = true;
-    spread.classList.remove('is-changing');
   };
 
-  const goTo = (left) => { currentLeft = left; showSpread(); };
-  const next = () => {
-    if (currentLeft >= totalPages) return;
-    goTo(currentLeft === 1 ? 2 : Math.min(currentLeft + 2, totalPages));
-  };
-  const prev = () => {
-    if (currentLeft <= 1) return;
-    goTo(currentLeft === 2 ? 1 : Math.max(currentLeft - 2, 1));
-  };
-  const leftFor = (pageNum) => {
-    if (pageNum <= 1) return 1;
-    return pageNum % 2 === 0 ? pageNum : pageNum - 1;
+  const updateIndicator = (idx) => {
+    // idx = index de page StPageFlip (0-based, page de gauche du spread)
+    const isMobile = window.matchMedia('(max-width: 700px)').matches;
+    let label;
+    if (isMobile || idx === 0 || idx >= totalPages - 1) label = String(idx + 1);
+    else label = `${idx + 1}–${Math.min(idx + 2, totalPages)}`;
+    curEl.textContent = label;
+    prevBtn.disabled = idx <= 0;
+    nextBtn.disabled = idx >= totalPages - 1;
+    updateThumbs(idx);
   };
 
   /* Miniatures */
-  const buildThumbs = async () => {
-    if (!thumbsEl || !pdfDoc || thumbsEl.dataset.built === loadedPdfUrl) return;
+  const buildThumbs = async (token) => {
+    if (!thumbsEl) return;
     thumbsEl.innerHTML = '';
-    thumbsEl.dataset.built = loadedPdfUrl;
     for (let p = 1; p <= totalPages; p++) {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -608,40 +597,32 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
       btn.setAttribute('aria-label', `Aller à la page ${p}`);
       const c = document.createElement('canvas');
       btn.appendChild(c);
-      const lbl = document.createElement('span');
-      lbl.textContent = p;
-      btn.appendChild(lbl);
-      btn.addEventListener('click', () => goTo(leftFor(p)));
+      const lbl = document.createElement('span'); lbl.textContent = p; btn.appendChild(lbl);
+      btn.addEventListener('click', () => flip?.flip(p - 1));
       thumbsEl.appendChild(btn);
     }
-    // Rendu séquentiel en basse résolution
     for (let p = 1; p <= totalPages; p++) {
+      if (token !== sessionToken) return;
       try {
-        const page = await pdfDoc.getPage(p);
-        const vp = page.getViewport({ scale: 1 });
-        const scale = 72 / vp.height;
-        const rvp = page.getViewport({ scale: scale * 2 });
+        const canvas = await renderPageImg(p, 144);
         const c = thumbsEl.querySelector(`[data-page="${p}"] canvas`);
         if (!c) return;
-        c.width = rvp.width; c.height = rvp.height;
-        c.style.height = '72px'; c.style.width = (rvp.width / 2) + 'px';
-        await page.render({ canvasContext: c.getContext('2d'), viewport: rvp }).promise;
+        c.width = canvas.width; c.height = canvas.height;
+        c.style.height = '68px'; c.style.width = (canvas.width / 2) + 'px';
+        c.getContext('2d').drawImage(canvas, 0, 0);
       } catch (_) {}
     }
   };
-  const updateThumbs = (visible) => {
+  const updateThumbs = (idx) => {
     if (!thumbsEl) return;
     thumbsEl.querySelectorAll('.reader__thumb').forEach(b => {
-      const on = visible.includes(parseInt(b.dataset.page, 10));
+      const p = parseInt(b.dataset.page, 10) - 1;
+      const on = p === idx || (idx > 0 && idx < totalPages - 1 && p === idx + 1);
       b.classList.toggle('is-active', on);
-      b.setAttribute('aria-current', on ? 'true' : 'false');
     });
-    const active = thumbsEl.querySelector('.reader__thumb.is-active');
-    active?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    thumbsEl.querySelector('.reader__thumb.is-active')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   };
 
-  const titleEl = document.getElementById('readerTitle');
-  const dlEl = document.getElementById('readerDownload');
   const openReader = async (e) => {
     lastFocus = document.activeElement;
     const src = e?.currentTarget?.dataset?.pdf ? e.currentTarget : openBtn;
@@ -653,6 +634,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     document.body.style.overflow = 'hidden';
     loading.hidden = false;
     closeBtn.focus();
+    const token = ++sessionToken;
     try {
       await ensurePdfJs();
       if (loadedPdfUrl !== url) {
@@ -660,10 +642,12 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
         totalPages = pdfDoc.numPages;
         totEl.textContent = totalPages;
         loadedPdfUrl = url;
-        currentLeft = 1;
+        const p1 = await pdfDoc.getPage(1);
+        const vp = p1.getViewport({ scale: 1 });
+        pageRatio = vp.width / vp.height;
       }
-      await showSpread();
-      buildThumbs();
+      if (token !== sessionToken) return;
+      await Promise.all([buildBook(token), buildThumbs(token)]);
     } catch (err) {
       console.error('Gazette reader error:', err);
       loading.hidden = true;
@@ -671,52 +655,41 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   };
 
   const closeReader = () => {
-    cancelActive();
+    sessionToken++;
     reader.classList.remove('is-open');
     reader.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     lastFocus?.focus?.();
   };
 
-  openBtn.addEventListener('click', openReader);
+  openBtn?.addEventListener('click', openReader);
   document.getElementById('openGazetteCover')?.addEventListener('click', openReader);
   document.querySelectorAll('[data-open-gazette]').forEach(b => b.addEventListener('click', openReader));
+  // le flipbook d'aperçu ouvre le lecteur sur double-clic
+  document.getElementById('gazFlip')?.addEventListener('dblclick', (ev) => {
+    const host = document.getElementById('gazFlip');
+    openReader({ currentTarget: host });
+  });
   closeBtn.addEventListener('click', closeReader);
   backdrop.addEventListener('click', closeReader);
-  prevBtn.addEventListener('click', prev);
-  nextBtn.addEventListener('click', next);
+  prevBtn.addEventListener('click', () => flip?.flipPrev());
+  nextBtn.addEventListener('click', () => flip?.flipNext());
 
   document.addEventListener('keydown', (e) => {
     if (!reader.classList.contains('is-open')) return;
     if (e.key === 'Escape') closeReader();
-    else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
-    else if (e.key === 'Home') { e.preventDefault(); goTo(1); }
-    else if (e.key === 'End') { e.preventDefault(); goTo(leftFor(totalPages)); }
+    else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); flip?.flipNext(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); flip?.flipPrev(); }
+    else if (e.key === 'Home') { e.preventDefault(); flip?.flip(0); }
+    else if (e.key === 'End') { e.preventDefault(); flip?.flip(totalPages - 1); }
   });
 
   let resizeTimer;
   window.addEventListener('resize', () => {
     if (!reader.classList.contains('is-open')) return;
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(showSpread, 150);
+    resizeTimer = setTimeout(() => { const t = ++sessionToken; loading.hidden = false; buildBook(t); }, 200);
   });
-
-  // Clic moitié gauche / droite pour tourner la page
-  spread.addEventListener('click', (e) => {
-    const r = spread.getBoundingClientRect();
-    if ((e.clientX - r.left) < r.width / 2) prev(); else next();
-  });
-
-  // Swipe tactile
-  let touchX = null;
-  spread.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
-  spread.addEventListener('touchend', (e) => {
-    if (touchX === null) return;
-    const dx = e.changedTouches[0].clientX - touchX;
-    touchX = null;
-    if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
-  }, { passive: true });
 })();
 
 /* ══════════════════════════════════════════════════════════════
@@ -739,34 +712,3 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   map.panBy([0, -20], { animate: false });
 })();
 
-/* ══════════════════════════════════════════════════════════════
-   GAZETTE — page souple (bandes emboîtées)
-   ══════════════════════════════════════════════════════════════ */
-(function () {
-  const page = document.querySelector('.book__page');
-  if (!page || prefersReducedMotion) return;
-  const coverImg = page.querySelector('.book__cover-img');
-  const coverUrl = coverImg ? new URL(coverImg.getAttribute('src'), location.href).href : null;
-  if (!coverUrl) return;
-  const N = 14, total = -52; // degrés cumulés en fin de course
-  let parent = page;
-  for (let i = 0; i < N; i++) {
-    const s = document.createElement('span');
-    s.className = 'strip';
-    s.style.backgroundImage = `url("${coverUrl}")`;
-    if (i === 0) s.style.width = `${100 / N}%`;
-    s.style.setProperty('--bs', `${N * 100}%`);
-    s.style.setProperty('--bp', `${(i / (N - 1)) * 100}%`);
-    s.style.setProperty('--sw', `${100 / N}%`);
-    // courbe : les premières bandes tournent peu, la fin s'enroule davantage
-    const t = (i + 1) / N;
-    const cum = total * (1 - Math.pow(1 - t, 1.6));
-    const prev = i === 0 ? 0 : total * (1 - Math.pow(1 - i / N, 1.6));
-    s.style.setProperty('--a', `${(cum - prev).toFixed(3)}deg`);
-    s.style.setProperty('--d', `${i * 22}ms`);
-    s.style.setProperty('--shade', (0.03 + t * 0.22).toFixed(3));
-    parent.appendChild(s);
-    parent = s;
-  }
-  page.classList.add('is-split');
-})();
