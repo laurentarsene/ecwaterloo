@@ -197,27 +197,21 @@
     <svg class="mark mark--etu" aria-hidden="true"><use href="#s-blob"/></svg>
     <div class="wrap etu__grid">
       <div class="etu__text">
-        <h3 class="section-title">L'épicerie t'ouvre ses portes chaque mois.</h3>
-        <p class="lead">Chaque <strong>premier jeudi du mois</strong>, pour <strong>5€</strong>. Parce qu'entre le loyer et les cours, manger ne devrait pas être ce qui te stresse.</p>
-        <ol class="etu__steps">
-          <li>Tu t'inscris en ligne, en 30 secondes.</li>
-          <li>Tu reçois un email avec l'adresse et les infos.</li>
-          <li>Tu viens le jeudi avec tes 5€ et un sac.</li>
-        </ol>
-        <div class="etu__actions">
-          <button type="button" class="btn btn--light" id="openStudentForm">Je m'inscris pour le prochain jeudi</button>
-          <p class="etu__countdown" id="studentCountdown" hidden></p>
-        </div>
+        <h3 class="section-title">L'épicerie étudiante</h3>
+        <p class="lead">Une fois par mois, l'épicerie t'est ouverte pour 5€. Parce qu'entre le loyer et les cours, manger ne devrait pas être ce qui te stresse.</p>
+        <dl class="etu__facts">
+          <div><dt>Quand</dt><dd>Le premier jeudi du mois.</dd></div>
+          <div><dt>Où</dt><dd>À l'épicerie, à Waterloo — l'adresse exacte t'est envoyée par email.</dd></div>
+          <div><dt>Prix</dt><dd>5€ par personne, à apporter le jour même.</dd></div>
+          <div><dt>Comment</dt><dd>Inscription en ligne obligatoire, en 30 secondes. Puis tu viens avec tes 5€ et un sac.</dd></div>
+        </dl>
       </div>
       <div class="etu__card">
-        <p class="etu__card-label">Prochain rendez-vous</p>
+        <p class="etu__card-label">Prochaine date</p>
         <p class="etu__card-date" id="nextThursdayCard">—</p>
-        <dl class="etu__facts">
-          <div><dt>5€</dt><dd>par inscription</dd></div>
-          <div><dt>1er jeudi</dt><dd>du mois</dd></div>
-          <div><dt>30 s</dt><dd>pour s'inscrire</dd></div>
-        </dl>
-        <p class="etu__card-note">Inscription obligatoire. Les absents non excusés ne pourront plus s'inscrire.</p>
+        <button type="button" class="btn btn--primary" id="openStudentForm">Je m'inscris</button>
+        <p class="etu__countdown" id="studentCountdown" hidden></p>
+        <p class="etu__card-note">Les absents non excusés ne pourront plus s'inscrire par la suite.</p>
       </div>
     </div>
   </section>

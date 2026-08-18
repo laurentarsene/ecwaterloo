@@ -192,22 +192,19 @@ strong { font-weight: 600; }
 .band .eyebrow { color: inherit; opacity: .8; }
 
 /* Étudiants */
-.etu__grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
-.etu__steps { margin: 1.25rem 0 1.5rem; font-weight: 500; counter-reset: etape; }
-.etu__steps li { padding: .25rem 0 .25rem 1.8rem; position: relative; counter-increment: etape; }
-.etu__steps li::before { content: counter(etape) '.'; position: absolute; left: 0; font-weight: 500; }
-.etu__actions { display: flex; flex-direction: column; align-items: flex-start; gap: .75rem; }
-.etu__countdown { font-size: .9rem; opacity: .9; }
+.etu__grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+.etu__facts { margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.35); }
+.etu__facts div { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid rgba(255,255,255,.35); }
+.etu__facts dt { font-size: .8rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; opacity: .85; padding-top: .2rem; }
+.etu__facts dd { font-size: 1.05rem; }
 .etu__card { background: var(--white); color: var(--ink); border-radius: var(--r); padding: 1.75rem; }
-.etu__card-label { font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
-.etu__card-date { font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 400; letter-spacing: -.02em; line-height: 1.05; margin: .4rem 0 1.25rem; }
-.etu__facts { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.etu__facts div { padding: .9rem 0; }
-.etu__facts div + div { border-left: 1px solid var(--line); padding-left: 1rem; }
-.etu__facts dt { font-size: 1.35rem; font-weight: 400; letter-spacing: -.02em; }
-.etu__facts dd { font-size: .82rem; color: var(--ink-3); }
-.etu__card-note { margin-top: 1rem; font-size: .85rem; color: var(--ink-2); }
+.etu__card-label { font-size: .8rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.etu__card-date { font-size: clamp(1.7rem, 2.8vw, 2.4rem); font-weight: 300; letter-spacing: -.02em; line-height: 1.05; margin: .4rem 0 1.25rem; }
+.etu__card .btn { width: 100%; }
+.etu__countdown { margin-top: .75rem; font-size: .9rem; color: var(--ink-2); }
+.etu__card-note { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-3); }
 @media (max-width: 860px) { .etu__grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .etu__facts div { grid-template-columns: 1fr; gap: .2rem; } }
 
 /* Lutins */
 .lutins__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
