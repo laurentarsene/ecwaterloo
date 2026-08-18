@@ -138,23 +138,47 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     const countdown = document.getElementById('studentCountdown');
     if (!btn) return;
 
-    const numEl = document.getElementById('studentCountNum');
     const lblEl = document.getElementById('studentCountLbl');
+    const dateEl = document.getElementById('studentCountDate');
+    const timerEl = document.getElementById('studentTimer');
+    const openDate = new Date(nextThursday); openDate.setDate(openDate.getDate() - joursMax); // ouverture à minuit
+    const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+    const fmtLong = (d) => `${jours[d.getDay()]} ${formatDateFr(d).replace(/^Jeudi /, '')}`;
+
+    const runTimer = (target, onDone) => {
+      if (!timerEl) return;
+      const cells = {};
+      timerEl.querySelectorAll('[data-unit]').forEach(b => { cells[b.dataset.unit] = b; });
+      const pad = (n) => String(n).padStart(2, '0');
+      const tick = () => {
+        let ms = target - Date.now();
+        if (ms <= 0) { onDone?.(); return; }
+        const d = Math.floor(ms / 86400000); ms -= d * 86400000;
+        const h = Math.floor(ms / 3600000); ms -= h * 3600000;
+        const m = Math.floor(ms / 60000); ms -= m * 60000;
+        const sec = Math.floor(ms / 1000);
+        cells.d.textContent = pad(d); cells.h.textContent = pad(h); cells.m.textContent = pad(m); cells.s.textContent = pad(sec);
+        setTimeout(tick, 1000);
+      };
+      tick();
+    };
+
     if (daysUntilOpen > 0) {
       btn.disabled = true;
       btn.classList.add('btn--disabled');
       btn.textContent = 'Inscriptions pas encore ouvertes';
-      if (countdown && numEl && lblEl) {
-        const j = daysUntilOpen;
-        numEl.textContent = j;
-        lblEl.textContent = j > 1 ? "jours avant l'ouverture des inscriptions" : "jour avant l'ouverture des inscriptions";
+      if (countdown) {
+        lblEl.textContent = 'Ouverture des inscriptions dans';
+        dateEl.textContent = `Le ${fmtLong(openDate)} à minuit`;
         countdown.hidden = false;
+        runTimer(openDate.getTime(), () => location.reload());
       }
-    } else if (countdown && numEl && lblEl) {
-      numEl.textContent = daysUntil;
-      lblEl.textContent = (daysUntil > 1 ? 'jours' : 'jour') + ' avant le jeudi · inscriptions ouvertes';
+    } else if (countdown) {
+      lblEl.textContent = 'Inscriptions ouvertes — prochain jeudi dans';
+      dateEl.textContent = '';
       countdown.classList.add('is-open');
       countdown.hidden = false;
+      runTimer(nextThursday.getTime());
     }
   }
   initButtonState();

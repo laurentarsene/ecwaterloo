@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=5">
+  <link rel="stylesheet" href="styles/main.css?v=6">
 </head>
 <body class="no-js">
 
@@ -236,8 +236,14 @@
         <p class="etu__card-label">Prochaine date</p>
         <p class="etu__card-date" id="nextThursdayCard">—</p>
         <div class="etu__count" id="studentCountdown" hidden>
-          <span class="etu__count-num" id="studentCountNum">—</span>
-          <span class="etu__count-lbl" id="studentCountLbl">jours avant l'ouverture des inscriptions</span>
+          <p class="etu__count-lbl" id="studentCountLbl">Ouverture des inscriptions dans</p>
+          <div class="etu__timer" id="studentTimer" role="timer" aria-live="off">
+            <span><b data-unit="d">00</b><small>jours</small></span>
+            <span><b data-unit="h">00</b><small>heures</small></span>
+            <span><b data-unit="m">00</b><small>min</small></span>
+            <span><b data-unit="s">00</b><small>sec</small></span>
+          </div>
+          <p class="etu__count-date" id="studentCountDate"></p>
         </div>
         <button type="button" class="btn btn--primary" id="openStudentForm">Je m'inscris</button>
         <p class="etu__card-note">Les absents non excusés ne pourront plus s'inscrire par la suite.</p>
@@ -272,18 +278,30 @@
     </div>
   </section>
 
-  <section class="soutenir wrap" id="soutenir">
-    <div class="section-head">
-      <h3 class="section-title">Faire un don</h3>
-      <p class="section-sub">Pas de salaire, pas de frais cachés. Paiement sécurisé par Stripe.</p>
+  <section class="soutenir" id="soutenir">
+    <div class="wrap">
+      <div class="section-head">
+        <h3 class="section-title">Faire un don</h3>
+        <p class="section-sub">Ici, chaque euro arrive à destination&nbsp;: pas de salaire, pas de frais cachés. Merci, sincèrement.</p>
+      </div>
+      <div class="dons">
+        <a href="https://buy.stripe.com/00w4gzgJO36l5tE4TY4Rq01" target="_blank" rel="noopener" class="don"><span class="don__amount">10€</span><span class="don__impact">Un colis alimentaire pour une famille, une semaine.</span><span class="don__cta">Donner 10€ →</span></a>
+        <a href="https://buy.stripe.com/5kQaEX79ecGV6xI0DI4Rq02" target="_blank" rel="noopener" class="don"><span class="don__amount">25€</span><span class="don__impact">Des fournitures scolaires complètes pour trois enfants.</span><span class="don__cta">Donner 25€ →</span></a>
+        <a href="https://buy.stripe.com/dRmdR9fFK7mB6xIcmq4Rq03" target="_blank" rel="noopener" class="don"><span class="don__amount">50€</span><span class="don__impact">Un mois de permanences d'accueil.</span><span class="don__cta">Donner 50€ →</span></a>
+        <a href="https://buy.stripe.com/6oU28r8di9uJg8igCG4Rq04" target="_blank" rel="noopener" class="don don--accent"><span class="don__amount">100€</span><span class="don__impact">Un accompagnement médical complet pour une personne.</span><span class="don__cta">Donner 100€ →</span></a>
+      </div>
+      <div class="soutenir__more">
+        <div>
+          <p class="soutenir__more-title">Un autre montant&nbsp;?</p>
+          <a href="https://buy.stripe.com/dRm4gz0KQ0Yd5tE9ae4Rq00" target="_blank" rel="noopener" class="btn btn--outline">Don libre</a>
+        </div>
+        <div>
+          <p class="soutenir__more-title">Plutôt un don en nature&nbsp;?</p>
+          <p class="soutenir__more-text">Produits, fournitures scolaires, matériel&nbsp;: passez à l'épicerie ou <a href="mailto:infos.ecwaterloo@gmail.com">écrivez-nous</a>.</p>
+        </div>
+        <p class="soutenir__secure">Paiement sécurisé par Stripe. Merci pour eux.</p>
+      </div>
     </div>
-    <div class="dons">
-      <a href="https://buy.stripe.com/00w4gzgJO36l5tE4TY4Rq01" target="_blank" rel="noopener" class="don"><span class="don__amount">10€</span><span class="don__impact">Un colis alimentaire pour une famille, une semaine.</span><span class="don__cta">Donner 10€ →</span></a>
-      <a href="https://buy.stripe.com/5kQaEX79ecGV6xI0DI4Rq02" target="_blank" rel="noopener" class="don"><span class="don__amount">25€</span><span class="don__impact">Des fournitures scolaires complètes pour trois enfants.</span><span class="don__cta">Donner 25€ →</span></a>
-      <a href="https://buy.stripe.com/dRmdR9fFK7mB6xIcmq4Rq03" target="_blank" rel="noopener" class="don"><span class="don__amount">50€</span><span class="don__impact">Un mois de permanences d'accueil.</span><span class="don__cta">Donner 50€ →</span></a>
-      <a href="https://buy.stripe.com/6oU28r8di9uJg8igCG4Rq04" target="_blank" rel="noopener" class="don don--accent"><span class="don__amount">100€</span><span class="don__impact">Un accompagnement médical complet pour une personne.</span><span class="don__cta">Donner 100€ →</span></a>
-    </div>
-    <p class="soutenir__free">Vous préférez un montant libre&nbsp;? <a href="https://buy.stripe.com/dRm4gz0KQ0Yd5tE9ae4Rq00" target="_blank" rel="noopener">Faire un don personnalisé →</a></p>
   </section>
 
   <section class="band band--coral lutins" id="lutins">
@@ -647,6 +665,6 @@
 
     <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="scripts/main.js?v=5"></script>
+  <script src="scripts/main.js?v=6"></script>
 </body>
 </html>
