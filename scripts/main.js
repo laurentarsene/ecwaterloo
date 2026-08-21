@@ -46,6 +46,12 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   };
   window.addEventListener('scroll', update, { passive: true });
   update();
+
+  // État "scrollé" : la nav se densifie et prend une ombre
+  const nav = document.getElementById('nav');
+  const updateNav = () => nav?.classList.toggle('is-scrolled', window.scrollY > 12);
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
 })();
 
 /* ══════════════════════════════════════════════════════════════
@@ -61,10 +67,16 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   }
 
   // Sections : léger fondu à l'entrée
-  const targets = document.querySelectorAll('.door, .service, .step, .don, .temps-item, .figure, .etu__card, .gaz__cover');
+  const targets = document.querySelectorAll('.chapter, .section-head, .door, .service, .step, .don, .temps-item, .figure, .etu__card, .gaz__cover');
   targets.forEach(el => el.classList.add('reveal'));
   const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);
+      // Une fois entré, on retire .reveal pour rendre leurs transitions hover aux cartes
+      e.target.addEventListener('transitionend', () => e.target.classList.remove('reveal', 'is-in'), { once: true });
+    });
   }, { rootMargin: '0px 0px -8% 0px' });
   targets.forEach(el => io.observe(el));
 
