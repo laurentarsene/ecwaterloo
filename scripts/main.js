@@ -506,6 +506,96 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 })();
 
 /* ══════════════════════════════════════════════════════════════
+   PILE GAZETTE — paquet de cartes à glisser, en boucle (mobile)
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const pile = document.querySelector('.pile');
+  if (!pile) return;
+  const cards = [...pile.querySelectorAll('.pile__issue')];
+  if (cards.length < 2) return;
+
+  const mq = window.matchMedia('(max-width: 640px)');
+  let order = [cards[cards.length - 1], ...cards.slice(0, -1)]; // la dernière du HTML est visuellement dessus
+  let enabled = false, drag = null, suppressClick = false;
+
+  const backTransform = (i) => `rotate(${3.5 * i}deg) translate(${12 * i}px, ${9 * i}px)`;
+
+  function layout(animate) {
+    order.forEach((card, i) => {
+      card.style.transition = animate ? '' : 'none';
+      card.style.zIndex = String(order.length - i);
+      card.style.transform = i === 0 ? 'rotate(0deg)' : backTransform(i);
+      if (!animate) void card.offsetHeight;
+    });
+  }
+
+  function onDown(e) {
+    if (!enabled) return;
+    const top = order[0];
+    if (!top.contains(e.target)) return;
+    drag = { x: e.clientX, y: e.clientY, dx: 0, moved: false, top };
+  }
+  function onMove(e) {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.moved && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+      drag.moved = true;
+      drag.top.style.transition = 'none';
+    }
+    if (drag.moved) {
+      drag.dx = dx;
+      drag.top.style.transform = `translateX(${dx}px) rotate(${dx * 0.05}deg)`;
+      if (e.cancelable) e.preventDefault();
+    }
+  }
+  function onUp() {
+    if (!drag) return;
+    const { top, dx, moved } = drag;
+    drag = null;
+    top.style.transition = '';
+    if (moved && Math.abs(dx) > 70) {
+      suppressClick = true;
+      const dir = dx > 0 ? 1 : -1;
+      // 1. la carte s'écarte…
+      top.style.transform = `translateX(${dir * 112}%) rotate(${dir * 12}deg)`;
+      setTimeout(() => {
+        // 2. …puis on la voit glisser sous le paquet pendant que les autres remontent
+        order.push(order.shift());
+        layout(true);
+        setTimeout(() => { suppressClick = false; }, 380);
+      }, 230);
+    } else {
+      if (moved) { suppressClick = true; setTimeout(() => { suppressClick = false; }, 80); }
+      layout(true);
+    }
+  }
+  function onClickCapture(e) {
+    if (suppressClick) { e.stopPropagation(); e.preventDefault(); }
+  }
+
+  function enable() {
+    if (enabled) return; enabled = true;
+    pile.classList.add('is-deck');
+    layout(false);
+  }
+  function disable() {
+    if (!enabled) return; enabled = false;
+    pile.classList.remove('is-deck');
+    cards.forEach(c => { c.style.cssText = ''; });
+  }
+
+  pile.addEventListener('pointerdown', onDown);
+  pile.addEventListener('click', onClickCapture, true);
+  window.addEventListener('pointermove', onMove, { passive: false });
+  window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onUp);
+
+  const apply = () => (mq.matches ? enable() : disable());
+  mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
+  apply();
+})();
+
+/* ══════════════════════════════════════════════════════════════
    GAZETTE READER — livre plein écran (PDF.js + StPageFlip)
    ══════════════════════════════════════════════════════════════ */
 (function () {

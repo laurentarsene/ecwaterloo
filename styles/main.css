@@ -163,7 +163,7 @@ strong { font-weight: 600; }
 .hero3d { position: absolute; right: clamp(-4rem, -3.5vw, -2rem); bottom: -2rem; width: clamp(340px, 40vw, 600px); aspect-ratio: 1; z-index: 2; pointer-events: none; }
 .hero3d canvas { display: block; }
 .hero3d.is-live ~ .mark--hero { display: none; }
-@media (max-width: 899px) { .hero3d { display: none; } }
+@media (max-width: 899px) { .hero3d { width: clamp(180px, 48vw, 300px); right: -1rem; bottom: -1.5rem; } }
 
 /* Badge verre sur la photo */
 .hero__badge {
@@ -374,6 +374,14 @@ body:not(.no-js) .hero__figure { animation: rise .75s var(--ease) .18s backwards
   .gaz__grid { grid-template-columns: 1fr; }
   .gaz__cover { padding: 0 1.5rem 0 0; }
   .pile { max-width: 340px; }
+}
+/* Mobile : la pile devient un paquet de cartes à glisser, en boucle */
+.pile__hint { display: none; }
+@media (max-width: 640px) {
+  .pile { aspect-ratio: 707 / 1000; touch-action: pan-y; }
+  .pile.is-deck .pile__issue { position: absolute; inset: 0; transition: transform .35s var(--ease); will-change: transform; }
+  .pile.is-deck .pile__issue img { width: 100%; height: 100%; object-fit: cover; }
+  .pile.is-deck + .pile__hint { display: block; margin-top: .9rem; font-size: .82rem; color: var(--ink-3); }
 }
 .gaz__issues { margin-top: 1.75rem; border-top: 1px solid var(--line); }
 .gaz__issue { display: grid; grid-template-columns: 3.5rem 1fr auto; gap: 1rem; align-items: center; padding: .85rem 0; border-bottom: 1px solid var(--line); }
@@ -608,5 +616,7 @@ body:not(.no-js) .hero__figure { animation: rise .75s var(--ease) .18s backwards
   .etu__timer b { font-size: 1.5rem; }
   .contact__list div { grid-template-columns: 1fr; gap: .2rem; }
   .contact__list dt { padding-top: 0; }
-  .gaz__cover { padding: .5rem 1.25rem 1.5rem .25rem; }
+  .gaz__cover { padding: .5rem 0 1.5rem; }
+  .pile { margin-inline: auto; }
+  .pile.is-deck + .pile__hint { text-align: center; }
 }

@@ -11,9 +11,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const container = document.getElementById('hero3d');
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const desktop = window.matchMedia('(min-width: 900px)').matches;
 
-if (container && !reduced && desktop) {
+if (container && !reduced) {
   try { init(); } catch (e) { /* on garde l'aplat SVG */ }
 }
 
