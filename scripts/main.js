@@ -500,18 +500,6 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   BACK TO TOP
-   ══════════════════════════════════════════════════════════════ */
-(function () {
-  const btn = document.getElementById('backToTop');
-  if (!btn) return;
-  window.addEventListener('scroll', () => {
-    btn.classList.toggle('is-visible', window.scrollY > 500);
-  }, { passive: true });
-  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-})();
-
-/* ══════════════════════════════════════════════════════════════
    GAZETTE READER — livre plein écran (PDF.js + StPageFlip)
    ══════════════════════════════════════════════════════════════ */
 (function () {
