@@ -44,12 +44,18 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     let active = null;
     targets.forEach(t => { if (t.getBoundingClientRect().top + window.scrollY <= y) active = t; });
     links.forEach(l => l.classList.toggle('is-active', active && l.getAttribute('href') === '#' + active.id));
-    // La puce du chapitre courant se recentre dans la barre mobile
+    // La puce du chapitre courant se recentre dans la barre mobile.
+    // On ne défile QUE la barre (jamais scrollIntoView : il ferait
+    // défiler la page entière sur mobile, en plein geste du doigt).
     const id = active ? active.id : null;
     if (id !== lastActiveId) {
       lastActiveId = id;
-      document.querySelector('.nav__chapters a.is-active')
-        ?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      const bar = document.querySelector('.nav__chapters');
+      const chip = bar?.querySelector('a.is-active');
+      if (bar && chip && bar.scrollWidth > bar.clientWidth) {
+        const left = chip.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft;
+        bar.scrollTo({ left: left - (bar.clientWidth - chip.offsetWidth) / 2, behavior: 'smooth' });
+      }
     }
   };
   window.addEventListener('scroll', update, { passive: true });
