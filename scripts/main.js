@@ -35,14 +35,22 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   mobileNav?.addEventListener('click', (e) => { if (e.target === mobileNav) closeMobile(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileNav?.classList.contains('is-open')) closeMobile(); });
 
-  // Lien actif selon le chapitre visible
+  // Lien actif selon le chapitre visible (nav desktop + barre de chapitres mobile)
   const links = [...document.querySelectorAll('[data-nav-link]')];
   const targets = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  let lastActiveId = null;
   const update = () => {
     const y = window.scrollY + window.innerHeight * 0.35;
     let active = null;
     targets.forEach(t => { if (t.getBoundingClientRect().top + window.scrollY <= y) active = t; });
     links.forEach(l => l.classList.toggle('is-active', active && l.getAttribute('href') === '#' + active.id));
+    // La puce du chapitre courant se recentre dans la barre mobile
+    const id = active ? active.id : null;
+    if (id !== lastActiveId) {
+      lastActiveId = id;
+      document.querySelector('.nav__chapters a.is-active')
+        ?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    }
   };
   window.addEventListener('scroll', update, { passive: true });
   update();
@@ -52,6 +60,14 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   const updateNav = () => nav?.classList.toggle('is-scrolled', window.scrollY > 12);
   window.addEventListener('scroll', updateNav, { passive: true });
   updateNav();
+
+  // Mobile : le calendrier de rendez-vous se déplie à la demande
+  const rdvToggle = document.getElementById('rdvToggle');
+  const rdvWrap = document.getElementById('rdvWrap');
+  rdvToggle?.addEventListener('click', () => {
+    rdvWrap?.classList.remove('is-collapsed');
+    rdvToggle.hidden = true;
+  });
 })();
 
 /* ══════════════════════════════════════════════════════════════
