@@ -128,7 +128,7 @@ strong { font-weight: 600; }
   .nav__right { justify-content: flex-end; }
   .nav__toggle { display: inline-flex; }
   html { scroll-padding-top: 122px; }
-  .nav__chapters { display: flex; gap: .35rem; overflow-x: auto; scrollbar-width: none; padding: 0 var(--gutter) .6rem; }
+  .nav__chapters { display: flex; gap: .35rem; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; padding: 0 var(--gutter) .6rem; }
   .nav__chapters::-webkit-scrollbar { display: none; }
   .nav__chapters a { flex: none; padding: .32rem .7rem; font-size: .85rem; font-weight: 500; color: var(--ink-2); border: 1px solid var(--line); border-radius: var(--r); background: var(--white); transition: background .2s, color .2s, border-color .2s; }
   .nav__chapters a.is-active { background: var(--ink); color: var(--white); border-color: var(--ink); }
@@ -232,9 +232,9 @@ body:not(.no-js) .hero__figure { animation: rise .75s var(--ease) .18s backwards
 @media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } .steps::before { display: none; } }
 /* Mobile : les étapes se parcourent en glissant — la suivante dépasse du bord */
 @media (max-width: 640px) {
-  .steps { display: flex; gap: .85rem; overflow-x: auto; scrollbar-width: none; }
+  .steps { display: flex; gap: .85rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .steps::-webkit-scrollbar { display: none; }
-  .step { flex: 0 0 76%; padding: 1.15rem 1.15rem 1.3rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r); }
+  .step { flex: 0 0 76%; scroll-snap-align: start; padding: 1.15rem 1.15rem 1.3rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r); }
   .step__badge { position: relative; top: auto; left: auto; width: 38px; height: 38px; margin-bottom: .6rem; }
   .step__icon { width: 19px; height: 19px; }
   .step--1 .step__icon { transform: translateY(2px); }
@@ -309,9 +309,9 @@ body:not(.no-js) .hero__figure { animation: rise .75s var(--ease) .18s backwards
 @media (max-width: 860px) { .temps__grid { grid-template-columns: 1fr; } }
 /* Mobile : les temps forts en carrousel */
 @media (max-width: 640px) {
-  .temps__grid { display: flex; gap: .85rem; overflow-x: auto; scrollbar-width: none; }
+  .temps__grid { display: flex; gap: .85rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .temps__grid::-webkit-scrollbar { display: none; }
-  .temps-item { flex: 0 0 80%; }
+  .temps-item { flex: 0 0 80%; scroll-snap-align: start; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -594,6 +594,9 @@ body:not(.no-js) .hero__figure { animation: rise .75s var(--ease) .18s backwards
 
 /* ── Mobile : apaisé, une colonne, gestes faciles ───────────── */
 @media (max-width: 640px) {
+  /* Échelle globale réduite : tout ce qui est en rem suit */
+  html { font-size: 15px; }
+  :root { --sec: 3rem; }
   .footer__map { min-height: 220px; }
   .footer__grid { gap: 1.4rem; margin-top: 2rem; padding-top: 1.75rem; }
   .hero { padding-top: 1.75rem; }
