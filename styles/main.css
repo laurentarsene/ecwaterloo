@@ -232,11 +232,12 @@ body:not(.no-js) .hero__figure { animation: rise .75s var(--ease) .18s backwards
 @media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } .steps::before { display: none; } }
 /* Mobile : les étapes se parcourent en glissant — la suivante dépasse du bord */
 @media (max-width: 640px) {
-  .steps { display: flex; gap: .85rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .steps { display: flex; gap: .85rem; overflow-x: auto; scrollbar-width: none; }
   .steps::-webkit-scrollbar { display: none; }
-  .step { flex: 0 0 76%; scroll-snap-align: start; padding: 1.15rem 1.15rem 1.3rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r); }
-  .step__badge { position: static; width: 50px; height: 50px; margin-bottom: .8rem; }
-  .step__icon { width: 24px; height: 24px; }
+  .step { flex: 0 0 76%; padding: 1.15rem 1.15rem 1.3rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--r); }
+  .step__badge { position: relative; top: auto; left: auto; width: 38px; height: 38px; margin-bottom: .6rem; }
+  .step__icon { width: 19px; height: 19px; }
+  .step--1 .step__icon { transform: translateY(2px); }
 }
 
 .rdv { padding-top: var(--sec); padding-bottom: var(--sec); }
@@ -308,9 +309,9 @@ body:not(.no-js) .hero__figure { animation: rise .75s var(--ease) .18s backwards
 @media (max-width: 860px) { .temps__grid { grid-template-columns: 1fr; } }
 /* Mobile : les temps forts en carrousel */
 @media (max-width: 640px) {
-  .temps__grid { display: flex; gap: .85rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .temps__grid { display: flex; gap: .85rem; overflow-x: auto; scrollbar-width: none; }
   .temps__grid::-webkit-scrollbar { display: none; }
-  .temps-item { flex: 0 0 80%; scroll-snap-align: start; }
+  .temps-item { flex: 0 0 80%; }
 }
 
 /* ══════════════════════════════════════════════════════════════
