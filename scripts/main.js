@@ -68,6 +68,34 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     rdvWrap?.classList.remove('is-collapsed');
     rdvToggle.hidden = true;
   });
+
+  // Le calendrier apparaît en fondu une fois chargé
+  const rdvFrame = document.querySelector('.rdv__frame');
+  rdvFrame?.addEventListener('load', () => rdvFrame.classList.add('is-loaded'));
+
+  // Sélecteur de langue : dropdown + liens vers le site entier traduit (translate.goog)
+  const dd = document.getElementById('langDd');
+  const ddBtn = document.getElementById('langDdBtn');
+  const ddMenu = document.getElementById('langDdMenu');
+  if (dd && ddBtn && ddMenu) {
+    const host = location.hostname;
+    if (host && host !== 'localhost' && !host.startsWith('127.') && !host.startsWith('192.168.')) {
+      const gt = host.replace(/-/g, '--').replace(/\./g, '-') + '.translate.goog';
+      ddMenu.querySelectorAll('[data-lang]').forEach(a => {
+        const tl = a.dataset.lang;
+        a.href = 'https://' + gt + '/?_x_tr_sl=fr&_x_tr_tl=' + tl + '&_x_tr_hl=' + tl;
+      });
+    }
+    const close = () => { dd.classList.remove('is-open'); ddMenu.hidden = true; ddBtn.setAttribute('aria-expanded', 'false'); };
+    ddBtn.addEventListener('click', () => {
+      const open = ddMenu.hidden;
+      ddMenu.hidden = !open;
+      dd.classList.toggle('is-open', open);
+      ddBtn.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', (e) => { if (!dd.contains(e.target)) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  }
 })();
 
 /* ══════════════════════════════════════════════════════════════

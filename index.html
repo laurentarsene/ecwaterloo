@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="styles/main.css?v=33">
+  <link rel="stylesheet" href="styles/main.css?v=37">
 </head>
 <body class="no-js">
 
@@ -45,6 +45,26 @@
         </ul>
       </nav>
       <div class="nav__right">
+        <div class="langdd" id="langDd">
+          <button type="button" class="langdd__btn" id="langDdBtn" aria-expanded="false" aria-haspopup="true" aria-label="Choisir la langue — choose language"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg><span>FR</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="langdd__menu" id="langDdMenu" hidden>
+            <a href="index.html" lang="fr">Français</a>
+            <a data-lang="en" lang="en" href="bienvenue.html#en">English</a>
+            <a data-lang="nl" lang="nl" href="bienvenue.html#nl">Nederlands</a>
+            <a data-lang="de" lang="de" href="bienvenue.html#de">Deutsch</a>
+            <a data-lang="uk" lang="uk" href="bienvenue.html#uk">Українська</a>
+            <a data-lang="ru" lang="ru" href="bienvenue.html#ru">Русский</a>
+            <a data-lang="ar" lang="ar" href="bienvenue.html#ar">العربية</a>
+            <a data-lang="fa" lang="fa" href="bienvenue.html#fa">فارسی / دری</a>
+            <a data-lang="tr" lang="tr" href="bienvenue.html#tr">Türkçe</a>
+            <a data-lang="ro" lang="ro" href="bienvenue.html#ro">Română</a>
+            <a data-lang="pl" lang="pl" href="bienvenue.html#pl">Polski</a>
+            <a data-lang="es" lang="es" href="bienvenue.html#es">Español</a>
+            <a data-lang="pt" lang="pt" href="bienvenue.html#pt">Português</a>
+            <a data-lang="it" lang="it" href="bienvenue.html#it">Italiano</a>
+            <a class="langdd__all" href="bienvenue.html">Bienvenue · Welcome →</a>
+          </div>
+        </div>
         <a href="tel:+32465927366" class="nav__tel">0465 92 73 66</a>
         <a href="#rdv" class="btn btn--primary btn--sm">Prendre rendez-vous</a>
         <button class="nav__toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileNav"><span></span><span></span></button>
@@ -73,6 +93,7 @@
         <li><a href="#aider">Aider</a></li>
         <li><a href="#asbl">Qui sommes-nous</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="bienvenue.html" class="mnav__lang">English · Українська · العربية…</a></li>
       </ul>
       <div class="mnav__actions">
         <a href="#rdv" class="btn btn--primary">Prendre rendez-vous</a>
@@ -179,29 +200,41 @@
         <p class="section-sub">Venez comme vous êtes. Quatre étapes, à votre rythme — rien n'est décidé sans vous.</p>
       </div>
       <ol class="steps">
-        <li class="step">
-          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 18h26v12a10 10 0 0 1-10 10H18A10 10 0 0 1 8 30Z"/><path d="M34 22h3a5 5 0 0 1 0 10h-3"/><path d="M15 6c0 3 3 3 3 6M22 6c0 3 3 3 3 6"/></svg>
+        <li class="step step--1">
+          <span class="step__badge" aria-hidden="true">
+            <svg class="step__shape"><use href="#s-drop"/></svg>
+            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 6h7a2 2 0 0 1 2 2v34"/><path d="M28 42V6l-13 3a2 2 0 0 0-1.5 2V42"/><line x1="9" y1="42" x2="39" y2="42"/><circle cx="23.5" cy="25" r="1.4" fill="currentColor" stroke="none"/></svg>
+          </span>
           <span class="step__num">Étape 1</span>
           <h4>Vous poussez la porte</h4>
           <p>Un café, une conversation. On écoute, sans formulaire.</p>
           <span class="step__meta">≈ 45 min · en tête-à-tête</span>
         </li>
-        <li class="step">
-          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="3"/><path d="M16 16h16M16 24h16M16 32h10"/></svg>
+        <li class="step step--2">
+          <span class="step__badge" aria-hidden="true">
+            <svg class="step__shape"><use href="#s-blob"/></svg>
+            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h21a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H16l-6 5v-5H6a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3Z" transform="translate(3 0)"/><path d="M27 27h9a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-1v5l-6-5h-2a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z"/></svg>
+          </span>
           <span class="step__num">Étape 2</span>
           <h4>On fait le point ensemble</h4>
           <p>Alimentation, logement, emploi, santé, papiers, budget&nbsp;: on regarde tout, pour relier les choses.</p>
           <span class="step__meta">Bilan complet · confidentiel</span>
         </li>
-        <li class="step">
-          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 40 20 30l8 6 12-14"/><path d="M32 22h8v8"/></svg>
+        <li class="step step--3">
+          <span class="step__badge" aria-hidden="true">
+            <svg class="step__shape"><use href="#s-bean"/></svg>
+            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="40" r="3"/><path d="M12 37c8-5 4-14 12-18 5.5-2.75 12-3 14-8" stroke-dasharray="0.5 5.5"/><path d="M38 4v13"/><path d="M38 5l8 2.5-8 3"/></svg>
+          </span>
           <span class="step__num">Étape 3</span>
           <h4>On décide d'un plan</h4>
           <p>Réaliste, étape par étape. C'est vous qui tranchez.</p>
           <span class="step__meta">Sur-mesure · validé avec vous</span>
         </li>
-        <li class="step">
-          <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 24a16 16 0 0 1 32 0"/><path d="M8 24v10a3 3 0 0 0 3 3h3V22h-3a3 3 0 0 0-3 2ZM40 24v10a3 3 0 0 1-3 3h-3V22h3a3 3 0 0 1 3 2Z"/></svg>
+        <li class="step step--4">
+          <span class="step__badge" aria-hidden="true">
+            <svg class="step__shape"><use href="#s-dot"/></svg>
+            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 14c-2.5-3.5-8-4.5-10.5-1S12.5 21 16 24l8 7 8-7c3.5-3 5-7.5 2.5-11S26.5 10.5 24 14Z"/><path d="M6 36c5.5 4.5 12 6.5 18 6.5S36.5 40.5 42 36"/></svg>
+          </span>
           <span class="step__num">Étape 4</span>
           <h4>On reste là</h4>
           <p>Un bénévole référent, des points réguliers, un coup de fil quand ça coince.</p>
@@ -219,7 +252,7 @@
     </div>
     <button type="button" class="btn btn--outline rdv__toggle" id="rdvToggle">Choisir un créneau en ligne</button>
     <div class="rdv__wrap is-collapsed" id="rdvWrap">
-      <iframe src="https://cal.eu/epicerie-sociale-de-waterloo-e.c.w-vcjwji/rendez-vous?embed=true" class="rdv__frame" title="Prendre rendez-vous — Espace Convivial de Waterloo" loading="lazy"></iframe>
+      <iframe src="https://cal.eu/epicerie-sociale-de-waterloo-e.c.w-vcjwji/rendez-vous?embed=true&theme=light" class="rdv__frame" title="Prendre rendez-vous — Espace Convivial de Waterloo" loading="lazy"></iframe>
     </div>
   </section>
 
@@ -500,6 +533,7 @@
         <a href="tel:+32465927366">0465 92 73 66</a>
         <a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a>
         <span>Du lundi au vendredi</span>
+        <a href="bienvenue.html">Other languages · Інші мови</a>
       </div>
     </div>
     <div class="wrap footer__bottom">
@@ -738,7 +772,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-  <script src="scripts/main.js?v=18"></script>
+  <script src="scripts/main.js?v=20"></script>
   <script type="importmap">
   {
     "imports": {
