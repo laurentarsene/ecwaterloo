@@ -806,22 +806,70 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   CARTE — l'épicerie (Leaflet + tuiles CARTO)
+   CARTE — l'épicerie (MapLibre + tuiles OpenFreeMap : gratuites,
+   sans clé API). Chargée seulement à l'approche du footer.
    ══════════════════════════════════════════════════════════════ */
 (function () {
   const el = document.getElementById('map');
-  if (!el || typeof L === 'undefined') return;
-  const pos = [50.71443, 4.38369]; // Rue de la Station 139A, 1410 Waterloo
-  const map = L.map(el, { scrollWheelZoom: false, zoomControl: true, attributionControl: true }).setView(pos, 16);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19, subdomains: 'abcd',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-  }).addTo(map);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd', pane: 'shadowPane' }).addTo(map);
-  const icon = L.divIcon({ className: 'map-pin', iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -14] });
-  L.marker(pos, { icon, title: "Espace Convivial de Waterloo" }).addTo(map)
-    .bindPopup('<b>Espace Convivial de Waterloo</b><br>Rue de la Station 139A<br>1410 Waterloo<br><a href="https://www.google.com/maps/dir/?api=1&destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Itinéraire →</a>');
-  // Léger décalage pour laisser respirer le marqueur
-  map.panBy([0, -20], { animate: false });
+  if (!el) return;
+  const LIB = 'https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl';
+  const pos = [4.38369, 50.71443]; // [lng, lat] — Rue de la Station 139A, 1410 Waterloo
+
+  function init() {
+    if (typeof maplibregl === 'undefined') return;
+    const map = new maplibregl.Map({
+      container: el,
+      style: 'https://tiles.openfreemap.org/styles/positron',
+      center: pos, zoom: 15,
+      scrollZoom: false, dragRotate: false, pitchWithRotate: false, touchPitch: false,
+    });
+    map.touchZoomRotate.disableRotation();
+    // Positron teinté aux couleurs du site : papier, eau teal pâle, parcs olive pâle, textes encre
+    const TINT = {
+      background: ['background-color', '#f2f5f5'], landuse_residential: ['fill-color', '#edf1f1'],
+      park: ['fill-color', '#e7e9d2'], landcover_wood: ['fill-color', '#e0e3c8'],
+      water: ['fill-color', '#cde2e6'], waterway: ['line-color', '#bcd8de'],
+      building: ['fill-color', '#e4eaea'], railway: ['line-color', '#d7dede'],
+      railway_transit: ['line-color', '#d7dede'], railway_service: ['line-color', '#d7dede'],
+      'highway-name-minor': ['text-color', '#4a5a61'], 'highway-name-major': ['text-color', '#4a5a61'],
+      'highway-name-path': ['text-color', '#7b8a90'], label_other: ['text-color', '#1f3038'],
+      label_village: ['text-color', '#1f3038'], label_town: ['text-color', '#1f3038'],
+    };
+    map.on('style.load', () => {
+      for (const [id, [prop, value]] of Object.entries(TINT)) {
+        if (map.getLayer(id)) map.setPaintProperty(id, prop, value);
+      }
+    });
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
+    const pin = document.createElement('div');
+    pin.className = 'map-pin';
+    pin.title = 'Espace Convivial de Waterloo';
+    new maplibregl.Marker({ element: pin }).setLngLat(pos)
+      .setPopup(new maplibregl.Popup({ offset: 14, maxWidth: '260px' })
+        .setHTML('<b>Espace Convivial de Waterloo</b><br>Rue de la Station 139A<br>1410 Waterloo<br><a href="https://www.google.com/maps/dir/?api=1&destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Itinéraire →</a>'))
+      .addTo(map);
+    // Léger décalage pour laisser respirer le marqueur
+    map.panBy([0, -20], { duration: 0 });
+  }
+
+  function load() {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = LIB + '.css';
+    const js = document.createElement('script');
+    js.src = LIB + '.js';
+    // Attendre la feuille de style ET le script : sans le CSS, marqueur et popup sont mal placés
+    const ready = (node) => new Promise((resolve) => { node.onload = resolve; node.onerror = resolve; });
+    Promise.all([ready(css), ready(js)]).then(init);
+    document.head.append(css, js);
+  }
+
+  if (!('IntersectionObserver' in window)) { load(); return; }
+  const io = new IntersectionObserver((entries) => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    load();
+  }, { rootMargin: '600px 0px' });
+  io.observe(el);
 })();
 

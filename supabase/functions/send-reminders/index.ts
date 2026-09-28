@@ -128,7 +128,7 @@ function reminderHtml(d: any, dateStr: string, montant: number): string {
   <tr><td style="padding:24px 40px;">
     <p style="margin:0 0 16px;font-size:15px;color:#1c3038;">Bonjour <strong>${d.prenom}</strong> 👋</p>
     <p style="margin:0 0 20px;font-size:14px;color:rgba(28,48,56,.6);line-height:1.65;">
-      On t'attend <strong style="color:#1c3038;">demain</strong> pour l'épicerie étudiante !
+      Nous t'attendons <strong style="color:#1c3038;">demain</strong> pour l'épicerie étudiante !
     </p>
 
     <!-- Checklist -->

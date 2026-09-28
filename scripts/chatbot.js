@@ -11,7 +11,7 @@
   const QA = {
     aide: {
       q: "Comment obtenir de l'aide ?",
-      a: `C'est simple : vous <a href="#rdv" data-close>prenez rendez-vous</a> ou vous appelez le ${TEL}. La première visite, c'est un café et une conversation — rien à préparer, rien à apporter. Ensuite on regarde ensemble par où commencer : alimentation, logement, emploi, santé, papiers ou budget.`,
+      a: `C'est simple : vous <a href="#rdv" data-close>prenez rendez-vous</a> ou vous appelez le ${TEL}. La première visite, c'est un café et une conversation — rien à préparer, rien à apporter. Ensuite nous regardons avec vous par où commencer : alimentation, logement, emploi, santé, papiers ou budget.`,
       follow: ['gratuit', 'ou', 'langue'],
     },
     gratuit: {
@@ -26,7 +26,7 @@
     },
     benevole: {
       q: "Comment devenir bénévole ?",
-      a: `Chacun·e apporte ce qu'il a : une heure par semaine, une voiture, une langue, deux bras. On cherche du renfort en logistique, accompagnement, cuisine, transport, administratif, traduction, potager et événements. Appelez le ${TEL} ou écrivez à ${MAIL} — voir <a href="#benevoles" data-close>Donner du temps</a>.`,
+      a: `Chacun·e apporte ce qu'il a : une heure par semaine, une voiture, une langue, deux bras. Nous cherchons du renfort en logistique, accompagnement, cuisine, transport, administratif, traduction, potager et événements. Appelez le ${TEL} ou écrivez à ${MAIL} — voir <a href="#benevoles" data-close>Donner du temps</a>.`,
       follow: ['lutin', 'don'],
     },
     don: {
@@ -36,7 +36,7 @@
     },
     lutin: {
       q: "C'est quoi, les lutins de Noël ?",
-      a: `Chaque décembre, vous pouvez offrir un cadeau de Noël à un enfant de l'épicerie : vous vous inscrivez, vous recevez la lettre d'un enfant au Père Noël, vous déposez son cadeau — on le lui remet. Tout se passe dans la <a href="#lutins" data-close>section Devenez lutin·e</a>.`,
+      a: `Chaque décembre, vous pouvez offrir un cadeau de Noël à un enfant de l'épicerie : vous vous inscrivez, vous recevez la lettre d'un enfant au Père Noël, vous déposez son cadeau — nous le lui remettons. Tout se passe dans la <a href="#lutins" data-close>section Devenez lutin·e</a>.`,
       follow: ['don', 'benevole'],
     },
     ou: {
@@ -46,7 +46,7 @@
     },
     langue: {
       q: "Je ne parle pas bien français…",
-      a: `Pas de souci ! L'essentiel du site existe <a href="bienvenue.html">en 14 langues</a> (English, Nederlands, Українська, العربية, فارسی…). Et si vous venez, amenez si possible un proche qui peut traduire — sinon on se débrouillera ensemble.`,
+      a: `Pas de souci ! L'essentiel du site existe <a href="bienvenue.html">en 14 langues</a> (English, Nederlands, Українська, العربية, فارسی…). Et si vous venez, amenez si possible un proche qui peut traduire — sinon nous trouverons un moyen ensemble.`,
       follow: ['aide', 'ou'],
     },
     gazette: {
@@ -56,7 +56,7 @@
     },
     qui: {
       q: "Qui êtes-vous ?",
-      a: `Une ASBL de quartier née en 2014 à Waterloo : une vingtaine de bénévoles, zéro salarié, plus de mille personnes accompagnées. On a commencé par une épicerie, puis on a écouté — et on a ajouté le logement, les papiers, l'emploi, la santé. Toute <a href="#asbl" data-close>notre histoire est ici</a>.`,
+      a: `Une ASBL de quartier née en 2014 à Waterloo : une vingtaine de bénévoles, zéro salarié, plus de mille personnes accompagnées. D'abord une épicerie. Puis nous avons écouté, et ajouté le logement, les papiers, l'emploi, la santé. Toute <a href="#asbl" data-close>notre histoire est ici</a>.`,
       follow: ['aide', 'don'],
     },
   };
