@@ -253,7 +253,9 @@ function getNextFirstThursdayStr() {
   for (let offset = 0; offset <= 2; offset++) {
     const d   = new Date(today.getFullYear(), today.getMonth() + offset, 1);
     const dow = d.getDay();
-    const thu = new Date(d.getFullYear(), d.getMonth(), 1 + (4 - dow + 7) % 7);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const exceptions = typeof EPICERIE_DATES_EXCEPTIONNELLES !== 'undefined' ? EPICERIE_DATES_EXCEPTIONNELLES : {};
+    const thu = new Date(d.getFullYear(), d.getMonth(), exceptions[key] ?? 1 + (4 - dow + 7) % 7);
     if (thu >= today) return formatDateFr(thu);
   }
   return '';

@@ -15,14 +15,19 @@ const FROM_EMAIL      = 'Espace Convivial de Waterloo <noreply@ecwaterloo.com>';
 const REPLY_TO        = 'info@ecwaterloo.com';
 const ADRESSE         = 'Rue de la Station 139A, 1410 Waterloo';
 
+// Dates exceptionnelles de l'épicerie ('AAAA-MM': jour) — garder en phase avec config.js
+const EPICERIE_DATES_EXCEPTIONNELLES: Record<string, number> = {
+  '2026-10': 8, // octobre 2026 : 2e jeudi (8/10) au lieu du 1er
+};
+
 serve(async () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow.setHours(0, 0, 0, 0);
 
-  // Ne rien faire si demain n'est pas un 1er jeudi du mois
-  if (!isFirstThursday(tomorrow)) {
-    return new Response(JSON.stringify({ skipped: true, reason: 'pas un 1er jeudi' }), { status: 200 });
+  // Ne rien faire si demain n'est pas un jour d'épicerie (1er jeudi du mois, sauf exception)
+  if (!isEpicerieDay(tomorrow)) {
+    return new Response(JSON.stringify({ skipped: true, reason: 'pas un jour d\'épicerie' }), { status: 200 });
   }
 
   const dateStr = formatDateFr(tomorrow);
@@ -65,7 +70,10 @@ serve(async () => {
 });
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-function isFirstThursday(date: Date): boolean {
+function isEpicerieDay(date: Date): boolean {
+  const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  const exception = EPICERIE_DATES_EXCEPTIONNELLES[key];
+  if (exception !== undefined) return date.getDate() === exception;
   return date.getDay() === 4 && date.getDate() <= 7;
 }
 

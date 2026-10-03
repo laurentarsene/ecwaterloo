@@ -152,6 +152,12 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
    MODAL ÉTUDIANTS — Supabase
    ══════════════════════════════════════════════════════════════ */
 (function () {
+  // Jour de l'épicerie pour le mois de `d` : exception éventuelle (config.js), sinon le 1er jeudi
+  function epicerieDay(d, firstThuDay) {
+    const exceptions = typeof EPICERIE_DATES_EXCEPTIONNELLES !== 'undefined' ? EPICERIE_DATES_EXCEPTIONNELLES : {};
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    return exceptions[key] ?? firstThuDay;
+  }
   function getNextFirstThursday() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -159,7 +165,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
       const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
       const dow = d.getDay();
       const daysToThu = (4 - dow + 7) % 7;
-      const firstThu = new Date(d.getFullYear(), d.getMonth(), 1 + daysToThu);
+      const firstThu = new Date(d.getFullYear(), d.getMonth(), epicerieDay(d, 1 + daysToThu));
       if (firstThu > today) return firstThu;
     }
   }
