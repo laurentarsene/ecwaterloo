@@ -838,7 +838,7 @@ b, strong { font-weight: 600; }
   .moment__body { padding: 20px 0 32px; }
 
   /* Footer : contacts en lignes à toucher, liens sur deux colonnes */
-  .foot { margin: 0 8px calc(8px + env(safe-area-inset-bottom)); border-radius: 18px; }
+  .foot { margin: 0; border-radius: 0; padding-bottom: env(safe-area-inset-bottom); }
   .foot__art { height: 256px; padding-top: 52px; }
   .foot__art img { object-position: 100% 45%; }  /* le personnage cadré, sans bande vide */
   .foot__in { padding-top: 24px; gap: 36px; }
