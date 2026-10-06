@@ -223,6 +223,7 @@ b, strong { font-weight: 600; }
 .door--coral { background: var(--coral); } .door--coral:hover { background: var(--coral-h); }
 .door--teal { background: var(--teal); } .door--teal:hover { background: #4592a0; }
 .door--olive { background: var(--olive); } .door--olive:hover { background: #a4a624; }
+.door--navy { background: var(--navy); color: var(--white); } .door--navy:hover { background: var(--navy-h); color: var(--white); }
 .door__in { max-width: 1280px; margin: 0 auto; padding: 30px var(--gut); display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: center; min-height: 150px; }
 .door__title { flex: 1 1 360px; font-weight: 300; font-size: clamp(32px, 4.2vw, 56px); line-height: 1; letter-spacing: -.035em; }
 .door__desc { flex: 1 1 240px; font-size: 18px; line-height: 1.45; }
@@ -233,6 +234,7 @@ b, strong { font-weight: 600; }
 .door--teal .door__end img { width: clamp(120px, 15vw, 170px); margin-bottom: -24px; }
 .door--olive .door__end { align-items: center; align-self: auto; }
 .door--olive .door__end img { width: clamp(130px, 16vw, 180px); align-self: auto; }
+.door--navy .door__end img { width: clamp(120px, 15vw, 170px); margin-bottom: -26px; }
 
 /* ══════════════════════════════════════════════════════════════
    BANDES DE CHAPITRE + CHIPS
@@ -421,8 +423,8 @@ b, strong { font-weight: 600; }
    CARTE QUESTION + FOOTER
    ══════════════════════════════════════════════════════════════ */
 .ask { position: relative; z-index: 3; margin-bottom: -72px; }
-/* La page finit sur un aplat de couleur : la carte garde de l'air au-dessus */
-[data-page="accueil"] .ask, [data-page="etudiants"] .ask { margin-top: clamp(56px, 7vw, 96px); }
+/* Les pages finissent sur un aplat (portes, temps forts) : la carte garde de l'air au-dessus */
+.ask { margin-top: clamp(56px, 7vw, 96px); }
 .ask__card {
   background: var(--coral); color: var(--ink); border-radius: var(--r);
   padding: clamp(28px, 3.5vw, 44px) clamp(24px, 3.5vw, 48px);
@@ -646,6 +648,10 @@ b, strong { font-weight: 600; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
 }
 
+.lost { padding-top: clamp(56px, 8vw, 112px); padding-bottom: clamp(48px, 6vw, 80px); display: flex; flex-direction: column; gap: 20px; }
+.lost .lead { max-width: 34em; color: var(--ink-2); }
+.lost a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
 /* Bandes portes : au survol, l'illustration se soulève, la flèche avance */
 .door__end img, .door__arrow { transition: transform .5s var(--ease); }
 @media (hover: hover) {
@@ -730,6 +736,7 @@ b, strong { font-weight: 600; }
   .door--coral .door__end img { width: 92px; margin-bottom: -22px; }
   .door--teal .door__end img { width: 100px; margin-bottom: -22px; }
   .door--olive .door__end img { width: 104px; }
+  .door--navy .door__end img { width: 100px; margin-bottom: -22px; }
   .door__arrow { font-size: 32px; }
 
   /* Six domaines : accordéon, une ligne par domaine */
@@ -795,4 +802,18 @@ b, strong { font-weight: 600; }
   /* Article */
   .art-photo { padding: 0 var(--gut); }
   .art-photo figcaption, .art-fig figcaption { padding-top: 2px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TRANSITIONS ENTRE PAGES (View Transitions, navigateurs récents)
+   Le header et le chatbot restent en place ; le contenu se fond.
+   ══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  .hdr { view-transition-name: hdr; }
+  .bot { view-transition-name: bot; }
+  ::view-transition-old(root) { animation: vt-out .22s var(--ease) both; }
+  ::view-transition-new(root) { animation: vt-in .42s var(--ease) both; }
+  @keyframes vt-out { to { opacity: 0; } }
+  @keyframes vt-in { from { opacity: 0; transform: translateY(8px); } }
 }

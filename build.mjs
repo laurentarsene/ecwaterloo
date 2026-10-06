@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 
-const V = { css: 4, js: 29, chat: 5 };
+const V = { css: 5, js: 29, chat: 5 };
 
 const SUPABASE = '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>\n';
 const PAGEFLIP = '<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js" defer></script>\n';
@@ -54,6 +54,13 @@ const PAGES = [
     description: "Douze ans d'entraide à Waterloo : comment l'épicerie sociale est née en 2014, pourquoi elle est devenue une porte d'entrée vers un accompagnement plus large, nos dates clés et la Gazette conviviale.",
     cta: ['/aide/#rdv', 'Prendre rendez-vous'], modals: ['lecteur-gazette'], scripts: PAGEFLIP,
   },
+  {
+    page: '404', out: '404.html', path: '/404', robots: 'noindex, follow', doors: 'all',
+    title: 'Page introuvable · Espace Convivial de Waterloo',
+    ogTitle: 'Espace Convivial de Waterloo',
+    description: "Cette page n'existe pas ou plus. Retrouvez l'épicerie sociale, l'épicerie étudiante, les façons d'aider et notre histoire.",
+    cta: ['/aide/#rdv', 'Prendre rendez-vous'],
+  },
 ];
 
 // Ancre → page qui la contient (les liens #ancre deviennent /page/#ancre ailleurs)
@@ -71,6 +78,7 @@ const read = (f) => readFileSync(join(DIR, f), 'utf8');
 
 const layout = read('src/layout.html');
 const footer = read('src/partials/footer.html');
+const portes = read('src/partials/portes.html');
 
 function links(html, page) {
   return html
@@ -88,6 +96,11 @@ for (const p of PAGES) {
   let content = read(`src/pages/${p.page}.html`);
   // Le grand titre de chapitre devient le titre de la page
   if (p.chapter) content = content.replace(/<h2 class="h-chap">([\s\S]*?)<\/h2>/, '<h1 class="h-chap">$1</h1>');
+  // Fin de page : les portes vers les autres chapitres (tous les chemins mènent partout)
+  if (p.chapter || p.doors === 'all') {
+    const doors = portes.split('\n').filter(l => !p.chapter || !l.includes(`data-door="${p.chapter}"`)).join('\n');
+    content = content.trimEnd() + '\n\n' + doors;
+  }
   const modals = (p.modals || []).map(m => read(`src/partials/${m}.html`)).join('\n');
 
   let html = layout
@@ -95,6 +108,7 @@ for (const p of PAGES) {
     .replaceAll('{{og_title}}', p.ogTitle)
     .replaceAll('{{description}}', p.description)
     .replaceAll('{{path}}', p.path)
+    .replace('{{robots}}', p.robots || 'index, follow')
     .replaceAll('{{page}}', p.page)
     .replace('{{head_extra}}', p.headExtra || '')
     .replace('{{chapter_attr}}', p.chapter ? ` data-chapter="${p.chapter}"` : '')
