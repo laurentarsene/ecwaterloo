@@ -249,14 +249,13 @@ b, strong { font-weight: 600; }
 .door__in { max-width: 1280px; margin: 0 auto; padding: 30px var(--gut); display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: center; min-height: 150px; }
 .door__title { flex: 1 1 360px; font-weight: 300; font-size: clamp(32px, 4.2vw, 56px); line-height: 1; letter-spacing: -.035em; }
 .door__desc { flex: 1 1 240px; font-size: 18px; line-height: 1.45; }
-.door__end { flex: 0 0 auto; margin-left: auto; display: flex; align-items: flex-end; gap: 24px; align-self: stretch; }
-.door__end img { align-self: flex-end; }
+/* Illustration et flèche centrées verticalement dans la bande, sans toucher les bords */
+.door__end { flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; gap: 24px; align-self: center; }
 .door__arrow { font-weight: 300; font-size: 44px; line-height: 1; align-self: center; }
-.door--coral .door__end img { width: clamp(110px, 14vw, 160px); margin-bottom: -30px; }
-.door--teal .door__end img { width: clamp(120px, 15vw, 170px); margin-bottom: -24px; }
-.door--olive .door__end { align-items: center; align-self: auto; }
-.door--olive .door__end img { width: clamp(130px, 16vw, 180px); align-self: auto; }
-.door--navy .door__end img { width: clamp(120px, 15vw, 170px); margin-bottom: -26px; }
+.door--coral .door__end img { width: clamp(110px, 14vw, 160px); }
+.door--teal .door__end img { width: clamp(120px, 15vw, 170px); }
+.door--olive .door__end img { width: clamp(130px, 16vw, 180px); }
+.door--navy .door__end img { width: clamp(120px, 15vw, 170px); }
 
 /* ══════════════════════════════════════════════════════════════
    BANDES DE CHAPITRE + CHIPS
@@ -780,10 +779,10 @@ b, strong { font-weight: 600; }
   .door__title { grid-area: t; font-size: 32px; }
   .door__desc { grid-area: d; font-size: 16px; }
   .door__end { grid-area: e; margin: 0; gap: 8px; }
-  .door--coral .door__end img { width: 92px; margin-bottom: -22px; }
-  .door--teal .door__end img { width: 100px; margin-bottom: -22px; }
+  .door--coral .door__end img { width: 92px; }
+  .door--teal .door__end img { width: 100px; }
   .door--olive .door__end img { width: 104px; }
-  .door--navy .door__end img { width: 100px; margin-bottom: -22px; }
+  .door--navy .door__end img { width: 100px; }
   .door__arrow { font-size: 32px; }
 
   /* Six domaines : accordéon, une ligne par domaine */
