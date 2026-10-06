@@ -1,0 +1,33 @@
+<!-- ══════════ LECTEUR GAZETTE ══════════ -->
+<div class="reader" id="gazetteReader" aria-hidden="true" inert>
+  <div class="reader__backdrop" id="readerBackdrop"></div>
+  <div class="reader__shell" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+    <div class="reader__head">
+      <div class="reader__brand">
+        <span class="reader__kicker">Gazette conviviale</span>
+        <span class="reader__title" id="readerTitle">—</span>
+      </div>
+      <div class="reader__indicator"><span id="readerCurrentPage">1</span><span class="reader__indicator-sep">/</span><span id="readerTotalPages">—</span></div>
+      <div class="reader__toolbar">
+        <a href="assets/magazines/gazette-02.pdf" class="reader__tool" id="readerDownload" download title="Télécharger le PDF" aria-label="Télécharger le PDF">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <button type="button" class="reader__close" id="closeGazette" aria-label="Fermer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="reader__stage" id="readerStage">
+      <button type="button" class="reader__nav reader__nav--prev" id="readerPrev" aria-label="Page précédente">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="reader__spread" id="readerSpread"><div class="reader__book" id="readerBook"></div></div>
+      <button type="button" class="reader__nav reader__nav--next" id="readerNext" aria-label="Page suivante">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="reader__loading" id="readerLoading" hidden><div class="reader__spinner"></div></div>
+    </div>
+    <div class="reader__thumbs" id="readerThumbs" role="group" aria-label="Pages"></div>
+    <div class="reader__footer"><span class="reader__hint">← → ou glisser un coin pour tourner · Échap pour fermer</span></div>
+  </div>
+</div>

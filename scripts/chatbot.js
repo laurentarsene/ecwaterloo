@@ -8,14 +8,14 @@
   // [question, réponse, lien d'action éventuel [libellé, href]]
   const FAQ = [
     ['Combien ça coûte ?', "Le premier rendez-vous et l'accompagnement sont gratuits. À l'épicerie, vous payez une contribution solidaire, à prix réduit, pour les produits que vous choisissez."],
-    ["Comment accéder à l'épicerie ?", "Tout commence par un premier rendez-vous, pour faire le point sur votre situation. Une carte d'accès vous est ensuite remise.", ['Prendre rendez-vous', '#rdv']],
+    ["Comment accéder à l'épicerie ?", "Tout commence par un premier rendez-vous, pour faire le point sur votre situation. Une carte d'accès vous est ensuite remise.", ['Prendre rendez-vous', '/aide/#rdv']],
     ['Que dois-je apporter ?', 'Rien pour le premier rendez-vous. Vous venez, et nous discutons.'],
     ['Est-ce confidentiel ?', "Oui. Ce que vous nous confiez reste entre vous et l'équipe."],
-    ['Je ne parle pas bien français', "Vous pouvez venir quand même. Le site existe aussi en anglais, ukrainien, arabe et d'autres langues.", ['Autres langues', 'bienvenue.html']],
-    ['Je suis étudiant·e', "L'épicerie est réservée aux étudiant·es le premier jeudi du mois. Tu t'inscris en ligne et tu viens avec 5€ et un sac.", ["M'inscrire", '#inscription']],
+    ['Je ne parle pas bien français', "Vous pouvez venir quand même. Le site existe aussi en anglais, ukrainien, arabe et d'autres langues.", ['Autres langues', '/bienvenue.html']],
+    ['Je suis étudiant·e', "L'épicerie est réservée aux étudiant·es le premier jeudi du mois. Tu t'inscris en ligne et tu viens avec 5€ et un sac.", ["M'inscrire", '/etudiants/#inscription']],
     ['Où êtes-vous ?', 'Rue de la Station 139A, 1410 Waterloo. Les permanences se font sur rendez-vous.', ['Itinéraire', 'https://www.google.com/maps/dir/?api=1&destination=Rue+de+la+Station+139A,+1410+Waterloo']],
     ['Devenir bénévole', 'Avec plaisir ! Une heure par semaine suffit. Appelez-nous ou écrivez-nous, et passez faire connaissance.', ['Écrire un email', 'mailto:infos.ecwaterloo@gmail.com?subject=Devenir%20b%C3%A9n%C3%A9vole']],
-    ['Faire un don', 'Chaque euro sert directement aux personnes accompagnées. Le paiement est sécurisé par Stripe.', ['Voir les montants', '#don']],
+    ['Faire un don', 'Chaque euro sert directement aux personnes accompagnées. Le paiement est sécurisé par Stripe.', ['Voir les montants', '/aider/#don']],
   ];
   const GREETING = 'Bonjour ! Je réponds aux questions qui nous sont posées le plus souvent. Choisissez-en une ci-dessous.';
   const EASE = 'cubic-bezier(.16,1,.3,1)';
@@ -42,11 +42,11 @@
       <button type="button" class="bot__x" aria-label="Masquer">×</button>
     </div>
     <button type="button" class="bot__btn" aria-label="Ouvrir les questions fréquentes" aria-expanded="false">
-      <img class="bot__idle" src="assets/images/perso/bot-idle.webp" width="293" height="400" alt="">
-      <img class="bot__hello" src="assets/images/perso/bot-hello.webp" width="293" height="400" alt="">
+      <img class="bot__idle" src="/assets/images/perso/bot-idle.webp" width="293" height="400" alt="">
+      <img class="bot__hello" src="/assets/images/perso/bot-hello.webp" width="293" height="400" alt="">
     </button>
     <button type="button" class="bot__stand" aria-label="Fermer les questions fréquentes" aria-expanded="true">
-      <img src="assets/images/perso/bot-open.webp" width="324" height="600" alt="" loading="lazy">
+      <img src="/assets/images/perso/bot-open.webp" width="324" height="600" alt="" loading="lazy">
     </button>`;
   document.body.appendChild(root);
 
@@ -71,7 +71,7 @@
       const a = el('a', '', label);
       a.href = href;
       if (/^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
-      if (href[0] === '#') a.addEventListener('click', () => setOpen(false, { keepFocus: true }));
+      if (href.includes('#')) a.addEventListener('click', () => setOpen(false, { keepFocus: true }));
       b.appendChild(a);
     }
     row.appendChild(b);

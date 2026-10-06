@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<!-- Généré par build.mjs depuis src/ : modifier src/, puis lancer `node build.mjs` -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Épicerie étudiante · Espace Convivial de Waterloo</title>
+  <meta name="description" content="Le premier jeudi du mois, l'épicerie est réservée aux étudiant·es : tu repars avec tes courses pour 5€. Inscription en ligne obligatoire.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ecwaterloo.com/etudiants/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ecwaterloo.com/etudiants/">
+  <meta property="og:title" content="L'épicerie étudiante de Waterloo">
+  <meta property="og:description" content="Le premier jeudi du mois, l'épicerie est réservée aux étudiant·es : tu repars avec tes courses pour 5€. Inscription en ligne obligatoire.">
+  <meta property="og:image" content="https://ecwaterloo.com/assets/images/og-ecw.jpg">
+  <meta property="og:locale" content="fr_BE">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light only">
+  <link rel="apple-touch-icon" href="/assets/images/ecw-icon.png">
+  <link rel="icon" type="image/png" href="/assets/images/ecw-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/site.css?v=3">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "Espace Convivial de Waterloo",
+    "alternateName": "ECW",
+    "url": "https://ecwaterloo.com/",
+    "logo": "https://ecwaterloo.com/assets/images/ecw-logo.png",
+    "description": "Épicerie sociale et accompagnement (courses, logement, emploi, santé, papiers, budget) à Waterloo. ASBL 100% bénévole depuis 2014.",
+    "foundingDate": "2014",
+    "telephone": "+32465927366",
+    "email": "infos.ecwaterloo@gmail.com",
+    "address": { "@type": "PostalAddress", "streetAddress": "Rue de la Station 139A", "postalCode": "1410", "addressLocality": "Waterloo", "addressCountry": "BE" }
+  }
+  </script>
+</head>
+<body data-page="etudiants">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<div class="site">
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="hdr" id="hdr" data-chapter="etudiants">
+  <div class="hdr__in">
+    <a href="/" class="hdr__logo"><img src="/assets/images/ecw-logo.png" width="863" height="335" alt="Espace Convivial de Waterloo, accueil"></a>
+    <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/aide/" data-nav="aide">Besoin d'aide</a><a href="/etudiants/" data-nav="etudiants" aria-current="page">Étudiants</a><a href="/aider/" data-nav="aider">Aider</a><a href="/qui-sommes-nous/" data-nav="asbl">Qui sommes-nous</a><a href="#contact" data-nav="contact">Contact</a>
+    </nav>
+    <div class="hdr__right">
+      <a href="/bienvenue.html" class="hdr__lang" title="English · Українська · العربية…">FR · Other languages</a>
+      <a href="tel:+32465927366" class="hdr__tel">0465&nbsp;92&nbsp;73&nbsp;66</a>
+      <a href="#inscription" class="hdr__cta">Je m'inscris</a>
+    </div>
+    <button type="button" class="hdr__burger" id="menuOpen" aria-controls="menu" aria-expanded="false" aria-label="Ouvrir le menu">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="hdr__bar"></div>
+</header>
+<div class="hdr-space" id="hdrSpace" aria-hidden="true"></div>
+
+<main id="contenu">
+<section class="etu" id="etudiants">
+  <div class="wrap etu__in">
+    <div class="etu__grid">
+      <div class="etu__main">
+        <h1 class="h-chap">Étudiant·e&nbsp;?</h1>
+        <p class="lead">Le premier jeudi de chaque mois, l'épicerie est réservée aux étudiant·es. Pour 5€, tu repars avec tes courses.</p>
+        <ol class="etu__steps">
+          <li><b>1</b><div><span>Tu t'inscris en ligne</span><span>Ça prend 30 secondes. L'inscription est obligatoire.</span></div></li>
+          <li><b>2</b><div><span>Tu reçois l'adresse par email</span><span>Avec toutes les infos pratiques pour le jour J.</span></div></li>
+          <li><b>3</b><div><span>Tu viens avec 5€ et un sac</span><span>5€ par personne, à payer sur place.</span></div></li>
+        </ol>
+      </div>
+      <div class="etu__side">
+        <img src="/assets/images/perso/d1.webp" width="990" height="923" loading="lazy" alt="Une étudiante prend des notes, assise sur son sac à dos rempli de cours et de courses">
+        <div class="etu__card" id="inscription">
+          <p class="etu__date">La prochaine a lieu le <b id="nextThursdayCard">premier jeudi du mois</b>.</p>
+          <p class="etu__open" id="studentOpen" hidden></p>
+          <button type="button" class="btn btn--lg btn--dark" id="openStudentForm">Je m'inscris</button>
+          <p class="etu__rule">Si tu ne peux pas venir, préviens-nous. Une absence non excusée empêche de se réinscrire par la suite.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ══════════ CARTE QUESTION + FOOTER ══════════ -->
+<aside class="wrap ask" aria-label="Une question ?">
+  <div class="ask__card">
+    <h2>Une question&nbsp;? Appelez-nous ou passez nous voir.</h2>
+    <div class="btns"><a href="/aide/#rdv" class="btn btn--dark">Prendre rendez-vous</a><a href="/aider/#don" class="btn btn--line">Faire un don</a></div>
+  </div>
+</aside>
+<footer class="foot" id="contact">
+  <div class="foot__art"><img src="/assets/images/footer-trou.webp" srcset="/assets/images/footer-trou-1100.webp 1100w, /assets/images/footer-trou.webp 2172w" sizes="(min-width: 1100px) 1380px, 168vw" width="2172" height="724" loading="lazy" alt="Une bénévole, son cabas sur l'épaule, passe à travers le papier"></div>
+  <div class="wrap foot__in">
+    <div class="foot__intro">
+      <h2 class="sr-only">Contact</h2>
+      <div class="foot__contact">
+        <a href="tel:+32465927366">0465&nbsp;92&nbsp;73&nbsp;66</a>
+        <a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a>
+        <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Rue de la Station 139A, 1410 Waterloo</a>
+      </div>
+    </div>
+    <div class="foot__cols">
+      <nav class="foot__col" aria-label="Besoin d'aide"><b class="foot__title" style="--c:#f26d5f">Besoin d'aide</b><a href="/aide/#services">Nos services</a><a href="/aide/#workflow">Comment ça se passe</a><a href="/aide/#rdv">Prendre rendez-vous</a><a href="#etudiants" class="foot__etu">Épicerie étudiante</a></nav>
+      <nav class="foot__col" aria-label="Aider"><b class="foot__title" style="--c:#aeb02b">Aider</b><a href="/aider/#benevoles">Donner du temps</a><a href="/aider/#don">Faire un don</a><a href="/aider/#lutins">Devenir lutin·e</a></nav>
+      <nav class="foot__col" aria-label="L'asbl"><b class="foot__title" style="--c:#fff">L'asbl</b><a href="/qui-sommes-nous/#histoire">Notre histoire</a><a href="/#temps-forts">Temps forts</a><a href="/qui-sommes-nous/#gazette">La gazette</a></nav>
+    </div>
+    <div class="foot__bottom">
+      <span>© 2014–2026 Espace Convivial de Waterloo · ASBL 100% bénévole</span>
+      <span class="foot__links"><a href="/bienvenue.html">English · Українська · العربية…</a><a href="/admin.html">Espace admin</a></span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /.site -->
+
+<!-- ══════════ MENU (MOBILE) ══════════ -->
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="menu__head">
+    <a href="/" class="menu__logo"><img src="/assets/images/ecw-logo.png" width="863" height="335" alt="Espace Convivial de Waterloo, accueil"></a>
+    <button type="button" class="menu__close" id="menuClose" aria-label="Fermer le menu">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <nav class="menu__nav" aria-label="Menu principal">
+    <a href="/aide/" class="menu__item menu__item--coral" data-nav="aide"><span>Besoin d'aide&nbsp;?</span><span aria-hidden="true">→</span></a>
+    <a href="/etudiants/" class="menu__item menu__item--teal" data-nav="etudiants" aria-current="page"><span>Étudiant·e&nbsp;?</span><span aria-hidden="true">→</span></a>
+    <a href="/aider/" class="menu__item menu__item--olive" data-nav="aider"><span>Envie d'aider&nbsp;?</span><span aria-hidden="true">→</span></a>
+    <a href="/qui-sommes-nous/" class="menu__item menu__item--navy" data-nav="asbl"><span>Qui sommes-nous&nbsp;?</span><span aria-hidden="true">→</span></a>
+  </nav>
+  <div class="menu__actions">
+    <a href="/aide/#rdv" class="btn btn--lg btn--dark">Prendre rendez-vous</a>
+    <a href="tel:+32465927366" class="btn btn--lg btn--line">Appeler le 0465&nbsp;92&nbsp;73&nbsp;66</a>
+  </div>
+  <div class="menu__info">
+    <a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a>
+    <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Rue de la Station 139A, 1410 Waterloo</a>
+    <a href="/bienvenue.html">English · Українська · العربية…</a>
+  </div>
+</div>
+
+<!-- ══════════ MODALE INSCRIPTION ÉTUDIANTE ══════════ -->
+<div class="smodal" id="studentModal" aria-hidden="true" inert>
+  <div class="smodal__backdrop" id="studentModalBackdrop"></div>
+  <div class="smodal__dialog" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
+    <button type="button" class="smodal__close" id="closeStudentModal" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="smodal__progress" aria-hidden="true"><div class="smodal__progress-fill" id="sformProgressBar"></div></div>
+
+    <form id="studentForm" class="sform" novalidate>
+      <input type="hidden" name="date_rdv" id="hiddenDateRdv">
+
+      <div class="sform__step is-active" data-step="1">
+        <p class="sform__kicker">Épicerie étudiante</p>
+        <h2 class="sform__title" id="studentModalTitle">Prochain rendez-vous</h2>
+        <div class="sform__date">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="nextThursdayDisplay">Calcul…</span>
+        </div>
+        <ul class="sform__rules">
+          <li><span class="sform__rule-tag">5€</span><span><strong>5€ symboliques</strong> à apporter impérativement le jour J. Aucune exception.</span></li>
+          <li><span class="sform__rule-tag">✓</span><span>Inscription <strong>obligatoire</strong>. Les absents non excusés ne pourront plus s'inscrire.</span></li>
+          <li><span class="sform__rule-tag">✉</span><span>Tu recevras un <strong>email de confirmation</strong> avec l'adresse et les infos pratiques.</span></li>
+        </ul>
+        <button type="button" class="btn btn--dark sform__next">Je m'inscris</button>
+      </div>
+
+      <div class="sform__step" data-step="2">
+        <p class="sform__kicker">Étape 1 sur 3</p>
+        <h2 class="sform__title">Qui es-tu&nbsp;?</h2>
+        <div class="sform__row">
+          <div class="sform__group">
+            <label class="sform__label" for="inputPrenom">Prénom</label>
+            <input class="sform__input" type="text" id="inputPrenom" name="prenom" autocomplete="given-name" placeholder="Marie">
+          </div>
+          <div class="sform__group">
+            <label class="sform__label" for="inputNom">Nom</label>
+            <input class="sform__input" type="text" id="inputNom" name="nom" autocomplete="family-name" placeholder="Dupont">
+          </div>
+        </div>
+        <div class="sform__group">
+          <span class="sform__label">Genre</span>
+          <div class="sform__radios" id="genreGroup">
+            <label class="sform__radio"><input type="radio" name="genre" value="Femme"><span>Femme</span></label>
+            <label class="sform__radio"><input type="radio" name="genre" value="Homme"><span>Homme</span></label>
+          </div>
+        </div>
+        <div class="sform__nav">
+          <button type="button" class="btn btn--line sform__prev">← Retour</button>
+          <button type="button" class="btn btn--dark sform__next">Continuer →</button>
+        </div>
+      </div>
+
+      <div class="sform__step" data-step="3">
+        <p class="sform__kicker">Étape 2 sur 3</p>
+        <h2 class="sform__title">Tes coordonnées</h2>
+        <div class="sform__group">
+          <label class="sform__label" for="inputEmail">Email</label>
+          <input class="sform__input" type="email" id="inputEmail" name="email" autocomplete="email" placeholder="marie@exemple.com">
+        </div>
+        <div class="sform__group">
+          <label class="sform__label" for="inputTel">Téléphone</label>
+          <input class="sform__input" type="tel" id="inputTel" name="telephone" autocomplete="tel" placeholder="+32 470 00 00 00">
+        </div>
+        <div class="sform__nav">
+          <button type="button" class="btn btn--line sform__prev">← Retour</button>
+          <button type="button" class="btn btn--dark sform__next">Continuer →</button>
+        </div>
+      </div>
+
+      <div class="sform__step" data-step="4">
+        <p class="sform__kicker">Étape 3 sur 3</p>
+        <h2 class="sform__title">Ta visite</h2>
+        <div class="sform__group">
+          <label class="sform__label" for="inputUniv">Université / École</label>
+          <input class="sform__input" type="text" id="inputUniv" name="universite" placeholder="UCLouvain, ULB, HELHa…">
+        </div>
+        <div class="sform__group">
+          <span class="sform__label">Pour combien de personnes&nbsp;?</span>
+          <div class="sform__stepper">
+            <button type="button" class="sform__stepper-btn" id="stepperMinus" aria-label="Réduire">−</button>
+            <span class="sform__stepper-val" id="stepperVal" aria-live="polite">1</span>
+            <button type="button" class="sform__stepper-btn" id="stepperPlus" aria-label="Augmenter">+</button>
+          </div>
+          <input type="hidden" name="nb_personnes" id="hiddenNbPersonnes" value="1">
+        </div>
+        <label class="sform__check" id="engagementLabel">
+          <input type="checkbox" id="engagementCheck">
+          <span>Je m'engage à me présenter le <strong class="thursday-ref">…</strong> et à apporter <strong>5€</strong> par personne.</span>
+        </label>
+        <p class="sform__error" id="studentFormError" hidden></p>
+        <div class="sform__nav">
+          <button type="button" class="btn btn--line sform__prev">← Retour</button>
+          <button type="submit" class="btn btn--dark">Confirmer →</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="sform__success" id="sformSuccess" hidden>
+      <div class="sform__success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <p class="sform__kicker">C'est bon&nbsp;!</p>
+      <h2 class="sform__title">À jeudi&nbsp;!</h2>
+      <p class="sform__success-date" id="successDate"></p>
+      <p class="sform__success-note">Un email de confirmation t'a été envoyé. N'oublie pas d'apporter tes <strong>5€</strong> le jour J.</p>
+      <button type="button" class="btn btn--dark" id="closeSuccess">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script src="/config.js?v=2" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="/scripts/main.js?v=29" defer></script>
+<script src="/scripts/chatbot.js?v=5" defer></script>
+</body>
+</html>

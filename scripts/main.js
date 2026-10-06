@@ -11,64 +11,77 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
   ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 /* ══════════════════════════════════════════════════════════════
-   HEADER — compact après 40px, chapitre courant, CTA contextuel
+   ANCIENS LIENS — l'ancien one-page (ecwaterloo.com/#etudiants…)
+   renvoie vers la page qui contient désormais la section
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  if (document.body.dataset.page !== 'accueil' || !location.hash) return;
+  const id = location.hash.slice(1);
+  const MOVED = {
+    aide: '/aide/', 'aide-contenu': '/aide/#epicerie', epicerie: '/aide/#epicerie', services: '/aide/#services', workflow: '/aide/#workflow', rdv: '/aide/#rdv',
+    etudiants: '/etudiants/', 'epicerie-etudiante': '/etudiants/', inscription: '/etudiants/#inscription',
+    aider: '/aider/', benevoles: '/aider/#benevoles', don: '/aider/#don', soutenir: '/aider/#don', lutins: '/aider/#lutins',
+    asbl: '/qui-sommes-nous/', histoire: '/qui-sommes-nous/#histoire', gazette: '/qui-sommes-nous/#gazette',
+  };
+  if (MOVED[id]) location.replace(MOVED[id]);
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   HEADER — compact au défilement, menu plein écran sur mobile
    ══════════════════════════════════════════════════════════════ */
 (function () {
   const hdr = document.getElementById('hdr');
   if (!hdr) return;
-  const nav = document.getElementById('hdrNav');
-  const ctas = [...document.querySelectorAll('[data-cta]')];
-
-  // Sous-section → chapitre
-  const MAP = [
-    ['aide', 'aide'], ['aide-contenu', 'aide'], ['workflow', 'aide'], ['rdv', 'aide'],
-    ['etudiants', 'etudiants'],
-    ['aider', 'aider'], ['benevoles', 'aider'], ['don', 'aider'], ['lutins', 'aider'],
-    ['asbl', 'asbl'], ['histoire', 'asbl'], ['temps-forts', 'asbl'], ['gazette', 'asbl'],
-    ['contact', 'contact'],
-  ].map(([id, ch]) => [document.getElementById(id), ch]).filter(([el]) => el);
-
-  const CTA = {
-    etudiants: ['#inscription', "Je m'inscris"],
-    aider: ['#don', 'Faire un don'],
-    default: ['#rdv', 'Prendre rendez-vous'],
-  };
 
   // Le header est fixe : une cale de sa hauteur (ouvert) évite que la page saute quand il se compacte
   const space = document.getElementById('hdrSpace');
-  const fit = () => { if (space && !hdr.classList.contains('is-compact')) space.style.height = hdr.offsetHeight + 'px'; };
+  const fit = () => {
+    if (hdr.classList.contains('is-compact')) return;
+    const h = hdr.offsetHeight;
+    if (space) space.style.height = h + 'px';
+    document.documentElement.style.setProperty('--hdr-h', h + 'px');
+  };
   fit();
   document.fonts?.ready.then(fit);
   window.addEventListener('resize', fit);
 
-  let current, compact, raf = 0;
+  let compact = false, raf = 0;
   const update = () => {
     raf = 0;
-    const sy = window.scrollY;
-    const isCompact = sy > 40;
-    if (isCompact !== compact) { compact = isCompact; hdr.classList.toggle('is-compact', compact); }
-
-    let ch = null;
-    for (const [el, c] of MAP) if (el.getBoundingClientRect().top <= 150) ch = c;
-    if (window.innerHeight + sy >= document.documentElement.scrollHeight - 4) ch = 'contact';
-    if (ch === current) return;
-    current = ch;
-    if (ch) hdr.dataset.chapter = ch; else delete hdr.dataset.chapter;
-
-    const [href, label] = CTA[ch] || CTA.default;
-    ctas.forEach(a => { a.href = href; a.textContent = label; });
-
-    // Mobile : le lien actif se recentre dans la barre (on ne défile QUE la barre)
-    if (nav && nav.scrollWidth > nav.clientWidth) {
-      const link = ch && nav.querySelector(`[data-nav="${ch}"]`);
-      const left = link ? link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2 : 0;
-      nav.scrollTo({ left, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-    }
+    const c = window.scrollY > 40;
+    if (c !== compact) { compact = c; hdr.classList.toggle('is-compact', c); }
   };
-  const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
   update();
+
+  // Menu burger
+  const menu = document.getElementById('menu');
+  const openBtn = document.getElementById('menuOpen');
+  const closeBtn = document.getElementById('menuClose');
+  if (!menu || !openBtn) return;
+  const site = document.querySelector('.site');
+  const setMenu = (open) => {
+    menu.hidden = !open;
+    openBtn.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (site) site.inert = open;
+    (open ? closeBtn : openBtn).focus();
+  };
+  openBtn.addEventListener('click', () => setMenu(true));
+  closeBtn.addEventListener('click', () => setMenu(false));
+  // Un lien vers une ancre de la page courante : on ferme le menu et on y va
+  menu.querySelectorAll('a[href]').forEach(a => a.addEventListener('click', () => { if (!menu.hidden) setMenu(false); }));
+  document.addEventListener('keydown', (e) => {
+    if (menu.hidden) return;
+    if (e.key === 'Escape') { setMenu(false); return; }
+    if (e.key !== 'Tab') return;
+    const items = [...menu.querySelectorAll('a[href], button')];
+    const first = items[0], last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+  // Repassé en grand écran avec le menu ouvert : on le referme
+  window.matchMedia('(min-width: 900px)').addEventListener?.('change', (e) => { if (e.matches && !menu.hidden) setMenu(false); });
 })();
 
 /* ══════════════════════════════════════════════════════════════
@@ -121,7 +134,7 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
   if (!items.length) return;
   const mq = window.matchMedia('(max-width: 719.98px)');
   const apply = () => items.forEach((li) => {
-    const h = li.querySelector('h4');
+    const h = li.querySelector('h3');
     if (mq.matches && !li.classList.contains('is-acc')) {
       const b = document.createElement('button');
       b.type = 'button';
@@ -170,7 +183,7 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
   $('.paint__line').forEach(el => add(el, 'path'));
   $('.foot__art img').forEach(el => add(el, 'burst'));
   $([
-    'section h2:not(.sr-only)', 'section h3:not(.sr-only)', 'section img[src*="perso"]', '.domains > li', '#workflow li', '.amount',
+    'section h1:not(.hero__title)', 'section h2:not(.sr-only)', 'section h3:not(.sr-only)', 'section img[src*="perso"]', '.domains > li', '#workflow li', '.amount',
     '.moment', '#etudiants li', '#lutins li', '.chips > .chip', '#inscription', '.tags > li',
   ].join(',')).forEach(el => add(el, 'up'));
 
