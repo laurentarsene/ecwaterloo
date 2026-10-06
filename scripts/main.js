@@ -133,6 +133,7 @@ function makeModal(overlay, { onOpen } = {}) {
   let lastFocus = null;
   const open = () => {
     lastFocus = document.activeElement;
+    overlay.inert = false;
     overlay.classList.add('is-open');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -140,12 +141,23 @@ function makeModal(overlay, { onOpen } = {}) {
     setTimeout(() => overlay.querySelector('.sform__step.is-active input, .sform__step.is-active button, .sform__success:not([hidden]) button')?.focus(), 60);
   };
   const close = () => {
+    overlay.inert = true;
     overlay.classList.remove('is-open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     lastFocus?.focus?.();
   };
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('is-open')) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('is-open')) return;
+    if (e.key === 'Escape') { close(); return; }
+    // Le focus reste dans la modale (Tab / Maj+Tab bouclent)
+    if (e.key !== 'Tab') return;
+    const items = [...overlay.querySelectorAll('button, input, a[href]')].filter(el => !el.disabled && el.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0], last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
   return { open, close };
 }
 
@@ -560,6 +572,7 @@ function makeModal(overlay, { onOpen } = {}) {
     const url = e.currentTarget.dataset.pdf;
     if (titleEl) titleEl.textContent = e.currentTarget.dataset.title || '';
     if (dlEl) dlEl.href = url;
+    reader.inert = false;
     reader.classList.add('is-open');
     reader.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -586,6 +599,7 @@ function makeModal(overlay, { onOpen } = {}) {
 
   const closeReader = () => {
     sessionToken++;
+    reader.inert = true;
     reader.classList.remove('is-open');
     reader.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
@@ -600,6 +614,13 @@ function makeModal(overlay, { onOpen } = {}) {
 
   document.addEventListener('keydown', (e) => {
     if (!reader.classList.contains('is-open')) return;
+    if (e.key === 'Tab') {
+      const items = [...reader.querySelectorAll('button, a[href]')].filter(el => !el.disabled && el.offsetParent !== null);
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      return;
+    }
     if (e.key === 'Escape') closeReader();
     else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); flip?.flipNext(); }
     else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); flip?.flipPrev(); }

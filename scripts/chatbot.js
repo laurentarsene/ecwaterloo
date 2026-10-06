@@ -34,7 +34,7 @@
       <div class="bot__log" aria-live="polite"></div>
       <div class="bot__foot">
         <div class="bot__sugg"></div>
-        <p>Pas trouvé&nbsp;? Appelez le <a href="tel:+32465927366">0465 92 73 66</a></p>
+        <p>Pas trouvé&nbsp;? Appelez le <a href="tel:+32465927366">0465&nbsp;92&nbsp;73&nbsp;66</a></p>
       </div>
     </div>
     <div class="bot__teaser" hidden>
