@@ -1,165 +1,179 @@
 /* ══════════════════════════════════════════════════════════════
    ECW — chatbot.js
-   Faux chatbot scénarisé : questions pré-écrites, réponses fixes.
-   Aucune IA, aucun réseau — tout est dans QA ci-dessous.
+   Faux chatbot FAQ : un personnage flottant, des questions
+   pré-écrites, des réponses fixes. Aucune IA, aucun réseau.
    ══════════════════════════════════════════════════════════════ */
 
 (function () {
-  const TEL = '<a href="tel:+32465927366">0465 92 73 66</a>';
-  const MAIL = '<a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a>';
-
-  const QA = {
-    aide: {
-      q: "Comment obtenir de l'aide ?",
-      a: `C'est simple : vous <a href="#rdv" data-close>prenez rendez-vous</a> ou vous appelez le ${TEL}. La première visite, c'est un café et une conversation — rien à préparer, rien à apporter. Ensuite nous regardons avec vous par où commencer : alimentation, logement, emploi, santé, papiers ou budget.`,
-      follow: ['gratuit', 'ou', 'langue'],
-    },
-    gratuit: {
-      q: "C'est vraiment gratuit ?",
-      a: `Oui, tout est gratuit, confidentiel et sans jugement. L'association est 100% bénévole depuis 2014 — personne n'est payé, et rien ne vous sera demandé en échange.`,
-      follow: ['aide', 'qui'],
-    },
-    etudiant: {
-      q: "L'épicerie étudiante, ça marche comment ?",
-      a: `Chaque <strong>premier jeudi du mois</strong>, l'épicerie est ouverte aux étudiant·es pour <strong>5€</strong> (à apporter le jour J, avec un sac). L'inscription en ligne est obligatoire — elle prend 30 secondes dans la <a href="#etudiants" data-close>section Étudiants</a>, et tu reçois l'adresse par email.`,
-      follow: ['ou', 'aide'],
-    },
-    benevole: {
-      q: "Comment devenir bénévole ?",
-      a: `Chacun·e apporte ce qu'il a : une heure par semaine, une voiture, une langue, deux bras. Nous cherchons du renfort en logistique, accompagnement, cuisine, transport, administratif, traduction, potager et événements. Appelez le ${TEL} ou écrivez à ${MAIL} — voir <a href="#benevoles" data-close>Donner du temps</a>.`,
-      follow: ['lutin', 'don'],
-    },
-    don: {
-      q: "Comment faire un don ?",
-      a: `Dans la <a href="#soutenir" data-close>section Faire un don</a> : 10€, 25€, 50€, 100€ ou un montant libre, par paiement sécurisé Stripe. Chaque euro arrive à destination — pas de salaire, pas de frais cachés. Les dons en nature (produits, fournitures) sont bienvenus aussi : passez à l'épicerie ou écrivez-nous.`,
-      follow: ['benevole', 'lutin'],
-    },
-    lutin: {
-      q: "C'est quoi, les lutins de Noël ?",
-      a: `Chaque décembre, vous pouvez offrir un cadeau de Noël à un enfant de l'épicerie : vous vous inscrivez, vous recevez la lettre d'un enfant au Père Noël, vous déposez son cadeau — nous le lui remettons. Tout se passe dans la <a href="#lutins" data-close>section Devenez lutin·e</a>.`,
-      follow: ['don', 'benevole'],
-    },
-    ou: {
-      q: "Où êtes-vous ? Quels horaires ?",
-      a: `<strong>Rue de la Station 139A, 1410 Waterloo</strong> — la carte est en <a href="#contact" data-close>bas de page</a>. Les permanences sont sur rendez-vous, du lundi au vendredi : appelez le ${TEL} ou <a href="#rdv" data-close>choisissez un créneau en ligne</a>.`,
-      follow: ['aide', 'etudiant'],
-    },
-    langue: {
-      q: "Je ne parle pas bien français…",
-      a: `Pas de souci ! L'essentiel du site existe <a href="bienvenue.html">en 14 langues</a> (English, Nederlands, Українська, العربية, فارسی…). Et si vous venez, amenez si possible un proche qui peut traduire — sinon nous trouverons un moyen ensemble.`,
-      follow: ['aide', 'ou'],
-    },
-    gazette: {
-      q: "C'est quoi, la gazette ?",
-      a: `Notre journal papier, écrit par l'équipe deux fois par an : portraits, chroniques et vraies histoires du lieu. Vous pouvez la <a href="#gazette" data-close>feuilleter en ligne</a> ou télécharger le PDF.`,
-      follow: ['qui', 'benevole'],
-    },
-    qui: {
-      q: "Qui êtes-vous ?",
-      a: `Une ASBL de quartier née en 2014 à Waterloo : une vingtaine de bénévoles, zéro salarié, plus de mille personnes accompagnées. D'abord une épicerie. Puis nous avons écouté, et ajouté le logement, les papiers, l'emploi, la santé. Toute <a href="#asbl" data-close>notre histoire est ici</a>.`,
-      follow: ['aide', 'don'],
-    },
-  };
-
-  const PRIMARY = ['aide', 'etudiant', 'benevole', 'don', 'ou', 'langue'];
+  // [question, réponse, lien d'action éventuel [libellé, href]]
+  const FAQ = [
+    ['Combien ça coûte ?', "Le premier rendez-vous et l'accompagnement sont gratuits. À l'épicerie, vous payez une contribution solidaire, à prix réduit, pour les produits que vous choisissez."],
+    ["Comment accéder à l'épicerie ?", "Tout commence par un premier rendez-vous, pour faire le point sur votre situation. Une carte d'accès vous est ensuite remise.", ['Prendre rendez-vous', '#rdv']],
+    ['Que dois-je apporter ?', 'Rien pour le premier rendez-vous. Vous venez, et nous discutons.'],
+    ['Est-ce confidentiel ?', "Oui. Ce que vous nous confiez reste entre vous et l'équipe."],
+    ['Je ne parle pas bien français', "Vous pouvez venir quand même. Le site existe aussi en anglais, ukrainien, arabe et d'autres langues.", ['Autres langues', 'bienvenue.html']],
+    ['Je suis étudiant·e', "L'épicerie est réservée aux étudiant·es le premier jeudi du mois. Tu t'inscris en ligne et tu viens avec 5€ et un sac.", ["M'inscrire", '#inscription']],
+    ['Où êtes-vous ?', 'Rue de la Station 139A, 1410 Waterloo. Les permanences se font sur rendez-vous.', ['Itinéraire', 'https://www.google.com/maps/dir/?api=1&destination=Rue+de+la+Station+139A,+1410+Waterloo']],
+    ['Devenir bénévole', 'Avec plaisir ! Une heure par semaine suffit. Appelez-nous ou écrivez-nous, et passez faire connaissance.', ['Écrire un email', 'mailto:infos.ecwaterloo@gmail.com?subject=Devenir%20b%C3%A9n%C3%A9vole']],
+    ['Faire un don', 'Chaque euro sert directement aux personnes accompagnées. Le paiement est sécurisé par Stripe.', ['Voir les montants', '#don']],
+  ];
+  const GREETING = 'Bonjour ! Je réponds aux questions qui nous sont posées le plus souvent. Choisissez-en une ci-dessous.';
+  const EASE = 'cubic-bezier(.16,1,.3,1)';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mq = window.matchMedia('(max-width: 719.98px)');
 
   // ── DOM ──────────────────────────────────────────────────────
   const root = document.createElement('div');
-  root.className = 'chat';
+  root.className = 'bot';
   root.innerHTML = `
-    <button type="button" class="chat__fab" id="chatFab" aria-expanded="false" aria-controls="chatPanel" aria-label="Questions fréquentes">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
-      <span>Questions</span>
+    <div class="bot__win" role="dialog" aria-label="Questions fréquentes" tabindex="-1" hidden>
+      <div class="bot__head">
+        <div><b>Une question&nbsp;?</b><span>Les réponses aux questions les plus fréquentes</span></div>
+        <button type="button" class="bot__close" aria-label="Fermer">×</button>
+      </div>
+      <div class="bot__log" aria-live="polite"></div>
+      <div class="bot__foot">
+        <div class="bot__sugg"></div>
+        <p>Pas trouvé&nbsp;? Appelez le <a href="tel:+32465927366">0465 92 73 66</a></p>
+      </div>
+    </div>
+    <div class="bot__teaser" hidden>
+      <button type="button" class="bot__tease">Une question&nbsp;? Je peux vous aider.</button>
+      <button type="button" class="bot__x" aria-label="Masquer">×</button>
+    </div>
+    <button type="button" class="bot__btn" aria-label="Ouvrir les questions fréquentes" aria-expanded="false">
+      <img class="bot__idle" src="assets/images/perso/bot-idle.webp" width="293" height="400" alt="">
+      <img class="bot__hello" src="assets/images/perso/bot-hello.webp" width="293" height="400" alt="">
     </button>
-    <section class="chat__panel" id="chatPanel" role="dialog" aria-label="Questions fréquentes" hidden>
-      <header class="chat__head">
-        <div>
-          <p class="chat__title">Espace Convivial de Waterloo</p>
-          <p class="chat__sub">Réponses automatiques · pour un humain&nbsp;: <a href="tel:+32465927366">0465 92 73 66</a></p>
-        </div>
-        <button type="button" class="chat__close" id="chatClose" aria-label="Fermer">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </header>
-      <div class="chat__body" id="chatBody" aria-live="polite"></div>
-    </section>`;
+    <button type="button" class="bot__stand" aria-label="Fermer les questions fréquentes" aria-expanded="true">
+      <img src="assets/images/perso/bot-open.webp" width="324" height="600" alt="" loading="lazy">
+    </button>`;
   document.body.appendChild(root);
 
-  const fab = root.querySelector('#chatFab');
-  const panel = root.querySelector('#chatPanel');
-  const body = root.querySelector('#chatBody');
-  const closeBtn = root.querySelector('#chatClose');
+  const win = root.querySelector('.bot__win');
+  const log = root.querySelector('.bot__log');
+  const sugg = root.querySelector('.bot__sugg');
+  const teaser = root.querySelector('.bot__teaser');
+  const btn = root.querySelector('.bot__btn');
+  const stand = root.querySelector('.bot__stand');
 
-  const scrollDown = () => { body.scrollTop = body.scrollHeight; };
+  // ── État ─────────────────────────────────────────────────────
+  let open = false, asked = [], showAll = false, typing = false, timer = 0, teaseOff = 0, lastFocus = null;
 
-  const bubble = (cls, html) => {
-    const el = document.createElement('div');
-    el.className = 'chat__msg ' + cls;
-    el.innerHTML = html;
-    body.appendChild(el);
-    scrollDown();
-    return el;
-  };
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text) n.textContent = text; return n; };
 
-  const chips = (ids, label) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'chat__chips';
-    if (label) {
-      const l = document.createElement('p');
-      l.className = 'chat__chips-label';
-      l.textContent = label;
-      wrap.appendChild(l);
+  function bubble(text, me, link) {
+    const row = el('div', 'msg' + (me ? ' msg--me' : ''));
+    const b = el('div', 'msg__bubble');
+    b.appendChild(el('span', '', text));
+    if (link) {
+      const [label, href] = link;
+      const a = el('a', '', label);
+      a.href = href;
+      if (/^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
+      if (href[0] === '#') a.addEventListener('click', () => setOpen(false, { keepFocus: true }));
+      b.appendChild(a);
     }
-    ids.forEach(id => {
-      if (!QA[id]) return;
-      const b = document.createElement('button');
+    row.appendChild(b);
+    log.appendChild(row);
+    log.scrollTo({ top: log.scrollHeight, behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  function renderSugg() {
+    sugg.innerHTML = '';
+    let list = FAQ.map((f, i) => ({ q: f[0], i })).filter(x => !asked.includes(x.i)).map(x => ({ q: x.q, go: () => ask(x.i) }));
+    if (!showAll && list.length > 4) list = [...list.slice(0, 4), { q: 'Autres questions…', go: () => { showAll = true; renderSugg(); sugg.querySelector('button')?.focus(); } }];
+    if (!list.length) list = [{ q: 'Revoir les questions', go: () => { asked = []; showAll = true; renderSugg(); } }];
+    list.forEach(({ q, go }) => {
+      const b = el('button', '', q);
       b.type = 'button';
-      b.textContent = QA[id].q;
-      b.addEventListener('click', () => ask(id));
-      wrap.appendChild(b);
+      b.disabled = typing;
+      b.addEventListener('click', go);
+      sugg.appendChild(b);
     });
-    body.appendChild(wrap);
-    scrollDown();
-    return wrap;
-  };
-
-  const clearChips = () => body.querySelectorAll('.chat__chips').forEach(c => c.remove());
-
-  function ask(id) {
-    const item = QA[id];
-    clearChips();
-    bubble('chat__msg--user', item.q);
-    const typing = bubble('chat__msg--bot chat__msg--typing', '<span></span><span></span><span></span>');
-    const reveal = () => {
-      typing.remove();
-      const msg = bubble('chat__msg--bot', item.a);
-      msg.querySelectorAll('a[data-close]').forEach(a => a.addEventListener('click', close));
-      chips(item.follow, 'Et aussi :');
-    };
-    reduced ? reveal() : setTimeout(reveal, 650);
   }
 
-  function greet() {
-    if (body.childElementCount) return;
-    bubble('chat__msg--bot', 'Bonjour ! Je suis le petit guide du site — je réponds instantanément aux questions les plus fréquentes. Choisissez la vôtre :');
-    chips(PRIMARY.concat(['lutin', 'gazette', 'qui']));
+  function ask(i) {
+    if (typing) return;
+    const [q, a, link] = FAQ[i];
+    bubble(q, true);
+    asked.push(i);
+    typing = true;
+    renderSugg();
+    const dots = el('div', 'msg');
+    dots.appendChild(el('div', 'msg__typing', '•••'));
+    dots.setAttribute('aria-hidden', 'true');
+    log.appendChild(dots);
+    log.scrollTo({ top: log.scrollHeight, behavior: reduced ? 'auto' : 'smooth' });
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      dots.remove();
+      typing = false;
+      bubble(a, false, link);
+      renderSugg();
+      sugg.querySelector('button')?.focus({ preventScroll: true });
+    }, reduced ? 0 : Math.min(1300, 450 + a.length * 6));
   }
 
-  const open = () => {
-    panel.hidden = false;
-    fab.setAttribute('aria-expanded', 'true');
-    root.classList.add('is-open');
-    greet();
-    scrollDown();
-  };
-  const close = () => {
-    panel.hidden = true;
-    fab.setAttribute('aria-expanded', 'false');
-    root.classList.remove('is-open');
-  };
+  // ── Ouverture / fermeture ────────────────────────────────────
+  function hideTeaser() { teaser.hidden = true; clearTimeout(teaseOff); }
 
-  fab.addEventListener('click', () => (panel.hidden ? open() : close()));
-  closeBtn.addEventListener('click', close);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) close(); });
+  function setOpen(v, { keepFocus = false } = {}) {
+    if (v === open) return;
+    open = v;
+    hideTeaser();
+    root.classList.toggle('is-open', open);
+    win.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Fermer les questions fréquentes' : 'Ouvrir les questions fréquentes');
+    if (open) {
+      lastFocus = document.activeElement;
+      if (!reduced) {
+        win.style.transformOrigin = '100% 100%';
+        win.animate([{ opacity: 0, transform: 'translateY(10px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 450, easing: EASE });
+        if (!mq.matches) stand.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: EASE });
+      }
+      (sugg.querySelector('button') || win).focus({ preventScroll: true });
+    } else if (!keepFocus) {
+      (lastFocus && document.contains(lastFocus) ? lastFocus : btn).focus({ preventScroll: true });
+    }
+  }
+
+  btn.addEventListener('click', () => setOpen(!open));
+  stand.addEventListener('click', () => setOpen(false));
+  root.querySelector('.bot__close').addEventListener('click', () => setOpen(false));
+  root.querySelector('.bot__tease').addEventListener('click', () => setOpen(true));
+  root.querySelector('.bot__x').addEventListener('click', hideTeaser);
+  document.querySelectorAll('[data-open-chat]').forEach(b => b.addEventListener('click', (e) => { e.preventDefault(); setOpen(true); }));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) setOpen(false); });
+
+  // Mobile : le personnage reste sous la fenêtre (pas de personnage en pied)
+  const applyMq = () => root.classList.toggle('is-mobile', mq.matches);
+  mq.addEventListener ? mq.addEventListener('change', applyMq) : mq.addListener(applyMq);
+  applyMq();
+
+  // Le personnage rapetisse quand on descend, reprend sa taille quand on remonte
+  let lastY = window.scrollY, small = false;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY, dy = y - lastY;
+    if (Math.abs(dy) <= 6) return;
+    const s = dy > 0 && y > 80;
+    if (s !== small) { small = s; root.classList.toggle('is-small', small); }
+    lastY = y;
+  }, { passive: true });
+
+  // Teaser : une seule fois par visite, 6s après le chargement, 8s à l'écran
+  let seen = false;
+  try { seen = sessionStorage.getItem('ecw-bot-teaser') === '1'; } catch (_) {}
+  if (!seen) {
+    setTimeout(() => {
+      if (open) return;
+      teaser.hidden = false;
+      try { sessionStorage.setItem('ecw-bot-teaser', '1'); } catch (_) {}
+      teaseOff = setTimeout(() => { teaser.hidden = true; }, 8000);
+    }, 6000);
+  }
+
+  bubble(GREETING, false);
+  renderSugg();
 })();

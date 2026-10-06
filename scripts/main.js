@@ -1,157 +1,161 @@
 /* ══════════════════════════════════════════════════════════════
    ECW — main.js
+   Header (compact + scroll-spy + CTA contextuel), animations,
+   inscription étudiante, lutins, lecteur de gazette.
    ══════════════════════════════════════════════════════════════ */
 
-document.body.classList.remove('no-js');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EASE = 'cubic-bezier(.16,1,.3,1)';
+// Un seul client Supabase pour toute la page (inscriptions étudiantes + lutins)
+const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefined')
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 /* ══════════════════════════════════════════════════════════════
-   NAV — mobile + lien actif
+   HEADER — compact après 40px, chapitre courant, CTA contextuel
    ══════════════════════════════════════════════════════════════ */
 (function () {
-  const toggle = document.getElementById('navToggle');
-  const mobileNav = document.getElementById('mobileNav');
-  const mobileClose = document.getElementById('mobileNavClose');
+  const hdr = document.getElementById('hdr');
+  if (!hdr) return;
+  const nav = document.getElementById('hdrNav');
+  const ctas = [...document.querySelectorAll('[data-cta]')];
 
-  const openMobile = () => {
-    if (!mobileNav) return;
-    mobileNav.classList.add('is-open');
-    mobileNav.setAttribute('aria-hidden', 'false');
-    toggle?.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-    mobileClose?.focus();
-  };
-  const closeMobile = () => {
-    if (!mobileNav) return;
-    mobileNav.classList.remove('is-open');
-    mobileNav.setAttribute('aria-hidden', 'true');
-    toggle?.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-    toggle?.focus();
-  };
-  toggle?.addEventListener('click', openMobile);
-  mobileClose?.addEventListener('click', closeMobile);
-  mobileNav?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobile));
-  mobileNav?.addEventListener('click', (e) => { if (e.target === mobileNav) closeMobile(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileNav?.classList.contains('is-open')) closeMobile(); });
+  // Sous-section → chapitre
+  const MAP = [
+    ['aide', 'aide'], ['aide-contenu', 'aide'], ['workflow', 'aide'], ['rdv', 'aide'],
+    ['etudiants', 'etudiants'],
+    ['aider', 'aider'], ['benevoles', 'aider'], ['don', 'aider'], ['lutins', 'aider'],
+    ['asbl', 'asbl'], ['histoire', 'asbl'], ['temps-forts', 'asbl'], ['gazette', 'asbl'],
+    ['contact', 'contact'],
+  ].map(([id, ch]) => [document.getElementById(id), ch]).filter(([el]) => el);
 
-  // Lien actif selon le chapitre visible (nav desktop + barre de chapitres mobile)
-  const links = [...document.querySelectorAll('[data-nav-link]')];
-  const targets = links.map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
-  let lastActiveId = null;
+  const CTA = {
+    etudiants: ['#inscription', "Je m'inscris"],
+    aider: ['#don', 'Faire un don'],
+    default: ['#rdv', 'Prendre rendez-vous'],
+  };
+
+  let current, compact, raf = 0;
   const update = () => {
-    const y = window.scrollY + window.innerHeight * 0.35;
-    let active = null;
-    targets.forEach(t => { if (t.getBoundingClientRect().top + window.scrollY <= y) active = t; });
-    links.forEach(l => l.classList.toggle('is-active', active && l.getAttribute('href') === '#' + active.id));
-    // La puce du chapitre courant se recentre dans la barre mobile.
-    // On ne défile QUE la barre (jamais scrollIntoView : il ferait
-    // défiler la page entière sur mobile, en plein geste du doigt).
-    const id = active ? active.id : null;
-    if (id !== lastActiveId) {
-      lastActiveId = id;
-      const bar = document.querySelector('.nav__chapters');
-      const chip = bar?.querySelector('a.is-active');
-      if (bar && chip && bar.scrollWidth > bar.clientWidth) {
-        const left = chip.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft;
-        bar.scrollTo({ left: left - (bar.clientWidth - chip.offsetWidth) / 2, behavior: 'smooth' });
-      }
+    raf = 0;
+    const sy = window.scrollY;
+    const isCompact = sy > 40;
+    if (isCompact !== compact) { compact = isCompact; hdr.classList.toggle('is-compact', compact); }
+
+    let ch = null;
+    for (const [el, c] of MAP) if (el.getBoundingClientRect().top <= 150) ch = c;
+    if (window.innerHeight + sy >= document.documentElement.scrollHeight - 4) ch = 'contact';
+    if (ch === current) return;
+    current = ch;
+    if (ch) hdr.dataset.chapter = ch; else delete hdr.dataset.chapter;
+
+    const [href, label] = CTA[ch] || CTA.default;
+    ctas.forEach(a => { a.href = href; a.textContent = label; });
+
+    // Mobile : le lien actif se recentre dans la barre (on ne défile QUE la barre)
+    if (nav && nav.scrollWidth > nav.clientWidth) {
+      const link = ch && nav.querySelector(`[data-nav="${ch}"]`);
+      const left = link ? link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2 : 0;
+      nav.scrollTo({ left, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     }
   };
-  window.addEventListener('scroll', update, { passive: true });
+  const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
   update();
+})();
 
-  // État "scrollé" : la nav se densifie et prend une ombre
-  const nav = document.getElementById('nav');
-  const updateNav = () => nav?.classList.toggle('is-scrolled', window.scrollY > 12);
-  window.addEventListener('scroll', updateNav, { passive: true });
-  updateNav();
+/* ══════════════════════════════════════════════════════════════
+   ANIMATIONS — légères, lentes, une seule courbe
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  if (prefersReducedMotion || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+  const $ = (q, r = document) => [...r.querySelectorAll(q)];
 
-  // Mobile : le calendrier de rendez-vous se déplie à la demande
-  const rdvToggle = document.getElementById('rdvToggle');
-  const rdvWrap = document.getElementById('rdvWrap');
-  rdvToggle?.addEventListener('click', () => {
-    rdvWrap?.classList.remove('is-collapsed');
-    rdvToggle.hidden = true;
-  });
-
-  // Le calendrier apparaît en fondu une fois chargé
-  const rdvFrame = document.querySelector('.rdv__frame');
-  rdvFrame?.addEventListener('load', () => rdvFrame.classList.add('is-loaded'));
-
-  // Sélecteur de langue : dropdown + liens vers le site entier traduit (translate.goog)
-  const dd = document.getElementById('langDd');
-  const ddBtn = document.getElementById('langDdBtn');
-  const ddMenu = document.getElementById('langDdMenu');
-  if (dd && ddBtn && ddMenu) {
-    const host = location.hostname;
-    if (host && host !== 'localhost' && !host.startsWith('127.') && !host.startsWith('192.168.')) {
-      const gt = host.replace(/-/g, '--').replace(/\./g, '-') + '.translate.goog';
-      ddMenu.querySelectorAll('[data-lang]').forEach(a => {
-        const tl = a.dataset.lang;
-        a.href = 'https://' + gt + '/?_x_tr_sl=fr&_x_tr_tl=' + tl + '&_x_tr_hl=' + tl;
-      });
+  // Héro : titre puis colonne de droite, décalés de 80ms ; le hamac descend doucement
+  const hero = document.getElementById('hero');
+  if (hero) {
+    const parts = [hero.querySelector('.hero__title'), ...$('.hero__side > *', hero)].filter(Boolean);
+    parts.forEach((el, i) => el.animate(
+      [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }],
+      { duration: 1100, delay: 60 + i * 80, easing: EASE, fill: 'backwards' }));
+    const ham = hero.querySelector('.hero__art');
+    if (ham) {
+      ham.style.transformOrigin = '50% 0';
+      ham.animate([{ opacity: 0, transform: 'translateY(-12px) scale(.985)' }, { opacity: 1, transform: 'none' }],
+        { duration: 1400, delay: 300, easing: EASE, fill: 'backwards' });
     }
-    const close = () => { dd.classList.remove('is-open'); ddMenu.hidden = true; ddBtn.setAttribute('aria-expanded', 'false'); };
-    ddBtn.addEventListener('click', () => {
-      const open = ddMenu.hidden;
-      ddMenu.hidden = !open;
-      dd.classList.toggle('is-open', open);
-      ddBtn.setAttribute('aria-expanded', String(open));
-    });
-    document.addEventListener('click', (e) => { if (!dd.contains(e.target)) close(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   }
+
+  // Révélation au scroll
+  const targets = new Map();
+  const add = (el, kind) => { if (el && !targets.has(el) && !(hero && hero.contains(el))) targets.set(el, kind); };
+  $('.svc-art').forEach(el => targets.set(el, 'none'));             // pas d'animation sur les arches
+  $('.paint img').forEach(el => add(el, 'up'));
+  $('.paint__line').forEach(el => add(el, 'path'));
+  $('.foot__art img').forEach(el => add(el, 'burst'));
+  $([
+    'section h2:not(.sr-only)', 'section h3:not(.sr-only)', 'section img[src*="perso"]', '.domains > li', '#workflow li', '.amount',
+    '.moment', '#etudiants li', '#lutins li', '.chips > .chip', '#inscription', '.tags > li',
+  ].join(',')).forEach(el => add(el, 'up'));
+
+  const rank = (el) => {
+    const p = el.parentElement; if (!p) return 0;
+    let i = 0;
+    for (const c of p.children) { if (c === el) break; if (targets.has(c)) i++; }
+    return Math.min(i, 6);
+  };
+  targets.forEach((k, el) => { if (k !== 'none') el.style.opacity = '0'; });
+
+  const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    const el = en.target, k = targets.get(el);
+    io.unobserve(el);
+    if (k === 'path') {
+      el.style.transformOrigin = '0 50%';
+      el.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+        { duration: 2000, delay: 400, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'backwards' });
+    } else if (k === 'burst') {
+      el.animate([{ opacity: 0, transform: 'scale(.98)' }, { opacity: 1, transform: 'none' }],
+        { duration: 1400, easing: EASE, fill: 'backwards' });
+    } else {
+      el.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 1100, delay: rank(el) * 60, easing: EASE, fill: 'backwards' });
+    }
+    el.style.opacity = '';
+  }), { rootMargin: '0px 0px -6% 0px', threshold: 0.08 });
+  targets.forEach((k, el) => { if (k !== 'none') io.observe(el); });
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   APPARITION + COMPTEURS
+   Petit utilitaire de modale : ouverture, fermeture, focus rendu
    ══════════════════════════════════════════════════════════════ */
-(function () {
-  const counters = [...document.querySelectorAll('[data-count]')];
-  const finalize = (el) => { el.innerHTML = el.dataset.count + (el.dataset.suffix || ''); };
-
-  if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-    counters.forEach(finalize);
-    return;
-  }
-
-  // Sections : léger fondu à l'entrée
-  const targets = document.querySelectorAll('.chapter, .section-head, .door, .service, .step, .don, .temps-item, .figure, .etu__card, .gaz__cover');
-  targets.forEach(el => el.classList.add('reveal'));
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      e.target.classList.add('is-in');
-      io.unobserve(e.target);
-      // Une fois entré, on retire .reveal pour rendre leurs transitions hover aux cartes
-      e.target.addEventListener('transitionend', () => e.target.classList.remove('reveal', 'is-in'), { once: true });
-    });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  targets.forEach(el => io.observe(el));
-
-  // Compteurs
-  const cio = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      cio.unobserve(e.target);
-      const el = e.target, target = parseInt(el.dataset.count, 10), suffix = el.dataset.suffix || '';
-      const t0 = performance.now(), dur = 1200;
-      const tick = (t) => {
-        const p = Math.min(1, (t - t0) / dur), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
-        el.innerHTML = v + suffix;
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    });
-  }, { rootMargin: '0px 0px -10% 0px' });
-  counters.forEach(el => cio.observe(el));
-})();
+function makeModal(overlay, { onOpen } = {}) {
+  let lastFocus = null;
+  const open = () => {
+    lastFocus = document.activeElement;
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    onOpen?.();
+    setTimeout(() => overlay.querySelector('.sform__step.is-active input, .sform__step.is-active button, .sform__success:not([hidden]) button')?.focus(), 60);
+  };
+  const close = () => {
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    lastFocus?.focus?.();
+  };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('is-open')) close(); });
+  return { open, close };
+}
 
 /* ══════════════════════════════════════════════════════════════
-   MODAL ÉTUDIANTS — Supabase
+   ÉPICERIE ÉTUDIANTE — date, ouverture des inscriptions, modale
    ══════════════════════════════════════════════════════════════ */
 (function () {
+  const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+
   // Jour de l'épicerie pour le mois de `d` : exception éventuelle (config.js), sinon le 1er jeudi
   function epicerieDay(d, firstThuDay) {
     const exceptions = typeof EPICERIE_DATES_EXCEPTIONNELLES !== 'undefined' ? EPICERIE_DATES_EXCEPTIONNELLES : {};
@@ -163,164 +167,107 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     today.setHours(0, 0, 0, 0);
     for (let offset = 0; offset <= 2; offset++) {
       const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-      const dow = d.getDay();
-      const daysToThu = (4 - dow + 7) % 7;
+      const daysToThu = (4 - d.getDay() + 7) % 7;
       const firstThu = new Date(d.getFullYear(), d.getMonth(), epicerieDay(d, 1 + daysToThu));
       if (firstThu > today) return firstThu;
     }
   }
+  // Format enregistré en base (admin + rappels s'appuient dessus) : ne pas changer
   function formatDateFr(date) {
-    const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-    return `Jeudi ${date.getDate()} ${mois[date.getMonth()]} ${date.getFullYear()}`;
+    return `Jeudi ${date.getDate()} ${MOIS[date.getMonth()]} ${date.getFullYear()}`;
   }
+  const formatShort = (d) => `${JOURS[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]}`;
 
   const nextThursday = getNextFirstThursday();
   const nextThursdayStr = formatDateFr(nextThursday);
 
-  const modalDateEl = document.getElementById('nextThursdayDisplay');
-  if (modalDateEl) modalDateEl.textContent = nextThursdayStr;
-  const cardDateEl = document.getElementById('nextThursdayCard');
-  if (cardDateEl) cardDateEl.textContent = nextThursdayStr;
+  const setText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+  setText('nextThursdayCard', formatShort(nextThursday));
+  setText('nextThursdayDisplay', nextThursdayStr);
   document.querySelectorAll('.thursday-ref').forEach(el => el.textContent = nextThursdayStr);
   const hiddenDate = document.getElementById('hiddenDateRdv');
   if (hiddenDate) hiddenDate.value = nextThursdayStr;
 
-  if (typeof supabase === 'undefined' || typeof SUPABASE_URL === 'undefined') return;
+  const overlay = document.getElementById('studentModal');
+  const openBtn = document.getElementById('openStudentForm');
+  const form = document.getElementById('studentForm');
+  if (!overlay || !openBtn || !form) return;
+  if (!sb) return;
 
-  const { createClient } = supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  async function initButtonState() {
+  // Les inscriptions ouvrent X jours avant (réglage de l'admin) ; avant, compte à rebours
+  (async function initButtonState() {
     let joursMax = 3;
     try {
       const { data } = await sb.from('settings').select('value').eq('key', 'jours_inscription_max').single();
       if (data) joursMax = parseInt(data.value, 10);
     } catch (_) {}
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const daysUntil = Math.round((nextThursday - today) / 86400000);
-    const daysUntilOpen = daysUntil - joursMax;
+    const openDate = new Date(nextThursday);
+    openDate.setDate(openDate.getDate() - joursMax); // ouverture à minuit
+    if (Date.now() >= openDate.getTime()) return;
 
-    const btn = document.getElementById('openStudentForm');
-    const countdown = document.getElementById('studentCountdown');
-    if (!btn) return;
-
-    const lblEl = document.getElementById('studentCountLbl');
-    const dateEl = document.getElementById('studentCountDate');
-    const timerEl = document.getElementById('studentTimer');
-    const openDate = new Date(nextThursday); openDate.setDate(openDate.getDate() - joursMax); // ouverture à minuit
-    const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
-    const fmtLong = (d) => `${jours[d.getDay()]} ${formatDateFr(d).replace(/^Jeudi /, '')}`;
-
-    const runTimer = (target, onDone) => {
-      if (!timerEl) return;
-      const cells = {};
-      timerEl.querySelectorAll('[data-unit]').forEach(b => { cells[b.dataset.unit] = b; });
-      const pad = (n) => String(n).padStart(2, '0');
-      const tick = () => {
-        let ms = target - Date.now();
-        if (ms <= 0) { onDone?.(); return; }
-        const d = Math.floor(ms / 86400000); ms -= d * 86400000;
-        const h = Math.floor(ms / 3600000); ms -= h * 3600000;
-        const m = Math.floor(ms / 60000); ms -= m * 60000;
-        const sec = Math.floor(ms / 1000);
-        cells.d.textContent = pad(d); cells.h.textContent = pad(h); cells.m.textContent = pad(m); cells.s.textContent = pad(sec);
-        setTimeout(tick, 1000);
-      };
-      tick();
+    const info = document.getElementById('studentOpen');
+    openBtn.disabled = true;
+    openBtn.textContent = 'Inscriptions pas encore ouvertes';
+    if (!info) return;
+    info.hidden = false;
+    const pad = (n) => String(n).padStart(2, '0');
+    const tick = () => {
+      let ms = openDate.getTime() - Date.now();
+      if (ms <= 0) { location.reload(); return; }
+      const d = Math.floor(ms / 86400000); ms -= d * 86400000;
+      const h = Math.floor(ms / 3600000); ms -= h * 3600000;
+      const m = Math.floor(ms / 60000); ms -= m * 60000;
+      const s = Math.floor(ms / 1000);
+      info.innerHTML = `Les inscriptions ouvrent le <b>${formatShort(openDate)}</b> à minuit, dans ${d}&nbsp;j ${pad(h)}&nbsp;h ${pad(m)}&nbsp;min ${pad(s)}&nbsp;s.`;
+      setTimeout(tick, 1000);
     };
+    tick();
+  })();
 
-    if (daysUntilOpen > 0) {
-      btn.disabled = true;
-      btn.classList.add('btn--disabled');
-      btn.textContent = 'Inscriptions pas encore ouvertes';
-      if (countdown) {
-        lblEl.textContent = 'Ouverture des inscriptions dans';
-        dateEl.textContent = `Le ${fmtLong(openDate)} à minuit`;
-        countdown.hidden = false;
-        runTimer(openDate.getTime(), () => location.reload());
-      }
-    } else if (countdown) {
-      lblEl.textContent = 'Inscriptions ouvertes — prochain jeudi dans';
-      dateEl.textContent = '';
-      countdown.classList.add('is-open');
-      countdown.hidden = false;
-      runTimer(nextThursday.getTime());
-    }
-  }
-  initButtonState();
-
-  const overlay = document.getElementById('studentModal');
-  const backdrop = document.getElementById('studentModalBackdrop');
-  const openBtn = document.getElementById('openStudentForm');
-  const closeBtn = document.getElementById('closeStudentModal');
-  const form = document.getElementById('studentForm');
   const progressBar = document.getElementById('sformProgressBar');
   const successEl = document.getElementById('sformSuccess');
+  const errorEl = document.getElementById('studentFormError');
+  const modal = makeModal(overlay, { onOpen: () => { if (successEl.hidden) goToStep(1); } });
 
-  if (!overlay || !openBtn || !form) return;
-
-  function openModal() {
-    overlay.classList.add('is-open');
-    overlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    goToStep(1);
-  }
-  function closeModal() {
-    overlay.classList.remove('is-open');
-    overlay.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-
-  openBtn.addEventListener('click', openModal);
-  closeBtn?.addEventListener('click', closeModal);
-  document.getElementById('closeSuccess')?.addEventListener('click', closeModal);
-  backdrop?.addEventListener('click', closeModal);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal(); });
+  openBtn.addEventListener('click', modal.open);
+  document.getElementById('closeStudentModal')?.addEventListener('click', modal.close);
+  document.getElementById('closeSuccess')?.addEventListener('click', modal.close);
+  document.getElementById('studentModalBackdrop')?.addEventListener('click', modal.close);
 
   let currentStep = 1;
   const TOTAL = 3;
-
   function goToStep(n) {
-    document.querySelectorAll('.sform__step').forEach(s => s.classList.remove('is-active'));
-    const target = document.querySelector(`.sform__step[data-step="${n}"]`);
-    if (target) {
-      target.classList.add('is-active');
-      currentStep = n;
-    }
-    const pct = n === 1 ? 0 : Math.round(((n - 1) / TOTAL) * 100);
-    progressBar.style.width = pct + '%';
+    form.querySelectorAll('.sform__step').forEach(s => s.classList.remove('is-active'));
+    const target = form.querySelector(`.sform__step[data-step="${n}"]`);
+    if (target) { target.classList.add('is-active'); currentStep = n; }
+    progressBar.style.width = (n === 1 ? 0 : Math.round(((n - 1) / TOTAL) * 100)) + '%';
+    target?.querySelector('input, button')?.focus();
   }
-
-  document.querySelectorAll('.sform__next').forEach(btn => {
-    btn.addEventListener('click', () => { if (validateStep(currentStep)) goToStep(currentStep + 1); });
-  });
-  document.querySelectorAll('.sform__prev').forEach(btn => {
-    btn.addEventListener('click', () => goToStep(currentStep - 1));
-  });
+  form.querySelectorAll('.sform__next').forEach(btn => btn.addEventListener('click', () => { if (validateStep(currentStep)) goToStep(currentStep + 1); }));
+  form.querySelectorAll('.sform__prev').forEach(btn => btn.addEventListener('click', () => goToStep(currentStep - 1)));
 
   function validateStep(step) {
     let ok = true;
-    document.querySelectorAll('.sform__input--error').forEach(el => el.classList.remove('sform__input--error'));
+    form.querySelectorAll('.sform__input--error').forEach(el => el.classList.remove('sform__input--error'));
     document.getElementById('genreGroup')?.classList.remove('sform__radio-group--error');
     document.getElementById('engagementLabel')?.classList.remove('sform__checkbox--error');
 
     if (step === 2) {
       const prenom = document.getElementById('inputPrenom');
       const nom = document.getElementById('inputNom');
-      const genre = document.querySelector('input[name="genre"]:checked');
+      const genre = form.querySelector('input[name="genre"]:checked');
       if (!prenom.value.trim()) { prenom.classList.add('sform__input--error'); ok = false; }
       if (!nom.value.trim()) { nom.classList.add('sform__input--error'); ok = false; }
       if (!genre) { document.getElementById('genreGroup').classList.add('sform__radio-group--error'); ok = false; }
-      if (!ok) (document.querySelector('.sform__input--error') || prenom).focus();
+      if (!ok) (form.querySelector('.sform__input--error') || prenom).focus();
     }
     if (step === 3) {
       const email = document.getElementById('inputEmail');
       const tel = document.getElementById('inputTel');
       if (!email.value.trim() || !/\S+@\S+\.\S+/.test(email.value)) { email.classList.add('sform__input--error'); ok = false; }
       if (!tel.value.trim()) { tel.classList.add('sform__input--error'); ok = false; }
-      if (!ok) document.querySelector('.sform__input--error').focus();
+      if (!ok) form.querySelector('.sform__input--error').focus();
     }
     if (step === 4) {
       const univ = document.getElementById('inputUniv');
@@ -350,16 +297,17 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validateStep(4)) return;
+    errorEl.hidden = true;
 
     const submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
-    const origLabel = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="btn__label">Envoi…</span>';
+    const origLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Envoi…';
 
     const data = {
       prenom: document.getElementById('inputPrenom').value.trim(),
       nom: document.getElementById('inputNom').value.trim(),
-      genre: document.querySelector('input[name="genre"]:checked')?.value,
+      genre: form.querySelector('input[name="genre"]:checked')?.value,
       email: document.getElementById('inputEmail').value.trim(),
       telephone: document.getElementById('inputTel').value.trim(),
       universite: document.getElementById('inputUniv').value.trim(),
@@ -371,7 +319,9 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     if (insertError) {
       console.error(insertError);
       submitBtn.disabled = false;
-      submitBtn.innerHTML = origLabel;
+      submitBtn.textContent = origLabel;
+      errorEl.textContent = "L'inscription n'a pas pu être envoyée. Réessaie, ou écris-nous à infos.ecwaterloo@gmail.com.";
+      errorEl.hidden = false;
       return;
     }
 
@@ -381,27 +331,22 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     progressBar.style.width = '100%';
     successEl.hidden = false;
     document.getElementById('successDate').textContent = nextThursdayStr;
+    document.getElementById('closeSuccess')?.focus();
   });
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   FORMULAIRE LUTINS (Opération Lutins & Lutines — Noël)
+   LUTINS DE NOËL — inscription
    ══════════════════════════════════════════════════════════════ */
 (function () {
   const overlay = document.getElementById('lutinModal');
   const openBtn = document.getElementById('openLutinForm');
   if (!overlay || !openBtn) return;
-  if (typeof supabase === 'undefined' || typeof SUPABASE_URL === 'undefined') return;
+  if (!sb) return;
 
-  const { createClient } = supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const backdrop = document.getElementById('lutinModalBackdrop');
-  const closeBtn = document.getElementById('closeLutinModal');
   const form = document.getElementById('lutinForm');
   const successEl = document.getElementById('lutinSuccess');
   const errorEl = document.getElementById('lutinFormError');
-
   const prenomInput = document.getElementById('lutinPrenom');
   const nomInput = document.getElementById('lutinNom');
   const telInput = document.getElementById('lutinTel');
@@ -413,7 +358,6 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 
   let nbLettres = 1;
   const MAX_LETTRES = 10;
-
   function updateStepper() {
     stepperVal.textContent = nbLettres;
     hiddenNb.value = nbLettres;
@@ -424,58 +368,30 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   plusBtn.addEventListener('click', () => { if (nbLettres < MAX_LETTRES) { nbLettres++; updateStepper(); } });
   updateStepper();
 
-  function openModal() {
-    overlay.classList.add('is-open');
-    overlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    form.hidden = false;
-    successEl.hidden = true;
-    errorEl.hidden = true;
-  }
-  function closeModal() {
-    overlay.classList.remove('is-open');
-    overlay.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
+  const modal = makeModal(overlay, { onOpen: () => { errorEl.hidden = true; } });
+  openBtn.addEventListener('click', modal.open);
+  document.getElementById('closeLutinModal')?.addEventListener('click', modal.close);
+  document.getElementById('lutinModalBackdrop')?.addEventListener('click', modal.close);
+  document.getElementById('closeLutinSuccess')?.addEventListener('click', modal.close);
 
-  openBtn.addEventListener('click', openModal);
-  closeBtn?.addEventListener('click', closeModal);
-  backdrop?.addEventListener('click', closeModal);
-  document.getElementById('closeLutinSuccess')?.addEventListener('click', closeModal);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal(); });
-
-  function clearErrors() {
+  function showError(msg) { errorEl.textContent = msg; errorEl.hidden = false; }
+  function validate() {
     [prenomInput, nomInput, telInput, emailInput].forEach(el => el.classList.remove('sform__input--error'));
     errorEl.hidden = true;
-    errorEl.textContent = '';
-  }
-
-  function showError(msg) {
-    errorEl.textContent = msg;
-    errorEl.hidden = false;
-  }
-
-  function validate() {
-    clearErrors();
     let ok = true;
-
     if (!prenomInput.value.trim()) { prenomInput.classList.add('sform__input--error'); ok = false; }
     if (!nomInput.value.trim()) { nomInput.classList.add('sform__input--error'); ok = false; }
-
-    const tel = telInput.value.trim();
-    const email = emailInput.value.trim();
-
+    const tel = telInput.value.trim(), email = emailInput.value.trim();
     if (!tel && !email) {
       telInput.classList.add('sform__input--error');
       emailInput.classList.add('sform__input--error');
-      showError('Merci d\'indiquer au moins un téléphone ou un email.');
+      showError("Merci d'indiquer au moins un téléphone ou un email.");
       ok = false;
     } else if (email && !/\S+@\S+\.\S+/.test(email)) {
       emailInput.classList.add('sform__input--error');
-      showError('L\'email ne semble pas valide.');
+      showError("L'email ne semble pas valide.");
       ok = false;
     }
-
     if (!ok && errorEl.hidden) showError('Merci de remplir les champs requis.');
     return ok;
   }
@@ -483,11 +399,10 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
     const submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
-    const origLabel = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<span class="btn__label">Envoi…</span>';
+    const origLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Envoi…';
 
     const data = {
       prenom: prenomInput.value.trim(),
@@ -496,116 +411,25 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
       email: emailInput.value.trim() || null,
       nb_lettres: nbLettres,
     };
-
     const { error: insertError } = await sb.from('inscriptions_lutins').insert([data]);
     if (insertError) {
       console.error(insertError);
       submitBtn.disabled = false;
-      submitBtn.innerHTML = origLabel;
-      showError('Oups — une erreur est survenue. Réessaie ou écris-nous à infos.ecwaterloo@gmail.com');
+      submitBtn.textContent = origLabel;
+      showError("L'inscription n'a pas pu être envoyée. Réessaie, ou écris-nous à infos.ecwaterloo@gmail.com.");
       return;
     }
-
     form.hidden = true;
     successEl.hidden = false;
+    document.getElementById('closeLutinSuccess')?.focus();
   });
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   PILE GAZETTE — paquet de cartes à glisser, en boucle (mobile)
+   LECTEUR GAZETTE — livre plein écran (PDF.js + StPageFlip)
+   Sans JS ou sans StPageFlip, les liens ouvrent simplement le PDF.
    ══════════════════════════════════════════════════════════════ */
 (function () {
-  const pile = document.querySelector('.pile');
-  if (!pile) return;
-  const cards = [...pile.querySelectorAll('.pile__issue')];
-  if (cards.length < 2) return;
-
-  const mq = window.matchMedia('(max-width: 640px)');
-  let order = [cards[cards.length - 1], ...cards.slice(0, -1)]; // la dernière du HTML est visuellement dessus
-  let enabled = false, drag = null, suppressClick = false;
-
-  const backTransform = (i) => `rotate(${3.5 * i}deg) translate(${12 * i}px, ${9 * i}px)`;
-
-  function layout(animate) {
-    order.forEach((card, i) => {
-      card.style.transition = animate ? '' : 'none';
-      card.style.zIndex = String(order.length - i);
-      card.style.transform = i === 0 ? 'rotate(0deg)' : backTransform(i);
-      if (!animate) void card.offsetHeight;
-    });
-  }
-
-  function onDown(e) {
-    if (!enabled) return;
-    const top = order[0];
-    if (!top.contains(e.target)) return;
-    drag = { x: e.clientX, y: e.clientY, dx: 0, moved: false, top };
-  }
-  function onMove(e) {
-    if (!drag) return;
-    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (!drag.moved && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
-      drag.moved = true;
-      drag.top.style.transition = 'none';
-    }
-    if (drag.moved) {
-      drag.dx = dx;
-      drag.top.style.transform = `translateX(${dx}px) rotate(${dx * 0.05}deg)`;
-      if (e.cancelable) e.preventDefault();
-    }
-  }
-  function onUp() {
-    if (!drag) return;
-    const { top, dx, moved } = drag;
-    drag = null;
-    top.style.transition = '';
-    if (moved && Math.abs(dx) > 70) {
-      suppressClick = true;
-      const dir = dx > 0 ? 1 : -1;
-      // 1. la carte s'écarte…
-      top.style.transform = `translateX(${dir * 112}%) rotate(${dir * 12}deg)`;
-      setTimeout(() => {
-        // 2. …puis on la voit glisser sous le paquet pendant que les autres remontent
-        order.push(order.shift());
-        layout(true);
-        setTimeout(() => { suppressClick = false; }, 380);
-      }, 230);
-    } else {
-      if (moved) { suppressClick = true; setTimeout(() => { suppressClick = false; }, 80); }
-      layout(true);
-    }
-  }
-  function onClickCapture(e) {
-    if (suppressClick) { e.stopPropagation(); e.preventDefault(); }
-  }
-
-  function enable() {
-    if (enabled) return; enabled = true;
-    pile.classList.add('is-deck');
-    layout(false);
-  }
-  function disable() {
-    if (!enabled) return; enabled = false;
-    pile.classList.remove('is-deck');
-    cards.forEach(c => { c.style.cssText = ''; });
-  }
-
-  pile.addEventListener('pointerdown', onDown);
-  pile.addEventListener('click', onClickCapture, true);
-  window.addEventListener('pointermove', onMove, { passive: false });
-  window.addEventListener('pointerup', onUp);
-  window.addEventListener('pointercancel', onUp);
-
-  const apply = () => (mq.matches ? enable() : disable());
-  mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
-  apply();
-})();
-
-/* ══════════════════════════════════════════════════════════════
-   GAZETTE READER — livre plein écran (PDF.js + StPageFlip)
-   ══════════════════════════════════════════════════════════════ */
-(function () {
-  const openBtn = document.getElementById('openGazette');
   const reader = document.getElementById('gazetteReader');
   const backdrop = document.getElementById('readerBackdrop');
   const closeBtn = document.getElementById('closeGazette');
@@ -638,8 +462,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   const renderPageImg = async (n, scaleH) => {
     const page = await pdfDoc.getPage(n);
     const vp1 = page.getViewport({ scale: 1 });
-    const scale = scaleH / vp1.height;
-    const vp = page.getViewport({ scale });
+    const vp = page.getViewport({ scale: scaleH / vp1.height });
     const canvas = document.createElement('canvas');
     canvas.width = vp.width; canvas.height = vp.height;
     await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
@@ -647,7 +470,6 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   };
 
   const buildBook = async (token) => {
-    // taille disponible
     const isMobile = window.matchMedia('(max-width: 700px)').matches;
     const availH = stage.clientHeight - 24;
     const availW = stage.clientWidth - (isMobile ? 16 : 150);
@@ -668,23 +490,15 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     if (flip) { try { flip.destroy(); } catch (_) {} flip = null; }
     flip = new St.PageFlip(bookEl, {
       width: Math.round(pageW), height: Math.round(pageH),
-      size: 'fixed',
-      usePortrait: isMobile,
-      showCover: true,
-      maxShadowOpacity: 0.4,
-      flippingTime: 700,
-      mobileScrollSupport: false,
-      swipeDistance: 16,
+      size: 'fixed', usePortrait: isMobile, showCover: true,
+      maxShadowOpacity: 0.4, flippingTime: 700, mobileScrollSupport: false, swipeDistance: 16,
     });
     flip.loadFromHTML(holders);
     flip.on('flip', (e) => updateIndicator(e.data));
     updateIndicator(0);
 
-    // rendu progressif : pages visibles d'abord, puis le reste
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const order = [];
-    for (let n = 1; n <= totalPages; n++) order.push(n);
-    for (const n of order) {
+    for (let n = 1; n <= totalPages; n++) {
       if (token !== sessionToken) return;
       const canvas = await renderPageImg(n, pageH * dpr);
       if (token !== sessionToken) return;
@@ -698,18 +512,13 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   };
 
   const updateIndicator = (idx) => {
-    // idx = index de page StPageFlip (0-based, page de gauche du spread)
     const isMobile = window.matchMedia('(max-width: 700px)').matches;
-    let label;
-    if (isMobile || idx === 0 || idx >= totalPages - 1) label = String(idx + 1);
-    else label = `${idx + 1}–${Math.min(idx + 2, totalPages)}`;
-    curEl.textContent = label;
+    curEl.textContent = (isMobile || idx === 0 || idx >= totalPages - 1) ? String(idx + 1) : `${idx + 1}–${Math.min(idx + 2, totalPages)}`;
     prevBtn.disabled = idx <= 0;
     nextBtn.disabled = idx >= totalPages - 1;
     updateThumbs(idx);
   };
 
-  /* Miniatures */
   const buildThumbs = async (token) => {
     if (!thumbsEl) return;
     thumbsEl.innerHTML = '';
@@ -719,8 +528,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
       btn.className = 'reader__thumb';
       btn.dataset.page = p;
       btn.setAttribute('aria-label', `Aller à la page ${p}`);
-      const c = document.createElement('canvas');
-      btn.appendChild(c);
+      btn.appendChild(document.createElement('canvas'));
       const lbl = document.createElement('span'); lbl.textContent = p; btn.appendChild(lbl);
       btn.addEventListener('click', () => flip?.flip(p - 1));
       thumbsEl.appendChild(btn);
@@ -741,17 +549,16 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     if (!thumbsEl) return;
     thumbsEl.querySelectorAll('.reader__thumb').forEach(b => {
       const p = parseInt(b.dataset.page, 10) - 1;
-      const on = p === idx || (idx > 0 && idx < totalPages - 1 && p === idx + 1);
-      b.classList.toggle('is-active', on);
+      b.classList.toggle('is-active', p === idx || (idx > 0 && idx < totalPages - 1 && p === idx + 1));
     });
     thumbsEl.querySelector('.reader__thumb.is-active')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   };
 
   const openReader = async (e) => {
+    e.preventDefault();
     lastFocus = document.activeElement;
-    const src = e?.currentTarget?.dataset?.pdf ? e.currentTarget : openBtn;
-    const url = src.dataset.pdf;
-    if (titleEl) titleEl.textContent = src.dataset.title || '';
+    const url = e.currentTarget.dataset.pdf;
+    if (titleEl) titleEl.textContent = e.currentTarget.dataset.title || '';
     if (dlEl) dlEl.href = url;
     reader.classList.add('is-open');
     reader.setAttribute('aria-hidden', 'false');
@@ -766,8 +573,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
         totalPages = pdfDoc.numPages;
         totEl.textContent = totalPages;
         loadedPdfUrl = url;
-        const p1 = await pdfDoc.getPage(1);
-        const vp = p1.getViewport({ scale: 1 });
+        const vp = (await pdfDoc.getPage(1)).getViewport({ scale: 1 });
         pageRatio = vp.width / vp.height;
       }
       if (token !== sessionToken) return;
@@ -786,8 +592,6 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     lastFocus?.focus?.();
   };
 
-  openBtn?.addEventListener('click', openReader);
-  document.getElementById('openGazetteCover')?.addEventListener('click', openReader);
   document.querySelectorAll('[data-open-gazette]').forEach(b => b.addEventListener('click', openReader));
   closeBtn.addEventListener('click', closeReader);
   backdrop.addEventListener('click', closeReader);
@@ -810,72 +614,3 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
     resizeTimer = setTimeout(() => { const t = ++sessionToken; loading.hidden = false; buildBook(t); }, 200);
   });
 })();
-
-/* ══════════════════════════════════════════════════════════════
-   CARTE — l'épicerie (MapLibre + tuiles OpenFreeMap : gratuites,
-   sans clé API). Chargée seulement à l'approche du footer.
-   ══════════════════════════════════════════════════════════════ */
-(function () {
-  const el = document.getElementById('map');
-  if (!el) return;
-  const LIB = 'https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl';
-  const pos = [4.38369, 50.71443]; // [lng, lat] — Rue de la Station 139A, 1410 Waterloo
-
-  function init() {
-    if (typeof maplibregl === 'undefined') return;
-    const map = new maplibregl.Map({
-      container: el,
-      style: 'https://tiles.openfreemap.org/styles/positron',
-      center: pos, zoom: 15,
-      scrollZoom: false, dragRotate: false, pitchWithRotate: false, touchPitch: false,
-    });
-    map.touchZoomRotate.disableRotation();
-    // Positron teinté aux couleurs du site : papier, eau teal pâle, parcs olive pâle, textes encre
-    const TINT = {
-      background: ['background-color', '#f2f5f5'], landuse_residential: ['fill-color', '#edf1f1'],
-      park: ['fill-color', '#e7e9d2'], landcover_wood: ['fill-color', '#e0e3c8'],
-      water: ['fill-color', '#cde2e6'], waterway: ['line-color', '#bcd8de'],
-      building: ['fill-color', '#e4eaea'], railway: ['line-color', '#d7dede'],
-      railway_transit: ['line-color', '#d7dede'], railway_service: ['line-color', '#d7dede'],
-      'highway-name-minor': ['text-color', '#4a5a61'], 'highway-name-major': ['text-color', '#4a5a61'],
-      'highway-name-path': ['text-color', '#7b8a90'], label_other: ['text-color', '#1f3038'],
-      label_village: ['text-color', '#1f3038'], label_town: ['text-color', '#1f3038'],
-    };
-    map.on('style.load', () => {
-      for (const [id, [prop, value]] of Object.entries(TINT)) {
-        if (map.getLayer(id)) map.setPaintProperty(id, prop, value);
-      }
-    });
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
-    const pin = document.createElement('div');
-    pin.className = 'map-pin';
-    pin.title = 'Espace Convivial de Waterloo';
-    new maplibregl.Marker({ element: pin }).setLngLat(pos)
-      .setPopup(new maplibregl.Popup({ offset: 14, maxWidth: '260px' })
-        .setHTML('<b>Espace Convivial de Waterloo</b><br>Rue de la Station 139A<br>1410 Waterloo<br><a href="https://www.google.com/maps/dir/?api=1&destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Itinéraire →</a>'))
-      .addTo(map);
-    // Léger décalage pour laisser respirer le marqueur
-    map.panBy([0, -20], { duration: 0 });
-  }
-
-  function load() {
-    const css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = LIB + '.css';
-    const js = document.createElement('script');
-    js.src = LIB + '.js';
-    // Attendre la feuille de style ET le script : sans le CSS, marqueur et popup sont mal placés
-    const ready = (node) => new Promise((resolve) => { node.onload = resolve; node.onerror = resolve; });
-    Promise.all([ready(css), ready(js)]).then(init);
-    document.head.append(css, js);
-  }
-
-  if (!('IntersectionObserver' in window)) { load(); return; }
-  const io = new IntersectionObserver((entries) => {
-    if (!entries.some(e => e.isIntersecting)) return;
-    io.disconnect();
-    load();
-  }, { rootMargin: '600px 0px' });
-  io.observe(el);
-})();
-

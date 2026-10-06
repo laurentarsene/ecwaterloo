@@ -3,779 +3,535 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="L'Espace Convivial de Waterloo — épicerie sociale et accompagnement (alimentation, logement, emploi, santé, papiers, budget). ASBL 100% bénévole.">
+  <title>Espace Convivial de Waterloo · Épicerie sociale et accompagnement</title>
+  <meta name="description" content="Épicerie sociale et équipe de bénévoles à Waterloo : courses, logement, emploi, santé, papiers et budget. Accompagnement gratuit, confidentiel et sans jugement. ASBL 100% bénévole depuis 2014.">
   <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ecwaterloo.com/">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ecwaterloo.com/">
   <meta property="og:title" content="Espace Convivial de Waterloo">
-  <meta property="og:description" content="Épicerie sociale et accompagnement à Waterloo. ASBL 100% bénévole depuis 2014.">
+  <meta property="og:description" content="Nous tendons la main à celles et ceux qui en ont besoin. Épicerie sociale et accompagnement à Waterloo, ASBL 100% bénévole depuis 2014.">
+  <meta property="og:image" content="https://ecwaterloo.com/assets/images/og-ecw.jpg">
   <meta property="og:locale" content="fr_BE">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" type="image/png" href="assets/images/ecw-icon.png">
-  <title>Espace Convivial de Waterloo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css?v=44">
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/images/perso/c1.webp" imagesrcset="assets/images/perso/c1-900.webp 900w, assets/images/perso/c1.webp 1656w" imagesizes="(max-width: 1440px) 100vw, 1392px">
+  <link rel="stylesheet" href="styles/site.css?v=1">
 </head>
-<body class="no-js">
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<div class="site">
 
-  <a class="skip" href="#aide">Aller au contenu</a>
-
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="s-blob" viewBox="0 0 160 170"><path d="M78 2c38-6 78 30 80 76 2 44-30 84-72 90C42 174 4 142 1 96 -2 52 34 9 78 2Z"/></symbol>
-    <symbol id="s-drop" viewBox="0 0 90 170"><path d="M52 2c26 34 42 78 32 116-9 34-40 56-64 50C-4 162-4 120 8 84 18 52 34 22 52 2Z"/></symbol>
-    <symbol id="s-bean" viewBox="0 0 170 130"><path d="M18 22C40-4 84-6 122 12c40 20 56 62 40 92-16 30-60 34-100 18C22 106-6 62 18 22Z"/></symbol>
-    <symbol id="s-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"/></symbol>
-  </svg>
-
-  <!-- ══════════ NAV ══════════ -->
-  <header class="nav" id="nav">
-    <div class="wrap nav__inner">
-      <a href="#top" class="nav__logo" aria-label="Espace Convivial de Waterloo — accueil">
-        <img src="assets/images/ecw-logo.png" alt="Espace Convivial de Waterloo">
-      </a>
-      <nav aria-label="Navigation principale">
-        <ul class="nav__links">
-          <li><a href="#aide" data-nav-link>Besoin d'aide</a></li>
-          <li><a href="#etudiants" data-nav-link>Étudiants</a></li>
-          <li><a href="#aider" data-nav-link>Aider</a></li>
-          <li><a href="#asbl" data-nav-link>Qui sommes-nous</a></li>
-          <li><a href="#contact" data-nav-link>Contact</a></li>
-        </ul>
-      </nav>
-      <div class="nav__right">
-        <div class="langdd" id="langDd">
-          <button type="button" class="langdd__btn" id="langDdBtn" aria-expanded="false" aria-haspopup="true" aria-label="Choisir la langue — choose language"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg><span>FR</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
-          <div class="langdd__menu" id="langDdMenu" hidden>
-            <a href="index.html" lang="fr">Français</a>
-            <a data-lang="en" lang="en" href="bienvenue.html#en">English</a>
-            <a data-lang="nl" lang="nl" href="bienvenue.html#nl">Nederlands</a>
-            <a data-lang="de" lang="de" href="bienvenue.html#de">Deutsch</a>
-            <a data-lang="uk" lang="uk" href="bienvenue.html#uk">Українська</a>
-            <a data-lang="ru" lang="ru" href="bienvenue.html#ru">Русский</a>
-            <a data-lang="ar" lang="ar" href="bienvenue.html#ar">العربية</a>
-            <a data-lang="fa" lang="fa" href="bienvenue.html#fa">فارسی / دری</a>
-            <a data-lang="tr" lang="tr" href="bienvenue.html#tr">Türkçe</a>
-            <a data-lang="ro" lang="ro" href="bienvenue.html#ro">Română</a>
-            <a data-lang="pl" lang="pl" href="bienvenue.html#pl">Polski</a>
-            <a data-lang="es" lang="es" href="bienvenue.html#es">Español</a>
-            <a data-lang="pt" lang="pt" href="bienvenue.html#pt">Português</a>
-            <a data-lang="it" lang="it" href="bienvenue.html#it">Italiano</a>
-            <a class="langdd__all" href="bienvenue.html">Bienvenue · Welcome →</a>
-          </div>
-        </div>
-        <a href="tel:+32465927366" class="nav__tel">0465 92 73 66</a>
-        <a href="#rdv" class="btn btn--primary btn--sm">Prendre rendez-vous</a>
-        <button class="nav__toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileNav"><span></span><span></span></button>
-      </div>
-    </div>
-    <nav class="nav__chapters" aria-label="Chapitre en cours">
-      <a href="#aide" data-nav-link>Besoin d'aide</a>
-      <a href="#etudiants" data-nav-link>Étudiants</a>
-      <a href="#aider" data-nav-link>Aider</a>
-      <a href="#asbl" data-nav-link>Qui sommes-nous</a>
-      <a href="#contact" data-nav-link>Contact</a>
+<!-- ══════════ HEADER ══════════ -->
+<header class="hdr" id="hdr">
+  <div class="hdr__in">
+    <a href="#" class="hdr__logo"><img src="assets/images/ecw-logo.png" width="863" height="335" alt="Espace Convivial de Waterloo"></a>
+    <nav class="hdr__nav" id="hdrNav" aria-label="Navigation principale">
+      <a href="#aide" data-nav="aide">Besoin d'aide</a><a href="#etudiants" data-nav="etudiants">Étudiants</a><a href="#aider" data-nav="aider">Aider</a><a href="#asbl" data-nav="asbl">Qui sommes-nous</a><a href="#contact" data-nav="contact">Contact</a>
     </nav>
-  </header>
+    <div class="hdr__right">
+      <a href="bienvenue.html" class="hdr__lang" title="English · Українська · العربية…">FR · Other languages</a>
+      <a href="tel:+32465927366" class="hdr__tel">0465 92 73 66</a>
+      <a href="#rdv" class="hdr__cta" data-cta>Prendre rendez-vous</a>
+    </div>
+  </div>
+  <div class="hdr__bar"></div>
+</header>
 
-  <div class="mnav" id="mobileNav" aria-hidden="true" role="dialog" aria-label="Menu de navigation">
-    <div class="mnav__panel">
-      <div class="mnav__head">
-        <img src="assets/images/ecw-logo.png" alt="ECW" class="mnav__logo">
-        <button class="mnav__close" id="mobileNavClose" aria-label="Fermer le menu">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
+<main id="contenu">
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="hero">
+  <div class="hero__grid">
+    <h1 class="hero__title">Nous tendons la main à celles et ceux qui en ont besoin.</h1>
+    <div class="hero__side">
+      <p class="hero__lead">Une épicerie sociale et une équipe de bénévoles qui vous aident pour les courses, le logement, l'emploi, la santé, les papiers et le budget. L'accompagnement est gratuit, confidentiel et sans jugement.</p>
+      <div class="btns">
+        <a href="#rdv" class="btn btn--lg btn--dark">Prendre rendez-vous</a>
+        <a href="tel:+32465927366" class="btn btn--lg btn--line">Appeler le 0465 92 73 66</a>
       </div>
-      <ul class="mnav__menu">
-        <li><a href="#aide">Besoin d'aide</a></li>
-        <li><a href="#etudiants">Étudiants</a></li>
-        <li><a href="#aider">Aider</a></li>
-        <li><a href="#asbl">Qui sommes-nous</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="bienvenue.html" class="mnav__lang">English · Українська · العربية…</a></li>
-      </ul>
-      <div class="mnav__actions">
-        <a href="#rdv" class="btn btn--primary">Prendre rendez-vous</a>
-        <a href="tel:+32465927366" class="btn btn--outline">Appeler le 0465 92 73 66</a>
-      </div>
-      <p class="mnav__foot">infos.ecwaterloo@gmail.com · Waterloo, Belgique</p>
+      <div class="hero__facts"><span><b>Depuis 2014</b> à Waterloo</span><span><b>ASBL</b> 100% bénévole</span></div>
+    </div>
+  </div>
+  <img class="hero__art" src="assets/images/perso/c1.webp" srcset="assets/images/perso/c1-900.webp 900w, assets/images/perso/c1.webp 1656w" sizes="(max-width: 1440px) 100vw, 1392px" width="1656" height="800" fetchpriority="high" alt="Deux bénévoles tiennent un grand hamac rempli de courses, de livres, d'un calendrier, d'une clé et d'un stéthoscope ; l'une tend la main">
+</section>
+
+<!-- ══════════ PORTES D'ENTRÉE ══════════ -->
+<nav class="doors" aria-label="Par où commencer">
+  <a href="#aide" class="door door--coral"><div class="door__in"><span class="door__title">Je cherche de l'aide</span><span class="door__desc">Courses, logement, emploi, santé, papiers, budget&nbsp;: nous regardons ça avec vous.</span><span class="door__end"><img src="assets/images/perso/b2.webp" width="990" height="1000" alt="" loading="lazy"><span class="door__arrow" aria-hidden="true">→</span></span></div></a>
+  <a href="#etudiants" class="door door--teal"><div class="door__in"><span class="door__title">Je suis étudiant·e</span><span class="door__desc">Le premier jeudi du mois, l'épicerie t'est ouverte pour 5€.</span><span class="door__end"><img src="assets/images/perso/b6.webp" width="978" height="845" alt="" loading="lazy"><span class="door__arrow" aria-hidden="true">→</span></span></div></a>
+  <a href="#aider" class="door door--olive"><div class="door__in"><span class="door__title">Je veux aider</span><span class="door__desc">Donner un peu de temps, faire un don, ou offrir un cadeau de Noël à un enfant.</span><span class="door__end"><img src="assets/images/perso/a4.webp" width="1000" height="819" alt="" loading="lazy"><span class="door__arrow" aria-hidden="true">→</span></span></div></a>
+</nav>
+
+<!-- ══════════ 1. BESOIN D'AIDE ══════════ -->
+<section class="chap chap--coral" id="aide">
+  <div class="chap__in">
+    <h2 class="h-chap">Besoin d'aide&nbsp;?</h2>
+    <nav class="chips" aria-label="Dans cette partie">
+      <a href="#epicerie" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>L'épicerie sociale</a>
+      <a href="#services" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>Nos six domaines</a>
+      <a href="#workflow" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h5a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h5"/></svg>Comment ça se passe</a>
+      <a href="#rdv" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Prendre rendez-vous</a>
+      <button type="button" class="chip" data-open-chat><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg>Vos questions</button>
+    </nav>
+  </div>
+</section>
+
+<section class="wrap" id="aide-contenu">
+  <div class="epi" id="epicerie">
+    <h3 class="h-sec">Une épicerie sociale, c'est quoi&nbsp;?</h3>
+    <div class="epi__body">
+      <p class="lead">C'est une épicerie pour les personnes qui traversent une période difficile. Vous y choisissez vous-même vos produits, frais ou de base, et vous payez une contribution solidaire, à prix réduit. Comme dans un magasin.</p>
+      <p class="txt">Chez nous, l'épicerie est surtout une porte d'entrée. Vous venez pour les courses, vous prenez un café, et souvent la conversation glisse vers le reste&nbsp;: une facture, un courrier, un souci de logement ou de santé. Les bénévoles prennent le temps d'écouter, puis vous aident à avancer, une chose après l'autre.</p>
+      <p class="txt">C'est pour toute personne qui traverse une période difficile&nbsp;: seule ou en famille, avec ou sans emploi, à la retraite ou aux études. Si vous hésitez, appelez-nous. Nous regardons ensemble ce qui est possible.</p>
+      <p class="epi__key">Tout commence par un rendez-vous, gratuit et confidentiel.</p>
     </div>
   </div>
 
-  <main id="top">
-
-  <!-- ══════════ HERO ══════════ -->
-  <section class="hero">
-    <div class="wrap hero__grid">
-      <div class="hero__text">
-        <p class="eyebrow">Épicerie sociale · Waterloo</p>
-        <h1 class="hero__title">Nous tendons la main à celles et ceux qui en ont besoin.</h1>
-        <p class="hero__lead">Épicerie sociale et accompagnement à Waterloo. Gratuit, sans jugement, 100% bénévole.</p>
-        <div class="hero__actions">
-          <a href="#rdv" class="btn btn--primary">Prendre rendez-vous</a>
-          <a href="tel:+32465927366" class="btn btn--outline">Appeler le 0465 92 73 66</a>
-        </div>
-      </div>
-      <figure class="hero__figure">
-        <img src="https://images.unsplash.com/photo-1501872603246-4089c433c40b?w=1600&q=80" alt="Lumière du soleil tachetée sur un mur olive, quelques brins d'herbe" style="object-position: 35% 50%" loading="eager">
-        <div class="hero__badge"><b>Depuis 2014</b><span>ASBL 100% bénévole</span></div>
-        <figcaption>Le soleil entre ici.</figcaption>
-        <div class="hero3d" id="hero3d" aria-hidden="true"></div>
-        <svg class="mark mark--hero" aria-hidden="true"><use href="#s-drop"/></svg>
-      </figure>
-    </div>
-  </section>
-
-  <!-- ══════════ PORTES D'ENTRÉE ══════════ -->
-  <section class="doors" aria-label="Par où commencer">
-    <div class="wrap"><div class="doors__grid">
-      <a href="#aide" class="door">
-        <span class="door__title">Je cherche de l'aide</span>
-        <span class="door__desc">Alimentation, logement, emploi, santé, papiers, budget.</span>
-        <span class="door__cta">Voir comment nous aidons →</span>
-      </a>
-      <a href="#etudiants" class="door">
-        <span class="door__title">Je suis étudiant·e</span>
-        <span class="door__desc">L'épicerie t'est ouverte chaque premier jeudi du mois, pour 5€.</span>
-        <span class="door__cta">M'inscrire →</span>
-      </a>
-      <a href="#aider" class="door">
-        <span class="door__title">Je veux aider</span>
-        <span class="door__desc">Du temps, un don, ou une lettre d'enfant à Noël.</span>
-        <span class="door__cta">Voir comment aider →</span>
-      </a>
-    </div></div>
-  </section>
-
-  <!-- ══════════ 1. BESOIN D'AIDE ══════════ -->
-  <div class="chapter wrap" id="aide">
-    <h2 class="chapter__title">Besoin d'aide&nbsp;?</h2>
-    <p class="chapter__text">Ce que nous faisons, et comment prendre rendez-vous.</p>
+  <div class="svc" id="services">
+    <h3 class="h-sec">Six domaines, une seule équipe.</h3>
+    <p class="txt-18">Les difficultés arrivent rarement seules&nbsp;: un loyer en retard amène des courriers, les courriers amènent du stress, et le stress finit par peser sur la santé. Nous regardons tout avec vous et nous commençons par ce qui presse le plus. Si une question dépasse nos compétences, nous vous orientons vers quelqu'un de confiance.</p>
   </div>
+  <img class="svc-art" src="assets/images/perso/c4.webp" srcset="assets/images/perso/c4-900.webp 900w, assets/images/perso/c4.webp 1672w" sizes="(max-width: 1280px) 100vw, 1184px" width="1672" height="562" loading="lazy" alt="Six arches que des gens traversent : un sac de courses, une mallette, une maison, un document, un stéthoscope et une pièce en euro">
+  <ul class="domains">
+    <li style="--c:#c9a26b"><h4>Alimentation</h4><p>Une épicerie où vous choisissez vos produits, à prix réduit, et des colis alimentaires.</p></li>
+    <li style="--c:#f26d5f"><h4>Emploi</h4><p>Écrire un CV, s'entraîner aux entretiens, rencontrer des employeurs de la région.</p></li>
+    <li style="--c:#3a74e0"><h4>Logement</h4><p>Monter un dossier, dialoguer avec le propriétaire, demander un logement social.</p></li>
+    <li style="--c:#9db8e8"><h4>Justice &amp; papiers</h4><p>Comprendre un courrier, faire une démarche, être accompagné chez l'avocat ou au tribunal.</p></li>
+    <li style="--c:#3a74e0"><h4>Santé</h4><p>Trouver un médecin, s'y retrouver avec la mutuelle, l'hôpital ou un psychologue.</p></li>
+    <li style="--c:#e8b53a"><h4>Budget</h4><p>Faire le point sur le budget, demander les aides auxquelles vous avez droit, négocier avec les créanciers.</p></li>
+  </ul>
+</section>
 
-  <section class="services wrap" id="services">
-    <div class="section-head">
-      <h3 class="section-title">Six domaines. Une seule équipe.</h3>
-      <p class="section-sub">Nous regardons avec vous par où commencer. Si ce n'est pas dans nos cordes, nous connaissons quelqu'un.</p>
+<section class="wrap flow" id="workflow">
+  <div class="flow__grid">
+    <div class="flow__head">
+      <h3 class="h-big">Comment ça se passe</h3>
+      <p class="txt-18">Venez comme vous êtes. Il y a quatre étapes, à votre rythme, et rien n'est décidé sans vous.</p>
+      <img src="assets/images/perso/c7.webp" width="909" height="1262" loading="lazy" alt="Une bénévole prend des notes face à une femme assise dans une immense oreille">
     </div>
-    <ul class="services__grid">
-      <li class="service">
-        <svg class="service__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 10 8 16v22a3 3 0 0 0 3 3h26a3 3 0 0 0 3-3V16l-3-6Z"/><path d="M8 16h32"/><path d="M30 23a6 6 0 0 1-12 0"/></svg>
-        <h4>Alimentation</h4>
-        <p>Colis hebdomadaires. Produits frais, de saison, dignes.</p>
-      </li>
-      <li class="service">
-        <svg class="service__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="15" width="36" height="24" rx="3"/><path d="M17 15v-5a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v5"/><path d="M6 25h36"/></svg>
-        <h4>Emploi</h4>
-        <p>CV, entretiens blancs, mise en relation avec des employeurs locaux.</p>
-      </li>
-      <li class="service">
-        <svg class="service__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21 24 7l18 14v17a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3Z"/><path d="M18 41V28h12v13"/></svg>
-        <h4>Logement</h4>
-        <p>Dossier, médiation avec les propriétaires, logement social.</p>
-      </li>
-      <li class="service">
-        <svg class="service__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 43s17-7 17-21V10L24 5 7 10v12c0 14 17 21 17 21Z"/><path d="M17 24l5 5 9-10"/></svg>
-        <h4>Justice &amp; papiers</h4>
-        <p>Courriers, démarches, accompagnement chez l'avocat ou au tribunal.</p>
-      </li>
-      <li class="service">
-        <svg class="service__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M43 24h-7l-6 16L17 8l-6 16H4"/></svg>
-        <h4>Santé</h4>
-        <p>Médecins, hôpitaux, mutuelle, psychologues.</p>
-      </li>
-      <li class="service">
-        <svg class="service__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 4v40"/><path d="M34 13H20a6 6 0 0 0 0 12h8a6 6 0 0 1 0 12H13"/></svg>
-        <h4>Budget</h4>
-        <p>Budget, aides sociales, négociation avec les créanciers.</p>
-      </li>
-    </ul>
-  </section>
-
-  <section class="workflow" id="workflow">
-    <div class="wrap">
-      <div class="section-head">
-        <h3 class="section-title">Comment ça se passe</h3>
-        <p class="section-sub">Venez comme vous êtes. Quatre étapes, à votre rythme — rien n'est décidé sans vous.</p>
-      </div>
+    <div>
       <ol class="steps">
-        <li class="step step--1">
-          <span class="step__badge" aria-hidden="true">
-            <svg class="step__shape"><use href="#s-drop"/></svg>
-            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 6h7a2 2 0 0 1 2 2v34"/><path d="M28 42V6l-13 3a2 2 0 0 0-1.5 2V42"/><line x1="9" y1="42" x2="39" y2="42"/><circle cx="23.5" cy="25" r="1.4" fill="currentColor" stroke="none"/></svg>
-          </span>
-          <span class="step__num">Étape 1</span>
-          <h4>Vous poussez la porte</h4>
-          <p>Un café, une conversation. Nous écoutons, sans formulaire.</p>
-          <span class="step__meta">≈ 45 min · en tête-à-tête</span>
-        </li>
-        <li class="step step--2">
-          <span class="step__badge" aria-hidden="true">
-            <svg class="step__shape"><use href="#s-blob"/></svg>
-            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h21a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H16l-6 5v-5H6a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3Z" transform="translate(3 0)"/><path d="M27 27h9a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-1v5l-6-5h-2a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z"/></svg>
-          </span>
-          <span class="step__num">Étape 2</span>
-          <h4>Nous faisons le point ensemble</h4>
-          <p>Alimentation, logement, emploi, santé, papiers, budget&nbsp;: nous regardons tout, pour relier les choses.</p>
-          <span class="step__meta">Bilan complet · confidentiel</span>
-        </li>
-        <li class="step step--3">
-          <span class="step__badge" aria-hidden="true">
-            <svg class="step__shape"><use href="#s-bean"/></svg>
-            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="40" r="3"/><path d="M12 37c8-5 4-14 12-18 5.5-2.75 12-3 14-8" stroke-dasharray="0.5 5.5"/><path d="M38 4v13"/><path d="M38 5l8 2.5-8 3"/></svg>
-          </span>
-          <span class="step__num">Étape 3</span>
-          <h4>Nous proposons un plan</h4>
-          <p>Réaliste, étape par étape. C'est vous qui tranchez.</p>
-          <span class="step__meta">Sur-mesure · validé avec vous</span>
-        </li>
-        <li class="step step--4">
-          <span class="step__badge" aria-hidden="true">
-            <svg class="step__shape"><use href="#s-dot"/></svg>
-            <svg class="step__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 14c-2.5-3.5-8-4.5-10.5-1S12.5 21 16 24l8 7 8-7c3.5-3 5-7.5 2.5-11S26.5 10.5 24 14Z"/><path d="M6 36c5.5 4.5 12 6.5 18 6.5S36.5 40.5 42 36"/></svg>
-          </span>
-          <span class="step__num">Étape 4</span>
-          <h4>Nous restons là</h4>
-          <p>Un bénévole référent, des points réguliers, un coup de fil quand ça coince.</p>
-          <span class="step__meta">Aussi longtemps qu'il le faut</span>
-        </li>
+        <li><div class="steps__txt"><h4>Vous poussez la porte</h4><p class="txt-16">Nous prenons un café et nous discutons. Vous racontez ce qui vous amène, sans formulaire à remplir.</p><span class="steps__meta">≈ 45 min · en tête-à-tête</span></div><img src="assets/images/perso/a5.webp" width="1000" height="760" loading="lazy" alt="Deux personnes qui discutent autour d'un café"></li>
+        <li><div class="steps__txt"><h4>Nous faisons le point ensemble</h4><p class="txt-16">Nous regardons votre situation dans son ensemble, parce que tout est souvent lié&nbsp;: les courses, le logement, le travail, la santé, les papiers et le budget.</p><span class="steps__meta">Bilan complet et confidentiel</span></div><img src="assets/images/perso/a2.webp" width="800" height="1000" loading="lazy" alt="Deux mains démêlent un fil qui relie logement, papiers, emploi et santé"></li>
+        <li><div class="steps__txt"><h4>Nous construisons un plan</h4><p class="txt-16">Des étapes concrètes et réalistes, dans l'ordre qui vous convient. C'est vous qui décidez.</p><span class="steps__meta">Sur mesure, validé avec vous</span></div><img src="assets/images/perso/b7.webp" width="1000" height="557" loading="lazy" alt="Une bénévole tire un fil emmêlé jusqu'à une pile de dossiers rangés"></li>
+        <li><div class="steps__txt"><h4>Nous restons à vos côtés</h4><p class="txt-16">Un bénévole devient votre référent. Il fait le point avec vous régulièrement, et vous pouvez l'appeler dès que quelque chose coince.</p><span class="steps__meta">Aussi longtemps qu'il le faut</span></div><img src="assets/images/perso/b2.webp" width="990" height="1000" loading="lazy" alt="Une bénévole abrite une famille sous un parapluie en forme de maison"></li>
       </ol>
-      <p class="workflow__note"><strong>Première visite&nbsp;:</strong> rien à préparer, rien à apporter. Vous venez, nous discutons.</p>
+      <p class="note"><b>Pour une première visite,</b> rien à préparer ni à apporter. Vous venez, et nous discutons.</p>
     </div>
-  </section>
-
-  <section class="rdv wrap" id="rdv">
-    <div class="section-head">
-      <h3 class="section-title">Prendre rendez-vous</h3>
-      <p class="section-sub">Choisissez un créneau, ou appelez le <a href="tel:+32465927366"><strong>0465 92 73 66</strong></a>. Confidentiel et gratuit.</p>
-    </div>
-    <button type="button" class="btn btn--outline rdv__toggle" id="rdvToggle">Choisir un créneau en ligne</button>
-    <div class="rdv__wrap is-collapsed" id="rdvWrap">
-      <iframe src="https://cal.eu/epicerie-sociale-de-waterloo-e.c.w-vcjwji/rendez-vous?embed=true&theme=light" class="rdv__frame" title="Prendre rendez-vous — Espace Convivial de Waterloo" loading="lazy"></iframe>
-    </div>
-  </section>
-
-  <!-- ══════════ 2. ÉTUDIANTS ══════════ -->
-  <div class="chapter wrap" id="etudiants">
-    <h2 class="chapter__title">Étudiant·e&nbsp;?</h2>
-    <p class="chapter__text">Une épicerie rien que pour toi, une fois par mois.</p>
   </div>
+</section>
 
-  <section class="band band--teal etu" id="epicerie-etudiante">
-    <svg class="mark mark--etu" aria-hidden="true"><use href="#s-blob"/></svg>
-    <div class="wrap etu__grid">
-      <div class="etu__text">
-        <h3 class="section-title">L'épicerie étudiante</h3>
-        <p class="lead">Une fois par mois, l'épicerie est ouverte aux étudiant·es.</p>
-        <dl class="etu__facts">
-          <div><dt>Quand</dt><dd>1<sup>er</sup> jeudi du mois</dd></div>
-          <div><dt>Prix</dt><dd>5€ <small>par personne</small></dd></div>
-          <div><dt>Où</dt><dd>Waterloo <small>adresse envoyée par email</small></dd></div>
-          <div><dt>Comment</dt><dd>Inscription en ligne <small>30 secondes, obligatoire</small></dd></div>
-        </dl>
-        <p class="etu__bring">Le jour J&nbsp;: tes 5€ et un sac.</p>
-      </div>
-      <div class="etu__card">
-        <p class="etu__card-label">Prochaine date</p>
-        <p class="etu__card-date" id="nextThursdayCard">—</p>
-        <div class="etu__count" id="studentCountdown" hidden>
-          <p class="etu__count-lbl" id="studentCountLbl">Ouverture des inscriptions dans</p>
-          <div class="etu__timer" id="studentTimer" role="timer" aria-live="off">
-            <span><b data-unit="d">00</b><small>jours</small></span>
-            <span><b data-unit="h">00</b><small>heures</small></span>
-            <span><b data-unit="m">00</b><small>min</small></span>
-            <span><b data-unit="s">00</b><small>sec</small></span>
-          </div>
-          <p class="etu__count-date" id="studentCountDate"></p>
-        </div>
-        <button type="button" class="btn btn--primary" id="openStudentForm">Je m'inscris</button>
-        <p class="etu__card-note">Les absents non excusés ne pourront plus s'inscrire par la suite.</p>
-      </div>
+<section class="wrap rdv" id="rdv">
+  <div class="rdv__grid">
+    <div class="rdv__txt">
+      <h3 class="h-sec">Prendre rendez-vous</h3>
+      <p class="txt-18">Choisissez un créneau en ligne, ou appelez-nous au <a href="tel:+32465927366">0465 92 73 66</a> du lundi au vendredi. Le rendez-vous est gratuit et confidentiel.</p>
+      <p class="txt-18">L'épicerie se trouve <a class="rdv__addr" href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">rue de la Station 139A, à Waterloo</a>.</p>
+      <img src="assets/images/perso/b1.webp" width="811" height="1000" loading="lazy" alt="Une bénévole assise sur une porte ouverte, qui tend la main">
     </div>
-  </section>
-
-  <!-- ══════════ 3. AIDER ══════════ -->
-  <div class="chapter wrap" id="aider">
-    <h2 class="chapter__title">Envie d'aider&nbsp;?</h2>
-    <p class="chapter__text">Du temps, un don, ou une lettre d'enfant à Noël.</p>
+    <div class="rdv__cal"><iframe src="https://cal.eu/epicerie-sociale-de-waterloo-e.c.w-vcjwji/rendez-vous?embed=true&amp;theme=light" title="Prendre rendez-vous avec l'Espace Convivial de Waterloo" loading="lazy"></iframe></div>
   </div>
+</section>
 
-  <section class="benev wrap" id="benevoles">
-    <div class="benev__grid">
-      <figure class="figure">
-        <img src="https://images.unsplash.com/photo-1566592802312-4fb1d22b3d60?w=1000&q=80" alt="Deux mains qui se tendent l'une vers l'autre" style="object-position: 50% 32%" loading="lazy">
-        <figcaption>Tendre la main, ça commence comme ça.</figcaption>
-      </figure>
-      <div class="benev__text">
-        <h3 class="section-title">Donner du temps</h3>
-        <p class="lead">Chacun·e apporte ce qu'il a&nbsp;: une heure par semaine, une compétence, une voiture, une langue, deux bras.</p>
-        <p class="body">Pas besoin de savoir faire quelque chose de spécial. Nous cherchons des renforts pour&nbsp;:</p>
-        <ul class="roles">
-          <li>Logistique &amp; colis</li><li>Accompagnement</li><li>Cuisine</li><li>Transport</li><li>Administratif</li><li>Traduction</li><li>Potager</li><li>Événements</li>
-        </ul>
-        <div class="actions">
-          <a href="tel:+32465927366" class="btn btn--primary">Appeler l'équipe</a>
-          <a href="mailto:infos.ecwaterloo@gmail.com" class="btn btn--outline">Écrire un email</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="soutenir" id="soutenir">
-    <div class="wrap">
-      <div class="section-head">
-        <h3 class="section-title">Faire un don</h3>
-        <p class="section-sub">Ici, chaque euro arrive à destination&nbsp;: pas de salaire, pas de frais cachés. Merci, sincèrement.</p>
-      </div>
-      <div class="dons">
-        <a href="https://buy.stripe.com/00w4gzgJO36l5tE4TY4Rq01" target="_blank" rel="noopener" class="don"><span class="don__amount">10€</span><span class="don__impact">Un colis alimentaire pour une famille, une semaine.</span><span class="don__cta">Donner 10€ →</span></a>
-        <a href="https://buy.stripe.com/5kQaEX79ecGV6xI0DI4Rq02" target="_blank" rel="noopener" class="don"><span class="don__amount">25€</span><span class="don__impact">Des fournitures scolaires complètes pour trois enfants.</span><span class="don__cta">Donner 25€ →</span></a>
-        <a href="https://buy.stripe.com/dRmdR9fFK7mB6xIcmq4Rq03" target="_blank" rel="noopener" class="don"><span class="don__amount">50€</span><span class="don__impact">Un mois de permanences d'accueil.</span><span class="don__cta">Donner 50€ →</span></a>
-        <a href="https://buy.stripe.com/6oU28r8di9uJg8igCG4Rq04" target="_blank" rel="noopener" class="don don--accent"><span class="don__amount">100€</span><span class="don__impact">Un accompagnement médical complet pour une personne.</span><span class="don__cta">Donner 100€ →</span></a>
-      </div>
-      <div class="soutenir__more">
-        <div>
-          <p class="soutenir__more-title">Un autre montant&nbsp;?</p>
-          <a href="https://buy.stripe.com/dRm4gz0KQ0Yd5tE9ae4Rq00" target="_blank" rel="noopener" class="btn btn--outline">Don libre</a>
-        </div>
-        <div>
-          <p class="soutenir__more-title">Plutôt un don en nature&nbsp;?</p>
-          <p class="soutenir__more-text">Produits, fournitures scolaires, matériel&nbsp;: passez à l'épicerie ou <a href="mailto:infos.ecwaterloo@gmail.com">écrivez-nous</a>.</p>
-        </div>
-        <p class="soutenir__secure">Paiement sécurisé par Stripe. Merci pour eux.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="band band--navy lutins" id="lutins">
-    <svg class="mark mark--lutins" aria-hidden="true"><use href="#s-dot"/></svg>
-    <div class="wrap lutins__grid">
-      <div class="lutins__text">
-        <p class="eyebrow">Chaque décembre</p>
-        <h3 class="section-title">Devenez lutin·e de Noël</h3>
-        <p class="lead">Offrir un cadeau de Noël à un enfant de l'épicerie. Notre moment préféré de l'année.</p>
-        <ol class="lutins__steps">
-          <li><span>1</span>Vous vous inscrivez, nous vous recontactons.</li>
-          <li><span>2</span>Vous recevez la lettre d'un enfant au Père Noël.</li>
-          <li><span>3</span>Vous déposez son cadeau à l'épicerie — nous le lui remettons.</li>
-        </ol>
-        <button type="button" class="btn btn--light" id="openLutinForm">Je veux être lutin·e cette année</button>
-      </div>
-      <figure class="figure figure--flat">
-        <img src="https://images.unsplash.com/photo-1608755728617-aefab37d2edd?w=1000&q=80" alt="Cadeaux emballés pour Noël" loading="lazy">
-      </figure>
-    </div>
-  </section>
-
-  <!-- ══════════ 4. QUI SOMMES-NOUS ══════════ -->
-  <div class="chapter wrap" id="asbl">
-    <h2 class="chapter__title">Qui sommes-nous&nbsp;?</h2>
-    <p class="chapter__text">Une ASBL de quartier, bénévole, depuis 2014.</p>
-  </div>
-
-  <section class="histoire wrap" id="histoire">
-    <div class="histoire__grid">
-      <div class="histoire__text">
-        <h3 class="section-title">Depuis 2014, à Waterloo.</h3>
-        <p class="lead">Au début, c'était simple&nbsp;: une épicerie, des colis, un bonjour. Et puis nous avons écouté.</p>
-        <p class="body">Les gens nous racontaient le reste&nbsp;: le loyer en retard, la lettre pas comprise, le rendez-vous médical loupé. Alors nous avons ajouté le logement, les papiers, l'emploi, la santé.</p>
-        <p class="body">Aujourd'hui&nbsp;: une vingtaine de bénévoles, zéro salarié, plus de mille personnes passées par ici. La plupart sont reparties debout.</p>
-        <dl class="facts">
-          <div><dt data-count="11" data-suffix="&nbsp;ans">0</dt><dd>d'action</dd></div>
-          <div><dt data-count="1000" data-suffix="+">0</dt><dd>personnes aidées</dd></div>
-          <div><dt>20</dt><dd>bénévoles</dd></div>
-          <div><dt>0</dt><dd>salarié</dd></div>
-        </dl>
-      </div>
-      <div class="histoire__side">
-        <figure class="figure">
-          <img src="assets/images/equipe-ecw.jpg" alt="Photo de groupe des bénévoles et habitués de l'ECW" loading="lazy">
-          <figcaption>L'équipe et les habitués, à la journée des bénévoles.</figcaption>
-        </figure>
-        <ol class="timeline" aria-label="Jalons">
-          <li><span>2014</span>Ouverture des portes</li>
-          <li><span>2015</span>Création officielle de l'ASBL</li>
-          <li><span>2018</span>Élargissement des services</li>
-          <li><span>2020</span>Adaptation pendant la crise</li>
-          <li><span>2023</span>Épicerie étudiante mensuelle</li>
-          <li><span>2026</span>Plus de 1000 personnes accompagnées</li>
+<!-- ══════════ 2. ÉTUDIANT·E ══════════ -->
+<section class="etu" id="etudiants">
+  <div class="wrap etu__in">
+    <div class="etu__grid">
+      <div class="etu__main">
+        <h2 class="h-chap">Étudiant·e&nbsp;?</h2>
+        <p class="lead">Le premier jeudi de chaque mois, l'épicerie est réservée aux étudiant·es. Pour 5€, tu repars avec tes courses.</p>
+        <ol class="etu__steps">
+          <li><b>1</b><div><span>Tu t'inscris en ligne</span><span>Ça prend 30 secondes. L'inscription est obligatoire.</span></div></li>
+          <li><b>2</b><div><span>Tu reçois l'adresse par email</span><span>Avec toutes les infos pratiques pour le jour J.</span></div></li>
+          <li><b>3</b><div><span>Tu viens avec 5€ et un sac</span><span>5€ par personne, à payer sur place.</span></div></li>
         </ol>
       </div>
-    </div>
-  </section>
-
-  <section class="band band--navy temps" id="temps-forts">
-    <svg class="mark mark--temps" aria-hidden="true"><use href="#s-bean"/></svg>
-    <div class="wrap">
-      <div class="section-head">
-        <h3 class="section-title">Trois rendez-vous que nous ne raterions pour rien au monde.</h3>
-        <p class="section-sub">Des moments faits maison, avec nos moyens et beaucoup d'envie.</p>
-      </div>
-      <div class="temps__grid">
-        <article class="temps-item">
-          <figure class="figure figure--flat"><img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1000&q=80" alt="Potager collectif" loading="lazy"><figcaption>Toute l'année</figcaption></figure>
-          <h4>Le potager collectif</h4>
-          <p>Entretenu à la main, ses légumes partent directement à l'épicerie. Un atelier à ciel ouvert.</p>
-        </article>
-        <article class="temps-item">
-          <figure class="figure figure--flat"><img src="https://images.unsplash.com/photo-1595246140625-573b715d11dc?w=1000&q=80" alt="Colis emballés" loading="lazy"><figcaption>Décembre</figcaption></figure>
-          <h4>La Magie de Noël</h4>
-          <p>Un vrai menu de fête pour nos familles, et des cadeaux choisis par vous. <a href="#lutins">Devenir lutin·e →</a></p>
-        </article>
-        <article class="temps-item">
-          <figure class="figure figure--flat"><img src="https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=1000&q=80" alt="Rideau rouge de théâtre" loading="lazy"><figcaption>Une fois par an, salle Jules Bastin</figcaption></figure>
-          <h4>Notre pièce annuelle</h4>
-          <p>Deux représentations, deux fois salle pleine. Venir voir la pièce, c'est applaudir deux fois.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="gaz wrap" id="gazette">
-    <div class="gaz__grid">
-      <div class="gaz__cover">
-        <div class="pile">
-          <button type="button" class="pile__issue pile__issue--1" data-open-gazette data-pdf="assets/magazines/gazette-01.pdf" data-title="N°1 · Printemps 2026" aria-label="Feuilleter la gazette N°1">
-            <img src="assets/magazines/gazette-01-cover.jpg" alt="" loading="lazy">
-          </button>
-          <button type="button" class="pile__issue pile__issue--2" data-open-gazette data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026" aria-label="Feuilleter la gazette N°2">
-            <img src="assets/magazines/gazette-02-cover.jpg" alt="Couverture de la gazette conviviale — N°2, juillet 2026" loading="lazy">
-          </button>
+      <div class="etu__side">
+        <img src="assets/images/perso/d1.webp" width="990" height="923" loading="lazy" alt="Une étudiante prend des notes, assise sur son sac à dos rempli de cours et de courses">
+        <div class="etu__card" id="inscription">
+          <p class="etu__date">La prochaine a lieu le <b id="nextThursdayCard">premier jeudi du mois</b>.</p>
+          <p class="etu__open" id="studentOpen" hidden></p>
+          <button type="button" class="btn btn--lg btn--dark" id="openStudentForm">Je m'inscris</button>
+          <p class="etu__rule">Si tu ne peux pas venir, préviens-nous. Une absence non excusée empêche de se réinscrire par la suite.</p>
         </div>
-        <p class="pile__hint">Glissez la couverture pour passer d'un numéro à l'autre — touchez pour feuilleter.</p>
       </div>
-      <div class="gaz__info">
-        <p class="eyebrow">La gazette conviviale</p>
-        <h3 class="section-title">Nous écrivons aussi. Deux fois par an.</h3>
-        <p class="lead">Portraits, chroniques, photos, beaucoup de vraies histoires. Sur du vrai papier — et ici.</p>
-        <div class="actions">
-          <button class="btn btn--primary" id="openGazette" data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026">Feuilleter le dernier numéro</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 3. ENVIE D'AIDER ══════════ -->
+<section class="chap chap--olive" id="aider">
+  <div class="chap__in">
+    <h2 class="h-chap">Envie d'aider&nbsp;?</h2>
+    <nav class="chips" aria-label="Dans cette partie">
+      <a href="#benevoles" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Donner du temps</a>
+      <a href="#don" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>Faire un don</a>
+      <a href="#lutins" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1"/><path d="M4 13h16M12 9v11M12 9c-2-4-6-3-5 0M12 9c2-4 6-3 5 0"/></svg>Devenir lutin·e</a>
+    </nav>
+  </div>
+</section>
+
+<section class="wrap" id="benevoles">
+  <div class="benev__grid">
+    <img src="assets/images/perso/c2.webp" width="693" height="1300" loading="lazy" alt="Des bénévoles s'entraident pour grimper sur une pile de paniers, de livres et de calendriers">
+    <div class="benev__txt">
+      <h3 class="sr-only">Donner du temps</h3>
+      <p class="lead">Une heure par semaine, une compétence, une voiture, une langue ou simplement deux bras&nbsp;: chacun·e apporte ce qu'il peut.</p>
+      <p class="txt-16">Pas besoin d'expérience particulière. Appelez-nous ou écrivez-nous&nbsp;: nous vous proposons de passer à l'épicerie pour faire connaissance, et nous trouvons ensemble ce qui vous convient. Nous cherchons surtout du renfort pour&nbsp;:</p>
+      <ul class="tags"><li>Logistique &amp; colis</li><li>Accompagnement</li><li>Cuisine</li><li>Transport</li><li>Administratif</li><li>Traduction</li><li>Potager</li><li>Événements</li></ul>
+      <div class="btns"><a href="tel:+32465927366" class="btn btn--dark">Appeler l'équipe</a><a href="mailto:infos.ecwaterloo@gmail.com?subject=Devenir%20b%C3%A9n%C3%A9vole" class="btn btn--line">Écrire un email</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="don" id="don">
+  <div class="wrap don__in">
+    <div class="don__grid">
+      <div class="don__main">
+        <h3 class="h-big">Faire un don</h3>
+        <p class="lead">Personne n'est payé chez nous. Chaque euro sert directement aux personnes que nous accompagnons.</p>
+        <div class="don__free">
+          <a href="https://buy.stripe.com/dRm4gz0KQ0Yd5tE9ae4Rq00" class="btn btn--line-light">Choisir un autre montant</a>
+          <span>Paiement sécurisé par Stripe.</span>
         </div>
-        <ul class="gaz__issues">
-          <li class="gaz__issue">
-            <span class="gaz__issue-num">N°2</span>
-            <span class="gaz__issue-title">Juillet 2026 <small>20 pages</small></span>
-            <span class="gaz__issue-actions">
-              <button type="button" class="gaz__link" data-open-gazette data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026">Feuilleter</button>
-              <a href="assets/magazines/gazette-02.pdf" class="gaz__link" download>PDF</a>
-            </span>
-          </li>
-          <li class="gaz__issue">
-            <span class="gaz__issue-num">N°1</span>
-            <span class="gaz__issue-title">Printemps 2026 <small>8 pages</small></span>
-            <span class="gaz__issue-actions">
-              <button type="button" class="gaz__link" data-open-gazette data-pdf="assets/magazines/gazette-01.pdf" data-title="N°1 · Printemps 2026">Feuilleter</button>
-              <a href="assets/magazines/gazette-01.pdf" class="gaz__link" download>PDF</a>
-            </span>
-          </li>
-        </ul>
-        <figure class="gaz__snap">
-          <img src="assets/images/gazette-lecteurs.jpg" alt="Le N°2 de la gazette, ouvert entre les mains de lectrices" loading="lazy">
-          <figcaption>Le N°2 entre les mains de ses premiers lecteurs.</figcaption>
-        </figure>
+      </div>
+      <div class="amounts">
+        <a href="https://buy.stripe.com/00w4gzgJO36l5tE4TY4Rq01" class="amount" style="--c:#f26d5f"><span class="amount__sum">10€</span><span class="amount__what">Un colis alimentaire pour une famille, une semaine.</span><span class="amount__cta">Donner 10€ →</span></a>
+        <a href="https://buy.stripe.com/5kQaEX79ecGV6xI0DI4Rq02" class="amount" style="--c:#7fbfcb"><span class="amount__sum">25€</span><span class="amount__what">Des fournitures scolaires complètes pour trois enfants.</span><span class="amount__cta">Donner 25€ →</span></a>
+        <a href="https://buy.stripe.com/dRmdR9fFK7mB6xIcmq4Rq03" class="amount" style="--c:#c9cb45"><span class="amount__sum">50€</span><span class="amount__what">Un mois de permanences d'accueil.</span><span class="amount__cta">Donner 50€ →</span></a>
+        <a href="https://buy.stripe.com/6oU28r8di9uJg8igCG4Rq04" class="amount" style="--c:#fff"><span class="amount__sum">100€</span><span class="amount__what">Un accompagnement médical complet pour une personne.</span><span class="amount__cta">Donner 100€ →</span></a>
       </div>
     </div>
-  </section>
+    <div class="don__nature">
+      <h4>Plutôt un don en nature&nbsp;?</h4>
+      <p>Produits, fournitures scolaires, matériel&nbsp;: passez à l'épicerie ou <a href="mailto:infos.ecwaterloo@gmail.com?subject=Don%20en%20nature">écrivez-nous</a> pour savoir ce dont nous avons besoin en ce moment.</p>
+    </div>
+  </div>
+</section>
 
-  <!-- ══════════ CONTACT ══════════ -->
-  <section class="contact" id="contact">
-    <div class="wrap contact__grid">
-      <div class="contact__text">
-        <h2 class="contact__title">Besoin d'aide&nbsp;? Envie d'aider&nbsp;? Notre porte est ouverte.</h2>
-      </div>
-      <dl class="contact__list">
-        <div><dt>Téléphone</dt><dd><a href="tel:+32465927366">0465 92 73 66</a><small>Du lundi au vendredi</small></dd></div>
-        <div><dt>Email</dt><dd><a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a><small>Réponse sous 48h</small></dd></div>
-        <div><dt>Adresse</dt><dd>Waterloo, Belgique<small>Permanences sur rendez-vous</small></dd></div>
-      </dl>
+<section class="wrap lutins" id="lutins">
+  <div class="lutins__grid">
+    <div class="lutins__txt">
+      <h3>Devenez lutin·e de Noël, chaque décembre</h3>
+      <p class="lead">Chaque année, des enfants de l'épicerie écrivent leur lettre au Père Noël. Vous en recevez une, et vous offrez le cadeau. C'est notre moment préféré de l'année.</p>
+      <ol class="lutins__steps">
+        <li><b>1</b>Vous vous inscrivez, et nous vous recontactons.</li>
+        <li><b>2</b>Vous recevez la lettre d'un enfant au Père Noël.</li>
+        <li><b>3</b>Vous déposez le cadeau à l'épicerie, et nous le lui remettons.</li>
+      </ol>
+      <button type="button" class="btn btn--lg btn--coral" id="openLutinForm">Je veux être lutin·e cette année</button>
     </div>
-    <svg class="mark mark--contact" aria-hidden="true"><use href="#s-blob"/></svg>
-  </section>
+    <img src="assets/images/perso/c6.webp" width="1091" height="1291" loading="lazy" alt="Deux lutins perchés sur une montagne de cadeaux et de courses, l'un tend un paquet à une enfant">
+  </div>
+</section>
 
-  <footer class="footer">
-    <div class="wrap footer__top">
-      <div class="footer__intro">
-        <img src="assets/images/ecw-logo.png" alt="Espace Convivial de Waterloo" class="footer__logo">
-        <p class="footer__claim">Nous tendons la main à celles et ceux qui en ont besoin.</p>
-        <address class="footer__address">
-          <strong>L'épicerie</strong><br>
-          Rue de la Station 139A<br>
-          1410 Waterloo, Belgique
-        </address>
-        <p class="footer__hours">Permanences sur rendez-vous.<br><a href="#rdv">Prendre rendez-vous</a> · <a href="tel:+32465927366">0465 92 73 66</a></p>
-        <a class="footer__itin" href="https://www.google.com/maps/dir/?api=1&destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Itinéraire →</a>
-      </div>
-      <div class="footer__map" id="map" role="img" aria-label="Carte : Rue de la Station 139A, 1410 Waterloo"></div>
+<!-- ══════════ 4. QUI SOMMES-NOUS ══════════ -->
+<section class="chap chap--navy" id="asbl">
+  <div class="chap__in">
+    <h2 class="h-chap">Qui sommes-nous&nbsp;?</h2>
+    <nav class="chips" aria-label="Dans cette partie">
+      <a href="#histoire" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3Z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg>Notre histoire</a>
+      <a href="#temps-forts" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 4 2.3 4.8 5.2.7-3.8 3.6.9 5.2L12 15.8 7.4 18.3l.9-5.2-3.8-3.6 5.2-.7Z"/></svg>Temps forts</a>
+      <a href="#gazette" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h11v14H7a2 2 0 0 1-2-2Z"/><path d="M16 9h3v8a2 2 0 0 1-2 2"/><path d="M8 9h5M8 12h5M8 15h3"/></svg>La gazette</a>
+    </nav>
+  </div>
+</section>
+
+<section class="wrap" id="histoire">
+  <div class="story">
+    <div class="story__txt">
+      <h3 class="sr-only">Notre histoire</h3>
+      <p class="lead lead--lg">L'Espace Convivial de Waterloo est né en 2014, à l'initiative de Wivine Mayaya. À l'époque, il n'existait aucune épicerie sociale à Waterloo.</p>
+      <p class="txt">Très vite, nous avons compris que manger ne suffisait pas. Derrière un panier, il y a souvent un loyer, un courrier ou un souci de santé. L'épicerie est devenue une porte d'entrée vers un accompagnement plus large, reconnu aujourd'hui comme Initiative Locale d'Insertion par la Région wallonne.</p>
+      <p class="txt">Ici, certains bénéficiaires deviennent bénévoles. Aujourd'hui, chacun peut avoir besoin d'aide&nbsp;; demain, chacun peut être celui qui aide.</p>
+      <a href="notre-histoire.html" class="btn btn--dark">Lire notre histoire<span aria-hidden="true">→</span></a>
     </div>
-    <div class="wrap footer__grid">
-      <nav class="footer__col" aria-label="Besoin d'aide">
-        <p class="footer__col-title">Besoin d'aide</p>
-        <a href="#services">Nos services</a>
-        <a href="#workflow">Comment ça se passe</a>
-        <a href="#rdv">Prendre rendez-vous</a>
-        <a href="#etudiants">Épicerie étudiante</a>
-      </nav>
-      <nav class="footer__col" aria-label="Aider">
-        <p class="footer__col-title">Aider</p>
-        <a href="#benevoles">Donner du temps</a>
-        <a href="#soutenir">Faire un don</a>
-        <a href="#lutins">Devenir lutin·e</a>
-      </nav>
-      <nav class="footer__col" aria-label="L'asbl">
-        <p class="footer__col-title">L'asbl</p>
-        <a href="#histoire">Notre histoire</a>
-        <a href="#temps-forts">Temps forts</a>
-        <a href="#gazette">La gazette</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <div class="footer__col">
-        <p class="footer__col-title">Nous joindre</p>
+    <figure class="photo"><div class="photo__frame"><img src="assets/images/equipe-ecw.jpg" width="700" height="345" loading="lazy" alt="Photo de groupe des bénévoles et habitués de l'ECW"></div><figcaption>L'équipe et les habitués, à la journée des bénévoles.</figcaption></figure>
+  </div>
+  <div class="paint"><img src="assets/images/perso/c8.webp" width="1122" height="775" loading="lazy" alt="Une bénévole peint un chemin bleu vers des habitants qui saluent"><div class="paint__line" aria-hidden="true"></div></div>
+  <ol class="years" aria-label="Quelques dates">
+    <li><b>2014</b><span>Ouverture de l'épicerie</span></li>
+    <li><b>2015</b><span>Création officielle de l'ASBL</span></li>
+    <li><b>2018</b><span>Logement, papiers, emploi et santé s'ajoutent</span></li>
+    <li><b>2020</b><span>Nous nous adaptons pendant la crise sanitaire</span></li>
+    <li><b>2023</b><span>Lancement de l'épicerie étudiante</span></li>
+    <li><b>2026</b><span>Première Gazette conviviale</span></li>
+  </ol>
+</section>
+
+<section class="moments" id="temps-forts">
+  <div class="wrap moments__in">
+    <div class="moments__head"><h3 class="h-sec">Trois moments forts dans l'année</h3><p class="txt-18">Organisés par les bénévoles, avec peu de moyens et beaucoup d'envie.</p></div>
+    <div class="moments__grid">
+      <article class="moment"><div class="moment__art" style="--c:#e7ecd0"><img src="assets/images/perso/a7.webp" width="1000" height="897" loading="lazy" alt="Une jardinière arrache une énorme carotte du potager"></div><div class="moment__body"><h4>Le potager collectif</h4><p class="txt-16">Toute l'année, les bénévoles l'entretiennent à la main, et les légumes récoltés partent directement à l'épicerie.</p></div></article>
+      <article class="moment"><div class="moment__art" style="--c:#fbe1dc"><img src="assets/images/perso/a1.webp" width="676" height="1000" loading="lazy" alt="Le cabas de l'épicerie, plein de légumes, qui marche d'un pas décidé"></div><div class="moment__body"><h4>La Magie de Noël</h4><p class="txt-16">En décembre, un vrai repas de fête pour les familles de l'épicerie, et des cadeaux offerts par les lutin·es. <a href="#lutins">Devenir lutin·e →</a></p></div></article>
+      <article class="moment"><div class="moment__art" style="--c:#dcebee"><img src="assets/images/perso/b3.webp" width="785" height="1000" loading="lazy" alt="Un comédien salue en sortant du rideau rouge"></div><div class="moment__body"><h4>Notre pièce annuelle</h4><p class="txt-16">Une fois par an, l'association monte une pièce de théâtre, jouée deux soirs à la salle Jules Bastin. La salle était pleine les deux fois.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="wrap gaz" id="gazette">
+  <div class="gaz__grid">
+    <div class="gaz__art">
+      <button type="button" class="gaz__cover" data-open-gazette data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026" aria-label="Feuilleter la gazette N°2"><img src="assets/magazines/gazette-02-cover.jpg" width="910" height="1287" loading="lazy" alt="Couverture de la gazette conviviale — N°2, juillet 2026"></button>
+      <img class="gaz__reader" src="assets/images/perso/a6.webp" width="1000" height="934" loading="lazy" alt="Une lectrice assise sur un journal roulé">
+    </div>
+    <div class="gaz__txt">
+      <h3 class="h-big">La Gazette conviviale, notre journal deux fois par an</h3>
+      <p class="txt-18">Des portraits de bénévoles et d'habitués, des chroniques, des idées de cuisine et des photos de la vie de l'épicerie. Il est imprimé sur papier, et vous pouvez aussi le lire ici.</p>
+      <div class="btns">
+        <a href="assets/magazines/gazette-02.pdf" class="btn btn--dark" data-open-gazette data-pdf="assets/magazines/gazette-02.pdf" data-title="N°2 · Juillet 2026">Lire le N°2 · juillet 2026</a>
+        <a href="assets/magazines/gazette-01.pdf" class="btn btn--line" data-open-gazette data-pdf="assets/magazines/gazette-01.pdf" data-title="N°1 · Printemps 2026">Lire le N°1 · printemps 2026</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════ CARTE QUESTION + FOOTER ══════════ -->
+<div class="wrap ask">
+  <div class="ask__card">
+    <h2>Une question&nbsp;? Appelez-nous ou passez nous voir.</h2>
+    <div class="btns"><a href="#rdv" class="btn btn--dark">Prendre rendez-vous</a><a href="#don" class="btn btn--line">Faire un don</a></div>
+  </div>
+</div>
+<footer class="foot" id="contact">
+  <div class="foot__art"><img src="assets/images/footer-trou.webp" srcset="assets/images/footer-trou-1100.webp 1100w, assets/images/footer-trou.webp 2172w" sizes="(min-width: 1100px) 1380px, 168vw" width="2172" height="724" loading="lazy" alt="Une bénévole, son cabas sur l'épaule, passe à travers le papier"></div>
+  <div class="wrap foot__in">
+    <div class="foot__intro">
+      <h2 class="sr-only">Contact</h2>
+      <div class="foot__contact">
         <a href="tel:+32465927366">0465 92 73 66</a>
         <a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a>
-        <span>Du lundi au vendredi</span>
-        <a href="bienvenue.html">Other languages · Інші мови</a>
+        <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Rue de la Station 139A, 1410 Waterloo</a>
       </div>
     </div>
-    <div class="wrap footer__bottom">
-      <p>&copy; 2014–2026 Espace Convivial de Waterloo · ASBL 100% bénévole</p>
-      <p><a href="admin.html">Espace admin</a></p>
+    <div class="foot__cols">
+      <nav class="foot__col" aria-label="Besoin d'aide"><b class="foot__title" style="--c:#f26d5f">Besoin d'aide</b><a href="#services">Nos services</a><a href="#workflow">Comment ça se passe</a><a href="#rdv">Prendre rendez-vous</a><a href="#etudiants" class="foot__etu">Épicerie étudiante</a></nav>
+      <nav class="foot__col" aria-label="Aider"><b class="foot__title" style="--c:#aeb02b">Aider</b><a href="#benevoles">Donner du temps</a><a href="#don">Faire un don</a><a href="#lutins">Devenir lutin·e</a></nav>
+      <nav class="foot__col" aria-label="L'asbl"><b class="foot__title" style="--c:#fff">L'asbl</b><a href="#histoire">Notre histoire</a><a href="#temps-forts">Temps forts</a><a href="#gazette">La gazette</a></nav>
     </div>
-  </footer>
-
-  </main>
-
-<!-- ══════════ MODAL INSCRIPTION ÉTUDIANTS ══════════ -->
-  <div class="smodal" id="studentModal" aria-hidden="true">
-    <div class="smodal__backdrop" id="studentModalBackdrop"></div>
-    <div class="smodal__dialog" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
-      <button class="smodal__close" id="closeStudentModal" aria-label="Fermer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-
-      <div class="smodal__progress" aria-hidden="true">
-        <div class="smodal__progress-fill" id="sformProgressBar"></div>
-      </div>
-
-      <form id="studentForm" class="sform" novalidate>
-        <input type="hidden" name="date_rdv" id="hiddenDateRdv">
-
-        <div class="sform__step is-active" data-step="1">
-          <p class="sform__kicker">Épicerie étudiante</p>
-          <h2 class="sform__title" id="studentModalTitle">Prochain rendez-vous</h2>
-          <div class="sform__date">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span id="nextThursdayDisplay">Calcul…</span>
-          </div>
-          <ul class="sform__rules">
-            <li><span class="sform__rule-tag">5€</span><span><strong>5€ symboliques</strong> à apporter impérativement le jour J. Aucune exception.</span></li>
-            <li><span class="sform__rule-tag">✓</span><span>Inscription <strong>obligatoire</strong>. Les absents non excusés ne pourront plus s'inscrire.</span></li>
-            <li><span class="sform__rule-tag">✉</span><span>Tu recevras un <strong>email de confirmation</strong> avec l'adresse et les infos pratiques.</span></li>
-          </ul>
-          <button type="button" class="btn btn--dark sform__next">Je m'inscris</button>
-        </div>
-
-        <div class="sform__step" data-step="2">
-          <p class="sform__kicker">Étape 1 / 3</p>
-          <h2 class="sform__title">Qui es-tu&nbsp;?</h2>
-          <div class="sform__row">
-            <div class="sform__group">
-              <label class="sform__label" for="inputPrenom">Prénom</label>
-              <input class="sform__input" type="text" id="inputPrenom" name="prenom" autocomplete="given-name" placeholder="Marie">
-            </div>
-            <div class="sform__group">
-              <label class="sform__label" for="inputNom">Nom</label>
-              <input class="sform__input" type="text" id="inputNom" name="nom" autocomplete="family-name" placeholder="Dupont">
-            </div>
-          </div>
-          <div class="sform__group">
-            <label class="sform__label">Genre</label>
-            <div class="sform__radios" id="genreGroup">
-              <label class="sform__radio"><input type="radio" name="genre" value="Femme"><span>Femme</span></label>
-              <label class="sform__radio"><input type="radio" name="genre" value="Homme"><span>Homme</span></label>
-            </div>
-          </div>
-          <div class="sform__nav">
-            <button type="button" class="btn btn--light sform__prev">← Retour</button>
-            <button type="button" class="btn btn--dark sform__next">Continuer →</button>
-          </div>
-        </div>
-
-        <div class="sform__step" data-step="3">
-          <p class="sform__kicker">Étape 2 / 3</p>
-          <h2 class="sform__title">Tes coordonnées</h2>
-          <div class="sform__group">
-            <label class="sform__label" for="inputEmail">Email</label>
-            <input class="sform__input" type="email" id="inputEmail" name="email" autocomplete="email" placeholder="marie@exemple.com">
-          </div>
-          <div class="sform__group">
-            <label class="sform__label" for="inputTel">Téléphone</label>
-            <input class="sform__input" type="tel" id="inputTel" name="telephone" autocomplete="tel" placeholder="+32 470 00 00 00">
-          </div>
-          <div class="sform__nav">
-            <button type="button" class="btn btn--light sform__prev">← Retour</button>
-            <button type="button" class="btn btn--dark sform__next">Continuer →</button>
-          </div>
-        </div>
-
-        <div class="sform__step" data-step="4">
-          <p class="sform__kicker">Étape 3 / 3</p>
-          <h2 class="sform__title">Ta visite</h2>
-          <div class="sform__group">
-            <label class="sform__label" for="inputUniv">Université / École</label>
-            <input class="sform__input" type="text" id="inputUniv" name="universite" placeholder="UCLouvain, ULB, HELHa…">
-          </div>
-          <div class="sform__group">
-            <label class="sform__label">Pour combien de personnes&nbsp;?</label>
-            <div class="sform__stepper">
-              <button type="button" class="sform__stepper-btn" id="stepperMinus" aria-label="Réduire">−</button>
-              <span class="sform__stepper-val" id="stepperVal">1</span>
-              <button type="button" class="sform__stepper-btn" id="stepperPlus" aria-label="Augmenter">+</button>
-            </div>
-            <input type="hidden" name="nb_personnes" id="hiddenNbPersonnes" value="1">
-          </div>
-          <label class="sform__check" id="engagementLabel">
-            <input type="checkbox" id="engagementCheck">
-            <span>Je m'engage à me présenter le <strong class="thursday-ref">…</strong> et à apporter <strong>5€</strong> par personne.</span>
-          </label>
-          <div class="sform__nav">
-            <button type="button" class="btn btn--light sform__prev">← Retour</button>
-            <button type="submit" class="btn btn--dark">Confirmer →</button>
-          </div>
-        </div>
-      </form>
-
-      <div class="sform__success" id="sformSuccess" hidden>
-        <div class="sform__success-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <p class="sform__kicker">C'est bon&nbsp;!</p>
-        <h2 class="sform__title">À jeudi&nbsp;!</h2>
-        <p class="sform__success-date" id="successDate"></p>
-        <p class="sform__success-note">Un email de confirmation t'a été envoyé. N'oublie pas d'apporter tes <strong>5€</strong> le jour J.</p>
-        <button type="button" class="btn btn--dark" id="closeSuccess">Fermer</button>
-      </div>
+    <div class="foot__bottom">
+      <span>© 2014–2026 Espace Convivial de Waterloo · ASBL 100% bénévole</span>
+      <span class="foot__links"><a href="bienvenue.html">English · Українська · العربية…</a><a href="admin.html">Espace admin</a></span>
     </div>
   </div>
+</footer>
 
-  <!-- ══════════ MODAL INSCRIPTION LUTINS ══════════ -->
-  <div class="smodal" id="lutinModal" aria-hidden="true">
-    <div class="smodal__backdrop" id="lutinModalBackdrop"></div>
-    <div class="smodal__dialog" role="dialog" aria-modal="true" aria-labelledby="lutinModalTitle">
-      <button class="smodal__close" id="closeLutinModal" aria-label="Fermer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+<div class="mbar-space" aria-hidden="true"></div>
+<div class="mbar">
+  <a href="tel:+32465927366" class="mbar__call"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Appeler</a>
+  <a href="#rdv" class="mbar__cta" data-cta>Prendre rendez-vous</a>
+</div>
 
-      <form id="lutinForm" class="sform" novalidate>
-        <div class="sform__step is-active">
-          <p class="sform__kicker">Opération Lutins &amp; Lutines</p>
-          <h2 class="sform__title" id="lutinModalTitle">Deviens lutin·e</h2>
-          <p class="sform__lead">Laisse-nous tes coordonnées et le nombre de lettres d'enfant que tu souhaites. Nous te recontactons par WhatsApp pour la suite.</p>
+</div><!-- /.site -->
 
-          <div class="sform__row">
-            <div class="sform__group">
-              <label class="sform__label" for="lutinPrenom">Prénom</label>
-              <input class="sform__input" type="text" id="lutinPrenom" name="prenom" autocomplete="given-name" placeholder="Marie">
-            </div>
-            <div class="sform__group">
-              <label class="sform__label" for="lutinNom">Nom</label>
-              <input class="sform__input" type="text" id="lutinNom" name="nom" autocomplete="family-name" placeholder="Dupont">
-            </div>
-          </div>
-          <div class="sform__group">
-            <label class="sform__label" for="lutinTel">Téléphone <span class="sform__label-hint">(recommandé — pour WhatsApp)</span></label>
-            <input class="sform__input" type="tel" id="lutinTel" name="telephone" autocomplete="tel" placeholder="+32 470 00 00 00">
-          </div>
-          <div class="sform__group">
-            <label class="sform__label" for="lutinEmail">Email <span class="sform__label-hint">(ou email si tu préfères)</span></label>
-            <input class="sform__input" type="email" id="lutinEmail" name="email" autocomplete="email" placeholder="marie@exemple.com">
-          </div>
-          <div class="sform__group">
-            <label class="sform__label">Combien de lettres veux-tu recevoir&nbsp;?</label>
-            <div class="sform__stepper">
-              <button type="button" class="sform__stepper-btn" id="lutinStepperMinus" aria-label="Réduire">−</button>
-              <span class="sform__stepper-val" id="lutinStepperVal">1</span>
-              <button type="button" class="sform__stepper-btn" id="lutinStepperPlus" aria-label="Augmenter">+</button>
-            </div>
-            <input type="hidden" name="nb_lettres" id="hiddenNbLettres" value="1">
-          </div>
+<!-- ══════════ MODALE INSCRIPTION ÉTUDIANTE ══════════ -->
+<div class="smodal" id="studentModal" aria-hidden="true">
+  <div class="smodal__backdrop" id="studentModalBackdrop"></div>
+  <div class="smodal__dialog" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
+    <button type="button" class="smodal__close" id="closeStudentModal" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="smodal__progress" aria-hidden="true"><div class="smodal__progress-fill" id="sformProgressBar"></div></div>
 
-          <p class="sform__error" id="lutinFormError" hidden></p>
+    <form id="studentForm" class="sform" novalidate>
+      <input type="hidden" name="date_rdv" id="hiddenDateRdv">
 
-          <div class="sform__nav sform__nav--single">
-            <button type="submit" class="btn btn--dark">Je m'inscris comme lutin·e</button>
-          </div>
+      <div class="sform__step is-active" data-step="1">
+        <p class="sform__kicker">Épicerie étudiante</p>
+        <h2 class="sform__title" id="studentModalTitle">Prochain rendez-vous</h2>
+        <div class="sform__date">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="nextThursdayDisplay">Calcul…</span>
         </div>
-      </form>
-
-      <div class="sform__success" id="lutinSuccess" hidden>
-        <div class="sform__success-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <p class="sform__kicker">Merci&nbsp;!</p>
-        <h2 class="sform__title">À bientôt&nbsp;!</h2>
-        <p class="sform__success-note">Nous t'enverrons la (ou les) lettre(s) d'enfant par WhatsApp. Merci de faire partie de cette belle aventure.</p>
-        <button type="button" class="btn btn--dark" id="closeLutinSuccess">Fermer</button>
+        <ul class="sform__rules">
+          <li><span class="sform__rule-tag">5€</span><span><strong>5€ symboliques</strong> à apporter impérativement le jour J. Aucune exception.</span></li>
+          <li><span class="sform__rule-tag">✓</span><span>Inscription <strong>obligatoire</strong>. Les absents non excusés ne pourront plus s'inscrire.</span></li>
+          <li><span class="sform__rule-tag">✉</span><span>Tu recevras un <strong>email de confirmation</strong> avec l'adresse et les infos pratiques.</span></li>
+        </ul>
+        <button type="button" class="btn btn--dark sform__next">Je m'inscris</button>
       </div>
+
+      <div class="sform__step" data-step="2">
+        <p class="sform__kicker">Étape 1 sur 3</p>
+        <h2 class="sform__title">Qui es-tu&nbsp;?</h2>
+        <div class="sform__row">
+          <div class="sform__group">
+            <label class="sform__label" for="inputPrenom">Prénom</label>
+            <input class="sform__input" type="text" id="inputPrenom" name="prenom" autocomplete="given-name" placeholder="Marie">
+          </div>
+          <div class="sform__group">
+            <label class="sform__label" for="inputNom">Nom</label>
+            <input class="sform__input" type="text" id="inputNom" name="nom" autocomplete="family-name" placeholder="Dupont">
+          </div>
+        </div>
+        <div class="sform__group">
+          <span class="sform__label">Genre</span>
+          <div class="sform__radios" id="genreGroup">
+            <label class="sform__radio"><input type="radio" name="genre" value="Femme"><span>Femme</span></label>
+            <label class="sform__radio"><input type="radio" name="genre" value="Homme"><span>Homme</span></label>
+          </div>
+        </div>
+        <div class="sform__nav">
+          <button type="button" class="btn btn--line sform__prev">← Retour</button>
+          <button type="button" class="btn btn--dark sform__next">Continuer →</button>
+        </div>
+      </div>
+
+      <div class="sform__step" data-step="3">
+        <p class="sform__kicker">Étape 2 sur 3</p>
+        <h2 class="sform__title">Tes coordonnées</h2>
+        <div class="sform__group">
+          <label class="sform__label" for="inputEmail">Email</label>
+          <input class="sform__input" type="email" id="inputEmail" name="email" autocomplete="email" placeholder="marie@exemple.com">
+        </div>
+        <div class="sform__group">
+          <label class="sform__label" for="inputTel">Téléphone</label>
+          <input class="sform__input" type="tel" id="inputTel" name="telephone" autocomplete="tel" placeholder="+32 470 00 00 00">
+        </div>
+        <div class="sform__nav">
+          <button type="button" class="btn btn--line sform__prev">← Retour</button>
+          <button type="button" class="btn btn--dark sform__next">Continuer →</button>
+        </div>
+      </div>
+
+      <div class="sform__step" data-step="4">
+        <p class="sform__kicker">Étape 3 sur 3</p>
+        <h2 class="sform__title">Ta visite</h2>
+        <div class="sform__group">
+          <label class="sform__label" for="inputUniv">Université / École</label>
+          <input class="sform__input" type="text" id="inputUniv" name="universite" placeholder="UCLouvain, ULB, HELHa…">
+        </div>
+        <div class="sform__group">
+          <span class="sform__label">Pour combien de personnes&nbsp;?</span>
+          <div class="sform__stepper">
+            <button type="button" class="sform__stepper-btn" id="stepperMinus" aria-label="Réduire">−</button>
+            <span class="sform__stepper-val" id="stepperVal" aria-live="polite">1</span>
+            <button type="button" class="sform__stepper-btn" id="stepperPlus" aria-label="Augmenter">+</button>
+          </div>
+          <input type="hidden" name="nb_personnes" id="hiddenNbPersonnes" value="1">
+        </div>
+        <label class="sform__check" id="engagementLabel">
+          <input type="checkbox" id="engagementCheck">
+          <span>Je m'engage à me présenter le <strong class="thursday-ref">…</strong> et à apporter <strong>5€</strong> par personne.</span>
+        </label>
+        <p class="sform__error" id="studentFormError" hidden></p>
+        <div class="sform__nav">
+          <button type="button" class="btn btn--line sform__prev">← Retour</button>
+          <button type="submit" class="btn btn--dark">Confirmer →</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="sform__success" id="sformSuccess" hidden>
+      <div class="sform__success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <p class="sform__kicker">C'est bon&nbsp;!</p>
+      <h2 class="sform__title">À jeudi&nbsp;!</h2>
+      <p class="sform__success-date" id="successDate"></p>
+      <p class="sform__success-note">Un email de confirmation t'a été envoyé. N'oublie pas d'apporter tes <strong>5€</strong> le jour J.</p>
+      <button type="button" class="btn btn--dark" id="closeSuccess">Fermer</button>
     </div>
   </div>
+</div>
 
-  <!-- ══════════ LECTEUR GAZETTE ══════════ -->
-  <div class="reader" id="gazetteReader" aria-hidden="true">
-    <div class="reader__backdrop" id="readerBackdrop"></div>
-    <div class="reader__shell" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
-      <header class="reader__head">
-        <div class="reader__brand">
-          <span class="reader__kicker">Gazette conviviale</span>
-          <span class="reader__title" id="readerTitle">—</span>
+<!-- ══════════ MODALE INSCRIPTION LUTINS ══════════ -->
+<div class="smodal" id="lutinModal" aria-hidden="true">
+  <div class="smodal__backdrop" id="lutinModalBackdrop"></div>
+  <div class="smodal__dialog" role="dialog" aria-modal="true" aria-labelledby="lutinModalTitle">
+    <button type="button" class="smodal__close" id="closeLutinModal" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <form id="lutinForm" class="sform" novalidate>
+      <div class="sform__step is-active">
+        <p class="sform__kicker">Opération Lutins &amp; Lutines</p>
+        <h2 class="sform__title" id="lutinModalTitle">Deviens lutin·e</h2>
+        <p class="sform__lead">Laisse-nous tes coordonnées et le nombre de lettres d'enfant que tu souhaites. Nous te recontactons par WhatsApp pour la suite.</p>
+        <div class="sform__row">
+          <div class="sform__group">
+            <label class="sform__label" for="lutinPrenom">Prénom</label>
+            <input class="sform__input" type="text" id="lutinPrenom" name="prenom" autocomplete="given-name" placeholder="Marie">
+          </div>
+          <div class="sform__group">
+            <label class="sform__label" for="lutinNom">Nom</label>
+            <input class="sform__input" type="text" id="lutinNom" name="nom" autocomplete="family-name" placeholder="Dupont">
+          </div>
         </div>
-        <div class="reader__indicator">
-          <span id="readerCurrentPage">1</span>
-          <span class="reader__indicator-sep">/</span>
-          <span id="readerTotalPages">—</span>
+        <div class="sform__group">
+          <label class="sform__label" for="lutinTel">Téléphone <span class="sform__label-hint">(recommandé, pour WhatsApp)</span></label>
+          <input class="sform__input" type="tel" id="lutinTel" name="telephone" autocomplete="tel" placeholder="+32 470 00 00 00">
         </div>
-        <div class="reader__toolbar">
-          <a href="assets/magazines/gazette-02.pdf" class="reader__tool" id="readerDownload" download title="Télécharger le PDF">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          </a>
-          <button class="reader__close" id="closeGazette" aria-label="Fermer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
+        <div class="sform__group">
+          <label class="sform__label" for="lutinEmail">Email <span class="sform__label-hint">(si tu préfères)</span></label>
+          <input class="sform__input" type="email" id="lutinEmail" name="email" autocomplete="email" placeholder="marie@exemple.com">
         </div>
-      </header>
+        <div class="sform__group">
+          <span class="sform__label">Combien de lettres veux-tu recevoir&nbsp;?</span>
+          <div class="sform__stepper">
+            <button type="button" class="sform__stepper-btn" id="lutinStepperMinus" aria-label="Réduire">−</button>
+            <span class="sform__stepper-val" id="lutinStepperVal" aria-live="polite">1</span>
+            <button type="button" class="sform__stepper-btn" id="lutinStepperPlus" aria-label="Augmenter">+</button>
+          </div>
+          <input type="hidden" name="nb_lettres" id="hiddenNbLettres" value="1">
+        </div>
+        <p class="sform__error" id="lutinFormError" hidden></p>
+        <div class="sform__nav"><button type="submit" class="btn btn--dark">Je m'inscris comme lutin·e</button></div>
+      </div>
+    </form>
+    <div class="sform__success" id="lutinSuccess" hidden>
+      <div class="sform__success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <p class="sform__kicker">Merci&nbsp;!</p>
+      <h2 class="sform__title">À bientôt&nbsp;!</h2>
+      <p class="sform__success-note">Nous t'enverrons la (ou les) lettre(s) d'enfant par WhatsApp. Merci de faire partie de cette belle aventure.</p>
+      <button type="button" class="btn btn--dark" id="closeLutinSuccess">Fermer</button>
+    </div>
+  </div>
+</div>
 
-      <div class="reader__stage" id="readerStage">
-        <button class="reader__nav reader__nav--prev" id="readerPrev" aria-label="Page précédente">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+<!-- ══════════ LECTEUR GAZETTE ══════════ -->
+<div class="reader" id="gazetteReader" aria-hidden="true">
+  <div class="reader__backdrop" id="readerBackdrop"></div>
+  <div class="reader__shell" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+    <header class="reader__head">
+      <div class="reader__brand">
+        <span class="reader__kicker">Gazette conviviale</span>
+        <span class="reader__title" id="readerTitle">—</span>
+      </div>
+      <div class="reader__indicator"><span id="readerCurrentPage">1</span><span class="reader__indicator-sep">/</span><span id="readerTotalPages">—</span></div>
+      <div class="reader__toolbar">
+        <a href="assets/magazines/gazette-02.pdf" class="reader__tool" id="readerDownload" download title="Télécharger le PDF" aria-label="Télécharger le PDF">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <button type="button" class="reader__close" id="closeGazette" aria-label="Fermer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
-        <div class="reader__spread" id="readerSpread"><div class="reader__book" id="readerBook"></div></div>
-        <button class="reader__nav reader__nav--next" id="readerNext" aria-label="Page suivante">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-        <div class="reader__loading" id="readerLoading" hidden>
-          <div class="reader__spinner"></div>
-        </div>
       </div>
-
-      <div class="reader__thumbs" id="readerThumbs" aria-label="Pages"></div>
-      <div class="reader__footer">
-        <span class="reader__hint">← → ou glisser un coin pour tourner · Échap pour fermer</span>
-      </div>
+    </header>
+    <div class="reader__stage" id="readerStage">
+      <button type="button" class="reader__nav reader__nav--prev" id="readerPrev" aria-label="Page précédente">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="reader__spread" id="readerSpread"><div class="reader__book" id="readerBook"></div></div>
+      <button type="button" class="reader__nav reader__nav--next" id="readerNext" aria-label="Page suivante">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="reader__loading" id="readerLoading" hidden><div class="reader__spinner"></div></div>
     </div>
+    <div class="reader__thumbs" id="readerThumbs" aria-label="Pages"></div>
+    <div class="reader__footer"><span class="reader__hint">← → ou glisser un coin pour tourner · Échap pour fermer</span></div>
   </div>
+</div>
 
-    <script src="config.js?v=2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-  <script src="scripts/main.js?v=26"></script>
-  <script src="scripts/chatbot.js?v=2" defer></script>
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-    }
-  }
-  </script>
-  <script type="module" src="scripts/hero3d.js?v=3"></script>
+<script src="config.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+<script src="scripts/main.js?v=27"></script>
+<script src="scripts/chatbot.js?v=3"></script>
 </body>
 </html>
