@@ -405,7 +405,13 @@ b, strong { font-weight: 600; }
 .lutins__steps li { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 18px; line-height: 1.45; }
 .lutins__steps b { font-weight: 300; font-size: 28px; line-height: 1; color: var(--coral-d); }
 .lutins__txt .btn { align-self: flex-start; }
-.lutins__grid > img { width: min(100%, 560px); justify-self: center; }
+.ribbon-art { position: relative; width: min(100%, 560px); justify-self: center; container-type: inline-size; }
+.ribbon-art img { position: relative; z-index: 1; width: 100%; }
+/* Le ruban sort de derrière le cadeau rouge et file jusqu'au bord de l'écran (bande de largeur constante) */
+.ribbon { position: absolute; z-index: 0; left: 91%; top: calc(89% - 15cqw); width: 100vw; height: 30cqw; overflow: visible; }
+.ribbon path { fill: none; stroke-width: 7cqw; stroke-linecap: butt; vector-effect: non-scaling-stroke; }
+.ribbon__band { stroke: #ef4a2c; }
+.ribbon__back { stroke: #c22d1a; }
 
 /* ══════════════════════════════════════════════════════════════
    QUI SOMMES-NOUS — histoire, frise, temps forts, gazette
@@ -747,12 +753,13 @@ b, strong { font-weight: 600; }
 
   /* Images bord à bord (comme un post) */
   .hero__art, .svc-art, .flow__head img, .rdv__txt img, .etu__side > img,
-  .benev__grid > img, .lutins__grid > img, .art-photo div, .art-fig div {
+  .benev__grid > img, .ribbon-art, .art-photo div, .art-fig div {
     width: calc(100% + 2 * var(--gut)); max-width: none; margin-left: calc(-1 * var(--gut)); margin-right: calc(-1 * var(--gut));
     border-radius: 0;
   }
   /* Dessins très hauts : la boîte reste pleine largeur, le dessin est contenu */
-  .flow__head img, .benev__grid > img, .lutins__grid > img, .rdv__txt img { height: auto; max-height: 400px; object-fit: contain; }
+  .flow__head img, .benev__grid > img, .ribbon-art img, .rdv__txt img { height: auto; max-height: 400px; object-fit: contain; }
+  .ribbon { display: none; }  /* dessin bord à bord : plus de place pour le ruban */
 
   /* Héro : titre, dessin, texte — les boutons sont déjà dans la barre du bas */
   .hero { display: flex; flex-direction: column; padding: 24px var(--gut) 0; }
@@ -831,8 +838,9 @@ b, strong { font-weight: 600; }
   .moment__body { padding: 20px 0 32px; }
 
   /* Footer : contacts en lignes à toucher, liens sur deux colonnes */
-  .foot { margin: 0; border-radius: 16px 16px 0 0; }
-  .foot__art { height: 240px; padding-top: 48px; }
+  .foot { margin: 0 8px calc(8px + env(safe-area-inset-bottom)); border-radius: 18px; }
+  .foot__art { height: 256px; padding-top: 52px; }
+  .foot__art img { object-position: 100% 45%; }  /* le personnage cadré, sans bande vide */
   .foot__in { padding-top: 24px; gap: 36px; }
   .foot__contact { flex-direction: column; align-items: stretch; gap: 0; border-top: 1px solid rgba(255,255,255,.14); }
   .foot__contact a.foot__c, .foot__contact a.foot__c:first-child { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.14); font-size: 17px; font-weight: 400; letter-spacing: 0; }
@@ -841,11 +849,11 @@ b, strong { font-weight: 600; }
   .foot__ic { display: flex; flex: none; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,.1); }
   .foot__ct { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .foot__ct small { display: block; font-size: 13px; color: var(--mist-2); }
-  .foot__cols { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
-  .foot__col { gap: 0; }
-  .foot__col a { padding: 11px 0; }
-  .foot__title { margin-bottom: 6px; }
-  .foot__col a.foot__etu { margin-top: 12px; padding-top: 12px; }
+  /* Tous les liens à la suite, sur deux colonnes égales (le menu sert déjà de plan du site) */
+  .foot__cols { grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  .foot__col { display: contents; }
+  .foot__title { display: none; }
+  .foot__col a, .foot__col a.foot__etu { margin: 0; padding: 12px 0; border: 0; border-bottom: 1px solid rgba(255,255,255,.1); font-weight: 400; color: var(--mist); align-self: stretch; }
   .foot__bottom { flex-direction: column; gap: 4px; }
   .foot__links { flex-direction: column; gap: 0; }
   .foot__links a { padding: 11px 0; }

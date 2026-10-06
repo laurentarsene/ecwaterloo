@@ -221,6 +221,7 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
   $('.svc-art').forEach(el => targets.set(el, 'none'));             // pas d'animation sur les arches
   $('.paint img').forEach(el => add(el, 'up'));
   $('.paint__line').forEach(el => add(el, 'path'));
+  $('.ribbon').forEach(el => add(el, 'wipe'));
   $('.foot__art img').forEach(el => add(el, 'burst'));
   $([
     'section h1:not(.hero__title)', 'section h2:not(.sr-only)', 'section h3:not(.sr-only)', 'section img[src*="perso"]', '.domains > li', '#workflow li', '.amount',
@@ -239,7 +240,10 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
     if (!en.isIntersecting) return;
     const el = en.target, k = targets.get(el);
     io.unobserve(el);
-    if (k === 'path') {
+    if (k === 'wipe') {
+      el.animate([{ clipPath: 'inset(-50% 100% -50% 0)' }, { clipPath: 'inset(-50% 0 -50% 0)' }],
+        { duration: 2200, delay: 500, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'backwards' });
+    } else if (k === 'path') {
       el.style.transformOrigin = '0 50%';
       el.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
         { duration: 2000, delay: 400, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'backwards' });
