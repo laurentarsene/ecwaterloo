@@ -12,10 +12,21 @@ import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 
-const V = { css: 5, js: 29, chat: 5 };
+const V = { css: 6, js: 30, chat: 5 };
 
-const SUPABASE = '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>\n';
-const PAGEFLIP = '<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js" defer></script>\n';
+// Informations légales (footer, page Confidentialité) : à un seul endroit
+const LEGAL = {
+  legal_name: 'Espace Convivial de Waterloo',
+  legal_address: 'Rue de la Station 139A, 1410 Waterloo',
+  legal_bce: 'BE 1014.707.991',
+  legal_rpm: 'RPM Brabant wallon',
+  retention_etudiants: '12 mois après la date de passage',
+  retention_lutins: "jusqu'au 31 janvier qui suit l'opération",
+  legal_updated: '7 octobre 2026',
+};
+
+const SUPABASE = '<script src="/assets/vendor/supabase-2.117.2.js" defer></script>\n';
+const PAGEFLIP = '<script src="/assets/vendor/page-flip-2.0.7.js" defer></script>\n';
 const HERO_PRELOAD = '  <link rel="preload" as="image" href="/assets/images/perso/c1.webp" imagesrcset="/assets/images/perso/c1-900.webp 900w, /assets/images/perso/c1.webp 1656w" imagesizes="(max-width: 1440px) 100vw, 1392px">\n';
 
 const PAGES = [
@@ -53,6 +64,20 @@ const PAGES = [
     ogTitle: "Qui sommes-nous ? L'Espace Convivial de Waterloo",
     description: "Douze ans d'entraide à Waterloo : comment l'épicerie sociale est née en 2014, pourquoi elle est devenue une porte d'entrée vers un accompagnement plus large, nos dates clés et la Gazette conviviale.",
     cta: ['/aide/#rdv', 'Prendre rendez-vous'], modals: ['lecteur-gazette'], scripts: PAGEFLIP,
+  },
+  {
+    page: 'bienvenue', out: 'bienvenue.html', path: '/bienvenue', doors: 'all',
+    title: 'Bienvenue · Welcome · Espace Convivial de Waterloo',
+    ogTitle: 'Bienvenue · Welcome · Espace Convivial de Waterloo',
+    description: "Espace Convivial de Waterloo : welcome, welkom, willkommen, ласкаво просимо, добро пожаловать, أهلاً وسهلاً. L'essentiel dans votre langue.",
+    cta: ['/aide/#rdv', 'Prendre rendez-vous'],
+  },
+  {
+    page: 'confidentialite', out: 'confidentialite/index.html', path: '/confidentialite/', h1: true,
+    title: 'Confidentialité et mentions légales · Espace Convivial de Waterloo',
+    ogTitle: 'Confidentialité · Espace Convivial de Waterloo',
+    description: "Comment l'Espace Convivial de Waterloo utilise et protège vos données, vos droits, et les mentions légales de l'ASBL.",
+    cta: ['/aide/#rdv', 'Prendre rendez-vous'],
   },
   {
     page: '404', out: '404.html', path: '/404', robots: 'noindex, follow', doors: 'all',
@@ -95,7 +120,7 @@ function links(html, page) {
 for (const p of PAGES) {
   let content = read(`src/pages/${p.page}.html`);
   // Le grand titre de chapitre devient le titre de la page
-  if (p.chapter) content = content.replace(/<h2 class="h-chap">([\s\S]*?)<\/h2>/, '<h1 class="h-chap">$1</h1>');
+  if (p.chapter || p.h1) content = content.replace(/<h2 class="h-chap">([\s\S]*?)<\/h2>/, '<h1 class="h-chap">$1</h1>');
   // Fin de page : les portes vers les autres chapitres (tous les chemins mènent partout)
   if (p.chapter || p.doors === 'all') {
     const doors = portes.split('\n').filter(l => !p.chapter || !l.includes(`data-door="${p.chapter}"`)).join('\n');
@@ -121,6 +146,7 @@ for (const p of PAGES) {
     .replace('{{scripts}}', p.scripts || '')
     .replace('{{v_css}}', V.css).replace('{{v_js}}', V.js).replace('{{v_chat}}', V.chat);
 
+  for (const [k, v] of Object.entries(LEGAL)) html = html.replaceAll(`{{${k}}}`, v);
   if (p.chapter) html = html.replaceAll(`data-nav="${p.chapter}">`, `data-nav="${p.chapter}" aria-current="page">`);
   html = links(html, p.page);
   html = html.replace('<html lang="fr">', '<html lang="fr">\n<!-- Généré par build.mjs depuis src/ : modifier src/, puis lancer `node build.mjs` -->');

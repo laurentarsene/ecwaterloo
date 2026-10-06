@@ -1,0 +1,4 @@
+#!/bin/sh
+# Régénère les pages à partir de src/ avant chaque commit, pour ne jamais publier un HTML périmé.
+node build.mjs >/dev/null || { echo "build.mjs a échoué : commit annulé"; exit 1; }
+git add index.html aide/index.html etudiants/index.html aider/index.html qui-sommes-nous/index.html confidentialite/index.html bienvenue.html 404.html

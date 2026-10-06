@@ -1,3 +1,5 @@
+> Brief initial du projet (avril 2026), conservé pour l'historique. L'état actuel du site est décrit dans README.md.
+
 # BRIEF — Espace Convivial de Waterloo
 
 ## Contexte

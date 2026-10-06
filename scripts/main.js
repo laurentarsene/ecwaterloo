@@ -546,8 +546,8 @@ function makeModal(overlay, { onOpen } = {}) {
   const dlEl = document.getElementById('readerDownload');
   if (!reader || !bookEl || typeof St === 'undefined') return;
 
-  const PDFJS_VER = '3.11.174';
-  const CDN = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDFJS_VER}`;
+  // pdf.js hébergé sur le site (aucun appel à un CDN tiers)
+  const PDFJS = '/assets/vendor/pdf-3.11.174';
 
   let pdfDoc = null, totalPages = 0, loadedPdfUrl = null;
   let flip = null, pageRatio = 910 / 1286;
@@ -556,8 +556,8 @@ function makeModal(overlay, { onOpen } = {}) {
   const loadScript = (src) => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
   const ensurePdfJs = async () => {
     if (window.pdfjsLib) return;
-    await loadScript(`${CDN}/build/pdf.min.js`);
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = `${CDN}/build/pdf.worker.min.js`;
+    await loadScript(`${PDFJS}.min.js`);
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS}.worker.min.js`;
   };
 
   const renderPageImg = async (n, scaleH) => {

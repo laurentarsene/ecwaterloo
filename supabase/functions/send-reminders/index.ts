@@ -12,7 +12,7 @@ const RESEND_KEY      = Deno.env.get('RESEND_API_KEY')!;
 const SUPABASE_URL    = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_KEY     = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const FROM_EMAIL      = 'Espace Convivial de Waterloo <noreply@ecwaterloo.com>';
-const REPLY_TO        = 'info@ecwaterloo.com';
+const REPLY_TO        = 'infos.ecwaterloo@gmail.com';
 const ADRESSE         = 'Rue de la Station 139A, 1410 Waterloo';
 
 // Dates exceptionnelles de l'épicerie ('AAAA-MM': jour) — garder en phase avec config.js

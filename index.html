@@ -17,11 +17,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light only">
+  <link rel="preload" href="/assets/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="apple-touch-icon" href="/assets/images/ecw-icon.png">
   <link rel="icon" type="image/png" href="/assets/images/ecw-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- Une transition entre pages peut être annulée (clic rapide, onglet caché) : rien à signaler -->
   <script>for (const ev of ['pageswap', 'pagereveal']) addEventListener(ev, (e) => { const t = e.viewTransition; if (t) [t.ready, t.finished, t.updateCallbackDone].forEach(p => p?.catch(() => {})); });</script>
   <!-- Navigation instantanée : la page visée est préchargée au survol ou au toucher (Chrome, Edge) -->
@@ -29,7 +27,7 @@
   { "prefetch": [{ "where": { "and": [{ "href_matches": "/*" }, { "not": { "href_matches": "/admin.html" } }, { "not": { "href_matches": "/assets/*" } }] }, "eagerness": "moderate" }] }
   </script>
   <link rel="preload" as="image" href="/assets/images/perso/c1.webp" imagesrcset="/assets/images/perso/c1-900.webp 900w, /assets/images/perso/c1.webp 1656w" imagesizes="(max-width: 1440px) 100vw, 1392px">
-  <link rel="stylesheet" href="/styles/site.css?v=5">
+  <link rel="stylesheet" href="/styles/site.css?v=6">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -129,8 +127,8 @@
       <nav class="foot__col" aria-label="L'asbl"><b class="foot__title" style="--c:#fff">L'asbl</b><a href="/qui-sommes-nous/#histoire">Notre histoire</a><a href="#temps-forts">Temps forts</a><a href="/qui-sommes-nous/#gazette">La gazette</a></nav>
     </div>
     <div class="foot__bottom">
-      <span>© 2014–2026 Espace Convivial de Waterloo · ASBL 100% bénévole</span>
-      <span class="foot__links"><a href="/bienvenue.html">English · Українська · العربية…</a><a href="/admin.html">Espace admin</a></span>
+      <span>© 2014–2026 Espace Convivial de Waterloo ASBL · BE 1014.707.991 · RPM Brabant wallon</span>
+      <span class="foot__links"><a href="/confidentialite/">Confidentialité et mentions légales</a><a href="/bienvenue.html">English · Українська · العربية…</a><a href="/admin.html">Espace admin</a></span>
     </div>
   </div>
 </footer>
@@ -164,7 +162,7 @@
 
 
 <script src="/config.js?v=2" defer></script>
-<script src="/scripts/main.js?v=29" defer></script>
+<script src="/scripts/main.js?v=30" defer></script>
 <script src="/scripts/chatbot.js?v=5" defer></script>
 </body>
 </html>

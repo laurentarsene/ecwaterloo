@@ -8,7 +8,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 const RESEND_KEY  = Deno.env.get('RESEND_API_KEY')!;
 const FROM_EMAIL  = 'Espace Convivial de Waterloo <noreply@ecwaterloo.com>';
-const REPLY_TO    = 'info@ecwaterloo.com';
+const REPLY_TO    = 'infos.ecwaterloo@gmail.com';
 const ADRESSE     = 'Rue de la Station 139A, 1410 Waterloo';
 
 const CORS = {

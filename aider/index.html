@@ -17,18 +17,16 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light only">
+  <link rel="preload" href="/assets/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="apple-touch-icon" href="/assets/images/ecw-icon.png">
   <link rel="icon" type="image/png" href="/assets/images/ecw-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- Une transition entre pages peut être annulée (clic rapide, onglet caché) : rien à signaler -->
   <script>for (const ev of ['pageswap', 'pagereveal']) addEventListener(ev, (e) => { const t = e.viewTransition; if (t) [t.ready, t.finished, t.updateCallbackDone].forEach(p => p?.catch(() => {})); });</script>
   <!-- Navigation instantanée : la page visée est préchargée au survol ou au toucher (Chrome, Edge) -->
   <script type="speculationrules">
   { "prefetch": [{ "where": { "and": [{ "href_matches": "/*" }, { "not": { "href_matches": "/admin.html" } }, { "not": { "href_matches": "/assets/*" } }] }, "eagerness": "moderate" }] }
   </script>
-  <link rel="stylesheet" href="/styles/site.css?v=5">
+  <link rel="stylesheet" href="/styles/site.css?v=6">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -104,6 +102,10 @@
           <a href="https://buy.stripe.com/dRm4gz0KQ0Yd5tE9ae4Rq00" class="btn btn--line-light">Choisir un autre montant</a>
           <span>Paiement sécurisé par Stripe.</span>
         </div>
+        <div class="don__nature">
+          <h3>Plutôt un don en nature&nbsp;?</h3>
+          <p>Produits, fournitures scolaires, matériel&nbsp;: passez à l'épicerie ou <a href="mailto:infos.ecwaterloo@gmail.com?subject=Don%20en%20nature">écrivez-nous</a> pour savoir ce dont nous avons besoin en ce moment.</p>
+        </div>
       </div>
       <div class="amounts">
         <a href="https://buy.stripe.com/00w4gzgJO36l5tE4TY4Rq01" class="amount" style="--c:#f26d5f"><span class="amount__sum">10€</span><span class="amount__what">Un colis alimentaire pour une famille, une semaine.</span><span class="amount__cta">Donner 10€ →</span></a>
@@ -111,10 +113,6 @@
         <a href="https://buy.stripe.com/dRmdR9fFK7mB6xIcmq4Rq03" class="amount" style="--c:#c9cb45"><span class="amount__sum">50€</span><span class="amount__what">Un mois de permanences d'accueil.</span><span class="amount__cta">Donner 50€ →</span></a>
         <a href="https://buy.stripe.com/6oU28r8di9uJg8igCG4Rq04" class="amount" style="--c:#fff"><span class="amount__sum">100€</span><span class="amount__what">Un accompagnement médical complet pour une personne.</span><span class="amount__cta">Donner 100€ →</span></a>
       </div>
-    </div>
-    <div class="don__nature">
-      <h3>Plutôt un don en nature&nbsp;?</h3>
-      <p>Produits, fournitures scolaires, matériel&nbsp;: passez à l'épicerie ou <a href="mailto:infos.ecwaterloo@gmail.com?subject=Don%20en%20nature">écrivez-nous</a> pour savoir ce dont nous avons besoin en ce moment.</p>
     </div>
   </div>
 </section>
@@ -167,8 +165,8 @@
       <nav class="foot__col" aria-label="L'asbl"><b class="foot__title" style="--c:#fff">L'asbl</b><a href="/qui-sommes-nous/#histoire">Notre histoire</a><a href="/#temps-forts">Temps forts</a><a href="/qui-sommes-nous/#gazette">La gazette</a></nav>
     </div>
     <div class="foot__bottom">
-      <span>© 2014–2026 Espace Convivial de Waterloo · ASBL 100% bénévole</span>
-      <span class="foot__links"><a href="/bienvenue.html">English · Українська · العربية…</a><a href="/admin.html">Espace admin</a></span>
+      <span>© 2014–2026 Espace Convivial de Waterloo ASBL · BE 1014.707.991 · RPM Brabant wallon</span>
+      <span class="foot__links"><a href="/confidentialite/">Confidentialité et mentions légales</a><a href="/bienvenue.html">English · Українська · العربية…</a><a href="/admin.html">Espace admin</a></span>
     </div>
   </div>
 </footer>
@@ -239,6 +237,7 @@
           </div>
           <input type="hidden" name="nb_lettres" id="hiddenNbLettres" value="1">
         </div>
+        <p class="sform__privacy">Tes coordonnées servent seulement à te transmettre les lettres, puis sont supprimées après l'opération. <a href="/confidentialite/" target="_blank" rel="noopener">En savoir plus</a></p>
         <p class="sform__error" id="lutinFormError" hidden></p>
         <div class="sform__nav"><button type="submit" class="btn btn--dark">Je m'inscris comme lutin·e</button></div>
       </div>
@@ -254,8 +253,8 @@
 </div>
 
 <script src="/config.js?v=2" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="/scripts/main.js?v=29" defer></script>
+<script src="/assets/vendor/supabase-2.117.2.js" defer></script>
+<script src="/scripts/main.js?v=30" defer></script>
 <script src="/scripts/chatbot.js?v=5" defer></script>
 </body>
 </html>
