@@ -34,6 +34,13 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
     default: ['#rdv', 'Prendre rendez-vous'],
   };
 
+  // Le header est fixe : une cale de sa hauteur (ouvert) évite que la page saute quand il se compacte
+  const space = document.getElementById('hdrSpace');
+  const fit = () => { if (space && !hdr.classList.contains('is-compact')) space.style.height = hdr.offsetHeight + 'px'; };
+  fit();
+  document.fonts?.ready.then(fit);
+  window.addEventListener('resize', fit);
+
   let current, compact, raf = 0;
   const update = () => {
     raf = 0;
@@ -75,6 +82,33 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
     btn.setAttribute('aria-expanded', 'true');
     document.querySelector('#rdvCal iframe')?.focus({ preventScroll: true });
   });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   SIX DOMAINES — accordéon sur mobile, colonnes ouvertes ailleurs
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const items = [...document.querySelectorAll('.domains > li')];
+  if (!items.length) return;
+  const mq = window.matchMedia('(max-width: 719.98px)');
+  const apply = () => items.forEach((li) => {
+    const h = li.querySelector('h4');
+    if (mq.matches && !li.classList.contains('is-acc')) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'domain__btn';
+      b.textContent = h.textContent;
+      b.setAttribute('aria-expanded', 'false');
+      b.addEventListener('click', () => b.setAttribute('aria-expanded', String(li.classList.toggle('is-open'))));
+      h.replaceChildren(b);
+      li.classList.add('is-acc');
+    } else if (!mq.matches && li.classList.contains('is-acc')) {
+      h.textContent = h.textContent;
+      li.classList.remove('is-acc', 'is-open');
+    }
+  });
+  mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
+  apply();
 })();
 
 /* ══════════════════════════════════════════════════════════════

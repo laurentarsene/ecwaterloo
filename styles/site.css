@@ -32,7 +32,7 @@
 
   --f: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
   --r: 4px;
-  --gut: clamp(20px, 4vw, 48px);
+  --gut: clamp(16px, 4vw, 48px);
   --ease: cubic-bezier(.16, 1, .3, 1);
 }
 
@@ -93,7 +93,7 @@ b, strong { font-weight: 600; }
    HEADER — sticky, compact après 40px, scroll-spy
    ══════════════════════════════════════════════════════════════ */
 .hdr {
-  position: sticky; top: 0; z-index: 20;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 20;
   background: rgba(255,255,255,.96); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
   transition: background .3s, box-shadow .3s;
 }
@@ -118,6 +118,7 @@ b, strong { font-weight: 600; }
   min-width: 180px; text-align: center; font-size: 15px; transition: padding .3s, background .2s;
 }
 .hdr__cta:hover { background: var(--teal-d); color: var(--white); }
+.hdr-space { height: 113px; }  /* hauteur du header ouvert (ajustée en JS) : le header compact ne fait plus bouger la page */
 .hdr__bar { height: 4px; background: var(--line); transition: background .35s, height .3s; }
 
 .hdr.is-compact { background: rgba(255,255,255,.86); box-shadow: 0 8px 24px -18px rgba(31,48,56,.35); }
@@ -423,6 +424,10 @@ b, strong { font-weight: 600; }
 .bot { position: fixed; right: 24px; bottom: 20px; z-index: 40; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; pointer-events: none; }
 .bot.is-open:not(.is-mobile) { flex-direction: row; }
 .bot > * { pointer-events: auto; }
+.bot { transition: opacity .4s var(--ease), transform .4s var(--ease); }
+/* Mobile, tout en haut : le personnage laisse le dessin du héro respirer */
+.bot.is-away { opacity: 0; transform: translateY(12px); }
+.bot.is-away > * { pointer-events: none; }
 .bot__btn {
   position: relative; width: 96px; aspect-ratio: 293 / 400; border: 0; background: none; padding: 0; cursor: pointer;
   transition: width .45s var(--ease); filter: drop-shadow(0 14px 18px rgba(1,51,73,.28));
@@ -673,4 +678,112 @@ b, strong { font-weight: 600; }
   .rdv__txt { display: contents; }
   .rdv__online { order: 2; margin-top: 8px; }
   .rdv__txt img { order: 3; margin: 24px auto 0; width: min(70%, 260px); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE — composition écran par écran
+   Chaque écran doit se comprendre seul ; les images vont bord à bord.
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 719.98px) {
+  .hdr-space { height: 88px; }
+
+  /* Header compact : une seule ligne, logo + menu */
+  .hdr.is-compact .hdr__in { flex-wrap: nowrap; padding: 0 0 0 var(--gut); gap: 6px; }
+  .hdr.is-compact .hdr__logo { flex: none; padding: 10px 0; margin: 0; }
+  .hdr.is-compact .hdr__logo img { height: 24px; }
+  .hdr.is-compact .hdr__nav { order: 0; flex: 1 1 auto; min-width: 0; margin: 0; }
+
+  /* Images bord à bord (comme un post) */
+  .hero__art, .svc-art, .flow__head img, .steps img, .rdv__txt img, .etu__side > img,
+  .benev__grid > img, .lutins__grid > img, .photo__frame, .moment__art, .art-photo div, .art-fig div {
+    width: calc(100% + 2 * var(--gut)); max-width: none; margin-left: calc(-1 * var(--gut)); margin-right: calc(-1 * var(--gut));
+    border-radius: 0;
+  }
+  /* Dessins très hauts : la boîte reste pleine largeur, le dessin est contenu */
+  .flow__head img, .benev__grid > img, .lutins__grid > img, .rdv__txt img { height: auto; max-height: 400px; object-fit: contain; }
+
+  /* Héro : titre, dessin, texte — les boutons sont déjà dans la barre du bas */
+  .hero { display: flex; flex-direction: column; padding: 24px var(--gut) 0; }
+  .hero__grid { display: contents; }
+  .hero__title { order: 1; font-size: clamp(38px, 10.5vw, 48px); }
+  .hero__art { order: 2; margin-top: 20px; }
+  .hero__side { order: 3; padding: 24px 0 8px; gap: 16px; }
+  .hero__side .btns { display: none; }
+
+  /* Portes d'entrée : titre et texte à gauche, dessin et flèche à droite */
+  .door__in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "t e" "d e"; gap: 6px 12px; padding: 22px var(--gut); min-height: 0; align-items: center; }
+  .door__title { grid-area: t; font-size: 32px; }
+  .door__desc { grid-area: d; font-size: 16px; }
+  .door__end { grid-area: e; margin: 0; gap: 8px; }
+  .door--coral .door__end img { width: 92px; margin-bottom: -22px; }
+  .door--teal .door__end img { width: 100px; margin-bottom: -22px; }
+  .door--olive .door__end img { width: 104px; }
+  .door__arrow { font-size: 32px; }
+
+  /* Six domaines : accordéon, une ligne par domaine */
+  .svc { padding-top: 40px; padding-bottom: 24px; }
+  .domains { grid-template-columns: 1fr; gap: 0; margin-top: 12px; }
+  .domains li { padding-top: 0; gap: 0; }
+  .domains li.is-acc p { padding-bottom: 8px; }
+  .domains li.is-acc p:last-child { padding-bottom: 20px; }
+  .domains li.is-acc:not(.is-open) p { display: none; }
+  .domain__btn { all: unset; box-sizing: border-box; display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font: 500 20px/1.2 var(--f); letter-spacing: -.015em; color: var(--ink); }
+  .domain__btn::after { content: "+"; font-weight: 300; font-size: 30px; line-height: 1; transition: transform .35s var(--ease); }
+  .domains li.is-open .domain__btn::after { transform: rotate(45deg); }
+  .domain__btn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+  .domains__end { margin-top: 32px; font-size: 19px; }
+
+  /* Comment ça se passe : chaque étape devient un « post » (dessin puis texte) */
+  .flow { padding-top: 56px; }
+  .flow__head img { margin-top: 8px; }
+  .steps li { padding: 24px 0 28px; gap: 16px; }
+  .steps img { flex: 0 0 auto; max-height: 220px; object-fit: contain; object-position: center bottom; }
+
+  /* Étudiant·e : la carte (date + inscription) avant les étapes */
+  .etu__in { padding-top: 56px; padding-bottom: 56px; }
+  .etu__grid { display: flex; flex-direction: column; gap: 24px; }
+  .etu__main { display: contents; }
+  .etu__main > h2 { order: 1; }
+  .etu__main > .lead { order: 2; margin-top: -8px; }
+  .etu__side { order: 3; }
+  .etu__steps { order: 4; }
+  .etu__side > img { max-height: 320px; object-fit: contain; }
+  .etu__card { padding: 24px; }
+
+  /* Bénévoles */
+  .benev__grid { padding-top: 32px; gap: 24px; }
+
+  /* Don : les montants d'abord, en 2 × 2, puis le montant libre */
+  .don__grid { display: flex; flex-direction: column; gap: 20px; }
+  .don__main { display: contents; }
+  .don__main > h3 { order: 1; }
+  .don__main > .lead { order: 2; }
+  .amounts { order: 3; grid-template-columns: 1fr 1fr; }
+  .don__free { order: 4; margin-top: 4px; }
+  .amount { min-height: 0; padding: 20px 16px 22px; gap: 8px; }
+  .amount__sum { font-size: 40px; }
+  .amount__what { font-size: 15px; line-height: 1.45; }
+  .amount__cta { font-size: 15px; }
+  .don__nature { margin-top: 40px; }
+
+  /* Histoire : photo bord à bord, rouleau collé à gauche pour garder la ligne jusqu'au bord droit */
+  .photo__frame { aspect-ratio: 4 / 3; }
+  .photo figcaption { padding-top: 2px; }
+  .paint { margin-left: calc(-1 * var(--gut)); width: calc(88% + var(--gut)); }
+  .years { grid-template-columns: 1fr 1fr; gap: 20px 0; }
+
+  /* Temps forts : chaque moment comme un post, couleur bord à bord */
+  .moments__head { margin-bottom: 28px; }
+  .moments__grid { gap: 8px; }
+  .moment { background: transparent; border-radius: 0; overflow: visible; }
+  .moment__art { height: 260px; }
+  .moment__body { padding: 20px 0 32px; }
+  .moment a { color: #357481; }  /* sur fond gris : 4.8:1 */
+
+  /* Footer bord à bord */
+  .foot { margin: 0; border-radius: 16px 16px 0 0; }
+
+  /* Article */
+  .art-photo { padding: 0 var(--gut); }
+  .art-photo figcaption, .art-fig figcaption { padding-top: 2px; }
 }

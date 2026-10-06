@@ -123,6 +123,7 @@
     open = v;
     hideTeaser();
     root.classList.toggle('is-open', open);
+    root.classList.remove('is-away');
     win.hidden = !open;
     btn.setAttribute('aria-expanded', String(open));
     btn.setAttribute('aria-label', open ? 'Fermer les questions fréquentes' : 'Ouvrir les questions fréquentes');
@@ -152,6 +153,17 @@
   mq.addEventListener ? mq.addEventListener('change', applyMq) : mq.addListener(applyMq);
   applyMq();
 
+  // Mobile, tout en haut de page : le personnage s'efface pour ne pas couvrir le héro
+  let teasePending = false;
+  const updateAway = () => {
+    const away = mq.matches && window.scrollY < 160 && !open;
+    root.classList.toggle('is-away', away);
+    if (!away && teasePending) { teasePending = false; showTeaser(); }
+  };
+  window.addEventListener('scroll', updateAway, { passive: true });
+  mq.addEventListener ? mq.addEventListener('change', updateAway) : mq.addListener(updateAway);
+  updateAway();
+
   // Le personnage rapetisse quand on descend, reprend sa taille quand on remonte
   let lastY = window.scrollY, small = false;
   window.addEventListener('scroll', () => {
@@ -165,14 +177,14 @@
   // Teaser : une seule fois par visite, 6s après le chargement, 8s à l'écran
   let seen = false;
   try { seen = sessionStorage.getItem('ecw-bot-teaser') === '1'; } catch (_) {}
-  if (!seen) {
-    setTimeout(() => {
-      if (open) return;
-      teaser.hidden = false;
-      try { sessionStorage.setItem('ecw-bot-teaser', '1'); } catch (_) {}
-      teaseOff = setTimeout(() => { teaser.hidden = true; }, 8000);
-    }, 6000);
+  function showTeaser() {
+    if (open) return;
+    if (root.classList.contains('is-away')) { teasePending = true; return; }
+    teaser.hidden = false;
+    try { sessionStorage.setItem('ecw-bot-teaser', '1'); } catch (_) {}
+    teaseOff = setTimeout(() => { teaser.hidden = true; }, 8000);
   }
+  if (!seen) setTimeout(showTeaser, 6000);
 
   bubble(GREETING, false);
   renderSugg();
