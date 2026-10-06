@@ -75,12 +75,41 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
    RENDEZ-VOUS — sur mobile, le calendrier se déplie à la demande
    ══════════════════════════════════════════════════════════════ */
 (function () {
+  const box = document.getElementById('rdvCal');
+  if (!box) return;
   const btn = document.getElementById('rdvOpen');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    btn.closest('.rdv__online').classList.add('is-open');
-    btn.setAttribute('aria-expanded', 'true');
-    document.querySelector('#rdvCal iframe')?.focus({ preventScroll: true });
+
+  // Intégration officielle Cal (instance européenne) : le cadre prend la hauteur de son contenu
+  const LINK = 'epicerie-sociale-de-waterloo-e.c.w-vcjwji/rendez-vous';
+  const CONFIG = { layout: 'month_view', theme: 'light' };
+  let ready = false, inline = false;
+  const initCal = () => {
+    if (ready) return;
+    ready = true;
+    (function (C, A, L) { const p = (a, ar) => a.q.push(ar); const d = C.document; C.Cal = C.Cal || function () { const cal = C.Cal; const ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, 'https://app.cal.eu/embed/embed.js', 'init');
+    Cal('init', 'rdv', { origin: 'https://app.cal.eu' });
+    Cal.ns.rdv('ui', { theme: 'light', layout: 'month_view', hideEventTypeDetails: false, cssVarsPerTheme: { light: { 'cal-brand': '#1f3038' } } });
+  };
+  const showInline = () => {
+    if (inline) return;
+    inline = true;
+    initCal();
+    Cal.ns.rdv('inline', { elementOrSelector: '#rdvCal', calLink: LINK, config: CONFIG });
+  };
+
+  // Grands écrans : calendrier dans la page (en colonnes), chargé à l'approche de la section
+  const mobile = window.matchMedia('(max-width: 899.98px)');
+  const watch = () => {
+    if (!('IntersectionObserver' in window)) { if (!mobile.matches) showInline(); return; }
+    const io = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting) && !mobile.matches) { io.disconnect(); showInline(); } }, { rootMargin: '600px 0px' });
+    io.observe(box);
+  };
+  watch();
+
+  // Téléphone et tablette en portrait : le bouton ouvre le calendrier en plein écran
+  btn?.addEventListener('click', () => {
+    initCal();
+    Cal.ns.rdv('modal', { calLink: LINK, config: CONFIG });
   });
 })();
 

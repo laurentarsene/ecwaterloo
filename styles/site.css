@@ -258,14 +258,21 @@ b, strong { font-weight: 600; }
 .note { margin-top: 32px; padding: 20px 24px; background: var(--paper); border-radius: var(--r); font-size: 18px; line-height: 1.5; }
 
 .rdv { padding-top: clamp(64px, 8vw, 104px); padding-bottom: clamp(48px, 6vw, 80px); }
-.rdv__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 40px 64px; align-items: start; }
-.rdv__txt { display: flex; flex-direction: column; gap: 16px; }
+/* Texte + illustration en haut, calendrier en pleine largeur dessous : Cal y affiche
+   sa mise en page en colonnes (infos · mois · créneaux), compacte, sans rien couper */
+.rdv__grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+.rdv__txt { display: grid; grid-template-columns: minmax(0, 38em) auto; justify-content: space-between; align-content: start; gap: 16px 64px; }
+.rdv__txt > :not(img) { grid-column: 1; }
+.rdv__txt img { grid-column: 2; grid-row: 1 / span 4; align-self: end; }
 .rdv__txt a { font-weight: 600; color: var(--ink); }
 .rdv__txt a:hover { color: var(--teal-d); }
 .rdv__addr { text-decoration: underline; text-underline-offset: 3px; }
-.rdv__txt img { width: min(100%, 300px); margin-top: 24px; }
-.rdv__cal { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--white); }
-.rdv__cal iframe { width: 100%; height: 680px; border: 0; display: block; }
+.rdv__txt img { width: 220px; }
+.rdv__cal { background: var(--white); }  /* Cal dessine son propre cadre */
+.rdv__cal { min-height: 560px; }
+/* Le script Cal ajuste lui-même la hauteur du calendrier à son contenu (date, créneaux, formulaire) */
+.rdv__cal iframe { width: 100%; border: 0; display: block; }
+.rdv__cal noscript iframe { height: 760px; }
 
 /* ══════════════════════════════════════════════════════════════
    ÉTUDIANT·E
@@ -643,6 +650,11 @@ b, strong { font-weight: 600; }
    MOBILE — règles tactiles (Apple HIG 44pt, Material 48dp, WCAG 2.2)
    ══════════════════════════════════════════════════════════════ */
 .rdv__open { display: none; }
+/* Sous 900px, Cal empile tout (créneaux compris) : le bouton ouvre plutôt son calendrier en plein écran */
+@media (max-width: 899.98px) {
+  .rdv__open { display: flex; width: 100%; max-width: 420px; }
+  .rdv__cal { display: none; }
+}
 @media (hover: none) {
   /* Retour visuel au toucher, puisqu'il n'y a pas de survol */
   .btn, .chip, .door, .amount, .moment a, .bot__sugg button, .mbar a, .hdr__nav a, .foot a { -webkit-tap-highlight-color: transparent; }
@@ -669,15 +681,13 @@ b, strong { font-weight: 600; }
   .bot__sugg button { min-height: 44px; padding: 10px 14px; font-size: 15px; }
   .bot__teaser .bot__x { width: 36px; height: 36px; }
   /* Calendrier replié : pas de cadre de 680px ni de piège de défilement en plein milieu */
-  .rdv__open { display: flex; width: 100%; }
-  .rdv__cal { display: none; margin-top: 12px; }
-  .rdv__online.is-open .rdv__open { display: none; }
-  .rdv__online.is-open .rdv__cal { display: block; margin-top: 0; }
+
   /* L'action d'abord, l'illustration ensuite */
   .rdv__grid { display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
   .rdv__txt { display: contents; }
   .rdv__online { order: 2; margin-top: 8px; }
-  .rdv__txt img { order: 3; margin: 24px auto 0; width: min(70%, 260px); }
+  .rdv__open { max-width: none; }
+  .rdv__txt img { order: 3; margin-top: 24px; }
 }
 
 /* ══════════════════════════════════════════════════════════════
