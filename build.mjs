@@ -51,7 +51,7 @@ const PAGES = [
     page: 'qui-sommes-nous', chapter: 'asbl', out: 'qui-sommes-nous/index.html', path: '/qui-sommes-nous/',
     title: 'Qui sommes-nous ? · Espace Convivial de Waterloo',
     ogTitle: "Qui sommes-nous ? L'Espace Convivial de Waterloo",
-    description: "Depuis 2014, une ASBL 100% bénévole à Waterloo : notre histoire, nos dates clés et la Gazette conviviale, notre journal deux fois par an.",
+    description: "Douze ans d'entraide à Waterloo : comment l'épicerie sociale est née en 2014, pourquoi elle est devenue une porte d'entrée vers un accompagnement plus large, nos dates clés et la Gazette conviviale.",
     cta: ['/aide/#rdv', 'Prendre rendez-vous'], modals: ['lecteur-gazette'], scripts: PAGEFLIP,
   },
 ];
@@ -61,7 +61,7 @@ const OWNER = {
   aide: 'aide', 'aide-contenu': 'aide', epicerie: 'aide', services: 'aide', workflow: 'aide', rdv: 'aide',
   etudiants: 'etudiants', inscription: 'etudiants',
   aider: 'aider', benevoles: 'aider', don: 'aider', lutins: 'aider',
-  asbl: 'qui-sommes-nous', histoire: 'qui-sommes-nous', gazette: 'qui-sommes-nous',
+  asbl: 'qui-sommes-nous', histoire: 'qui-sommes-nous', dates: 'qui-sommes-nous', gazette: 'qui-sommes-nous',
   hero: 'accueil', 'temps-forts': 'accueil',
 };
 const ROOT = { aide: '/aide/', etudiants: '/etudiants/', aider: '/aider/', asbl: '/qui-sommes-nous/' };
@@ -81,7 +81,7 @@ function links(html, page) {
     })
     .replace(/(["\s,])assets\//g, '$1/assets/')
     .replace(/href="(bienvenue|admin)\.html"/g, 'href="/$1.html"')
-    .replace(/href="notre-histoire\.html"/g, 'href="/notre-histoire/"');
+    .replace(/href="notre-histoire\.html"/g, 'href="/qui-sommes-nous/#histoire"');
 }
 
 for (const p of PAGES) {

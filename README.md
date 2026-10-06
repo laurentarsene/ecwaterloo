@@ -10,8 +10,7 @@ Site statique (HTML, CSS, JS sans framework), hébergé sur Cloudflare Pages : c
 | `/aide/` | `aide/index.html` | `src/pages/aide.html` |
 | `/etudiants/` | `etudiants/index.html` | `src/pages/etudiants.html` |
 | `/aider/` | `aider/index.html` | `src/pages/aider.html` |
-| `/qui-sommes-nous/` | `qui-sommes-nous/index.html` | `src/pages/qui-sommes-nous.html` |
-| `/notre-histoire/` | `notre-histoire/index.html` | écrit à la main |
+| `/qui-sommes-nous/` | `qui-sommes-nous/index.html` | `src/pages/qui-sommes-nous.html` (histoire complète, dates, gazette) |
 | `/bienvenue` | `bienvenue.html` | écrit à la main (14 langues) |
 | `/admin.html` | `admin.html` | écrit à la main (espace bénévoles) |
 
@@ -25,7 +24,7 @@ Les liens `href="#ancre"` sont réécrits automatiquement vers la bonne page (`#
 
 ## Après une modification de `styles/site.css` ou des scripts
 
-Augmenter le numéro correspondant dans `V` en haut de `build.mjs` (et dans `notre-histoire/index.html` et `bienvenue.html` pour le CSS), puis relancer `node build.mjs`. Sinon, les visiteurs déjà venus gardent l'ancienne version en cache.
+Augmenter le numéro correspondant dans `V` en haut de `build.mjs` (et dans `bienvenue.html` pour le CSS), puis relancer `node build.mjs`. Sinon, les visiteurs déjà venus gardent l'ancienne version en cache.
 
 ## Épicerie étudiante
 

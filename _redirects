@@ -1,2 +1,4 @@
 # Cloudflare Pages — anciennes adresses
-/notre-histoire.html  /notre-histoire/  301
+/notre-histoire.html  /qui-sommes-nous/  301
+/notre-histoire       /qui-sommes-nous/  301
+/notre-histoire/      /qui-sommes-nous/  301
