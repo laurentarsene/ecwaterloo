@@ -396,9 +396,9 @@ b, strong { font-weight: 600; }
 .moment { background: var(--white); border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; }
 .moment__art { height: 280px; background: var(--c); display: flex; align-items: flex-end; justify-content: center; padding: 24px 24px 0; }
 .moment__art img { width: auto; height: auto; max-width: 100%; max-height: 100%; }
-.moment__body { padding: 24px 26px 30px; display: flex; flex-direction: column; gap: 10px; }
+.moment__body { flex: 1; padding: 24px 26px 30px; display: flex; flex-direction: column; gap: 10px; }
+.moment__cta { align-self: flex-start; margin-top: 8px; }
 .moment h3 { font-weight: 500; font-size: 22px; letter-spacing: -.015em; }
-.moment a { color: var(--teal-d); font-weight: 500; }
 
 .gaz { padding-top: clamp(72px, 9vw, 120px); padding-bottom: clamp(72px, 9vw, 120px); }
 .gaz__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 48px 72px; align-items: center; }
@@ -670,7 +670,7 @@ b, strong { font-weight: 600; }
 }
 @media (hover: none) {
   /* Retour visuel au toucher, puisqu'il n'y a pas de survol */
-  .btn, .chip, .door, .amount, .moment a, .bot__sugg button, .menu__item, .foot a { -webkit-tap-highlight-color: transparent; }
+  .btn, .chip, .door, .amount, .bot__sugg button, .menu__item, .foot a { -webkit-tap-highlight-color: transparent; }
   .btn:active, .chip:active, .bot__sugg button:active { transform: scale(.97); }
   .menu__item:active { filter: brightness(.95); }
   .btn, .chip, .bot__sugg button { transition: background .2s, color .2s, transform .15s; }
@@ -788,7 +788,6 @@ b, strong { font-weight: 600; }
   .moment { background: transparent; border-radius: 0; overflow: visible; }
   .moment__art { height: 260px; }
   .moment__body { padding: 20px 0 32px; }
-  .moment a { color: #357481; }  /* sur fond gris : 4.8:1 */
 
   /* Footer bord à bord */
   .foot { margin: 0; border-radius: 16px 16px 0 0; }

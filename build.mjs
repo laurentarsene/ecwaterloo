@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 
-const V = { css: 3, js: 29, chat: 5 };
+const V = { css: 4, js: 29, chat: 5 };
 
 const SUPABASE = '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>\n';
 const PAGEFLIP = '<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js" defer></script>\n';
