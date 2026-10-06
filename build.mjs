@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 
-const V = { css: 8, js: 31, chat: 5 };
+const V = { css: 9, js: 31, chat: 5 };
 
 // Informations légales (footer, page Confidentialité) : à un seul endroit
 const LEGAL = {
