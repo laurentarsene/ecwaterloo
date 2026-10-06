@@ -147,7 +147,7 @@ for (const p of PAGES) {
     .replace('{{v_css}}', V.css).replace('{{v_js}}', V.js).replace('{{v_chat}}', V.chat);
 
   for (const [k, v] of Object.entries(LEGAL)) html = html.replaceAll(`{{${k}}}`, v);
-  if (p.chapter) html = html.replaceAll(`data-nav="${p.chapter}">`, `data-nav="${p.chapter}" aria-current="page">`);
+  if (p.chapter) html = html.replaceAll(`data-nav="${p.chapter}"`, `data-nav="${p.chapter}" aria-current="page"`);
   html = links(html, p.page);
   html = html.replace('<html lang="fr">', '<html lang="fr">\n<!-- Généré par build.mjs depuis src/ : modifier src/, puis lancer `node build.mjs` -->');
 
