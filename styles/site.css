@@ -55,7 +55,7 @@ b, strong { font-weight: 600; }
 @supports not (overflow-x: clip) { body { overflow-x: hidden; } }
 .wrap { max-width: 1280px; margin: 0 auto; padding-left: var(--gut); padding-right: var(--gut); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.skip { position: absolute; left: 16px; top: -100px; z-index: 100; padding: 10px 16px; background: var(--ink); color: var(--white); border-radius: var(--r); }
+.skip { position: absolute; left: 16px; top: -100px; z-index: 100; padding: 12px 16px; background: var(--ink); color: var(--white); border-radius: var(--r); }
 .skip:focus { top: 16px; color: var(--white); }
 
 /* ── Typographie ────────────────────────────────────────────── */
@@ -633,3 +633,44 @@ b, strong { font-weight: 600; }
 
 /* Petits écrans : deux chips par ligne quand c'est possible */
 @media (max-width: 420px) { .chip { padding: 10px 11px; gap: 7px; } }
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE — règles tactiles (Apple HIG 44pt, Material 48dp, WCAG 2.2)
+   ══════════════════════════════════════════════════════════════ */
+.rdv__open { display: none; }
+@media (hover: none) {
+  /* Retour visuel au toucher, puisqu'il n'y a pas de survol */
+  .btn, .chip, .door, .amount, .moment a, .bot__sugg button, .mbar a, .hdr__nav a, .foot a { -webkit-tap-highlight-color: transparent; }
+  .btn:active, .chip:active, .mbar a:active, .bot__sugg button:active { transform: scale(.97); }
+  .btn, .chip, .mbar a, .bot__sugg button { transition: background .2s, color .2s, transform .15s; }
+  .door:active { filter: brightness(.95); }
+  .amount:active { background: var(--navy-h); }
+}
+.smodal__dialog { overscroll-behavior: contain; }
+@media (max-width: 719.98px) {
+  /* Menu horizontal : les bords s'estompent pour montrer qu'il défile */
+  .hdr__nav { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 32px), transparent); }
+  .hdr__in { padding-bottom: 0; }
+  .hdr__nav a, .hdr.is-compact .hdr__nav a { padding: 12px 12px 11px; }
+  .hdr__logo { padding: 8px 0; margin: -8px 0; }
+  .chip { min-height: 44px; }
+  .foot__contact a { padding: 9px 0; }
+  .foot__col { gap: 0; }
+  .foot__col a { padding: 12px 0; }
+  .foot__title { margin-bottom: 6px; }
+  .foot__col a.foot__etu { margin-top: 12px; padding-top: 12px; }
+  .foot__links a { padding: 13px 0; }
+  .bot__close { width: 44px; height: 44px; }
+  .bot__sugg button { min-height: 44px; padding: 10px 14px; font-size: 15px; }
+  .bot__teaser .bot__x { width: 36px; height: 36px; }
+  /* Calendrier replié : pas de cadre de 680px ni de piège de défilement en plein milieu */
+  .rdv__open { display: flex; width: 100%; }
+  .rdv__cal { display: none; margin-top: 12px; }
+  .rdv__online.is-open .rdv__open { display: none; }
+  .rdv__online.is-open .rdv__cal { display: block; margin-top: 0; }
+  /* L'action d'abord, l'illustration ensuite */
+  .rdv__grid { display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
+  .rdv__txt { display: contents; }
+  .rdv__online { order: 2; margin-top: 8px; }
+  .rdv__txt img { order: 3; margin: 24px auto 0; width: min(70%, 260px); }
+}

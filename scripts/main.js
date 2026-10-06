@@ -65,6 +65,19 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
 })();
 
 /* ══════════════════════════════════════════════════════════════
+   RENDEZ-VOUS — sur mobile, le calendrier se déplie à la demande
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const btn = document.getElementById('rdvOpen');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    btn.closest('.rdv__online').classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true');
+    document.querySelector('#rdvCal iframe')?.focus({ preventScroll: true });
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════
    ANIMATIONS — légères, lentes, une seule courbe
    ══════════════════════════════════════════════════════════════ */
 (function () {
