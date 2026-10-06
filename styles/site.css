@@ -744,7 +744,14 @@ b, strong { font-weight: 600; }
   .hero__grid { display: contents; }
   .hero__title { order: 1; font-size: clamp(38px, 10.5vw, 48px); }
   .hero__art { order: 2; margin-top: 20px; }
-  .hero__side { order: 3; padding: 24px 0 8px; gap: 16px; }
+  .hero__side { order: 3; padding: 24px 0 40px; gap: 20px; }
+  /* Repères : deux encadrés alignés, sous le texte et avant les boutons */
+  .hero__facts { order: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .hero__facts span { display: flex; flex-direction: column; gap: 2px; padding: 12px 0; font-size: 14px; line-height: 1.35; }
+  .hero__facts span + span { padding-left: 16px; border-left: 1px solid var(--line); }
+  .hero__facts b { font-size: 17px; font-weight: 500; }
+  .hero__side .btns { order: 2; flex-direction: column; }
+  .hero__side .btns .btn { width: 100%; }
 
   /* Portes d'entrée : titre et texte à gauche, dessin et flèche à droite */
   .door__in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "t e" "d e"; gap: 6px 12px; padding: 22px var(--gut); min-height: 0; align-items: center; }
