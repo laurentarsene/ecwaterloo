@@ -154,6 +154,46 @@ const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefine
 })();
 
 /* ══════════════════════════════════════════════════════════════
+   CARTES À FAIRE GLISSER (mobile) — points indicateurs
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const mq = window.matchMedia('(max-width: 719.98px)');
+  document.querySelectorAll('.steps, .moments__grid, .years').forEach((rail) => {
+    const items = [...rail.children];
+    if (items.length < 2) return;
+    const dots = document.createElement('div');
+    dots.className = 'rail-dots';
+    dots.setAttribute('aria-hidden', 'true');      // simple repère visuel : le contenu reste lisible au défilement
+    items.forEach((item, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.tabIndex = -1;
+      b.addEventListener('click', () => rail.scrollTo({ left: item.offsetLeft - items[0].offsetLeft, behavior: prefersReducedMotion ? 'auto' : 'smooth' }));
+      dots.appendChild(b);
+    });
+    rail.after(dots);
+    // Zone qui défile : atteignable au clavier (flèches) quand elle est en carrousel
+    const focusable = () => { if (mq.matches) rail.tabIndex = 0; else rail.removeAttribute('tabindex'); };
+    mq.addEventListener ? mq.addEventListener('change', focusable) : mq.addListener(focusable);
+    focusable();
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      if (!mq.matches) return;
+      const x = rail.scrollLeft;
+      let best = 0, dist = Infinity;
+      items.forEach((it, i) => { const d = Math.abs(it.offsetLeft - items[0].offsetLeft - x); if (d < dist) { dist = d; best = i; } });
+      // tout au bout du défilement : le dernier point
+      if (x + rail.clientWidth >= rail.scrollWidth - 4) best = items.length - 1;
+      [...dots.children].forEach((d, i) => d.classList.toggle('is-active', i === best));
+    };
+    rail.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════
    ANIMATIONS — légères, lentes, une seule courbe
    ══════════════════════════════════════════════════════════════ */
 (function () {
@@ -437,6 +477,25 @@ function makeModal(overlay, { onOpen } = {}) {
 })();
 
 /* ══════════════════════════════════════════════════════════════
+   PARTAGE (épicerie étudiante) — feuille de partage native du téléphone
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const btn = document.getElementById('shareEtu');
+  if (!btn || !navigator.share) return;
+  btn.hidden = false;
+  btn.addEventListener('click', async () => {
+    const date = document.getElementById('nextThursdayCard')?.textContent;
+    try {
+      await navigator.share({
+        title: "L'épicerie étudiante de Waterloo",
+        text: `Le premier jeudi du mois, l'épicerie de Waterloo est ouverte aux étudiant·es : tu repars avec tes courses pour 5€.${date ? ` La prochaine a lieu le ${date}.` : ''} Inscription en ligne :`,
+        url: location.origin + '/etudiants/',
+      });
+    } catch (_) { /* partage annulé */ }
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════
    LUTINS DE NOËL — inscription
    ══════════════════════════════════════════════════════════════ */
 (function () {
@@ -524,6 +583,42 @@ function makeModal(overlay, { onOpen } = {}) {
     successEl.hidden = false;
     document.getElementById('closeLutinSuccess')?.focus();
   });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   GAZETTES (mobile) — balayer la couverture du dessus la fait passer derrière
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const deck = document.querySelector('.gaz__covers');
+  if (!deck) return;
+  const mq = window.matchMedia('(max-width: 719.98px)');
+  let drag = null, suppress = false;
+  deck.addEventListener('pointerdown', (e) => {
+    if (!mq.matches) return;
+    const front = deck.querySelector('.gaz__cover:not(.gaz__cover--back)');
+    if (front && front.contains(e.target)) drag = { x: e.clientX, y: e.clientY, dx: 0, moved: false, front };
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.moved && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { drag.moved = true; drag.front.style.transition = 'none'; }
+    if (drag.moved) { drag.dx = dx; drag.front.style.transform = `translateX(${dx}px) rotate(${-3 + dx * 0.04}deg)`; }
+  }, { passive: true });
+  const end = () => {
+    if (!drag) return;
+    const { front, dx, moved } = drag;
+    drag = null;
+    front.style.transition = '';
+    front.style.transform = '';
+    if (!moved) return;
+    suppress = true;
+    setTimeout(() => { suppress = false; }, 400);
+    if (Math.abs(dx) > 60) deck.querySelectorAll('.gaz__cover').forEach(c => c.classList.toggle('gaz__cover--back'));
+  };
+  window.addEventListener('pointerup', end);
+  window.addEventListener('pointercancel', end);
+  // Après un balayage, pas d'ouverture du lecteur par erreur
+  deck.addEventListener('click', (e) => { if (suppress) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 })();
 
 /* ══════════════════════════════════════════════════════════════

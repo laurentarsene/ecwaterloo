@@ -268,13 +268,14 @@ b, strong { font-weight: 600; }
 /* ══════════════════════════════════════════════════════════════
    BESOIN D'AIDE
    ══════════════════════════════════════════════════════════════ */
-.epi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px 64px; padding: clamp(56px, 7vw, 96px) 0 0; }
-.epi__body { display: flex; flex-direction: column; gap: 16px; max-width: 38em; }
+/* Titre puis texte, jamais de texte à droite d'un titre */
+.epi { display: flex; flex-direction: column; gap: 24px; padding: clamp(56px, 7vw, 96px) 0 0; }
+.epi__body { display: flex; flex-direction: column; gap: 16px; max-width: 42em; }
 .epi__body .lead { font-size: 21px; }
 .epi__key { font-size: 17px; line-height: 1.65; font-weight: 500; }
 
-.svc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px 64px; padding: 56px 0 40px; }
-.svc p { max-width: 34em; }
+.svc { display: flex; flex-direction: column; gap: 16px; padding: 56px 0 40px; }
+.svc p { max-width: 42em; }
 .arches { position: relative; margin-top: 8px; }
 .svc-art { width: 100%; }
 /* Le sol sur lequel marchent les personnages continue jusqu'aux bords de l'écran (sans animation) */
@@ -345,6 +346,7 @@ b, strong { font-weight: 600; }
 .etu__date { font-weight: 300; font-size: clamp(26px, 2.6vw, 34px); line-height: 1.2; letter-spacing: -.02em; }
 .etu__date b { font-weight: 500; }
 .etu__card .btn { margin-top: 6px; width: 100%; }
+.etu__card .etu__share { margin-top: -6px; }
 .etu__open { font-size: 15px; line-height: 1.5; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .etu__open b { font-weight: 500; color: var(--ink); }
 .etu__rule { font-size: 14px; line-height: 1.5; color: var(--ink-2); }
@@ -405,7 +407,7 @@ b, strong { font-weight: 600; }
 
 .moments { background: var(--paper); }
 .moments__in { padding-top: clamp(64px, 8vw, 104px); padding-bottom: clamp(64px, 8vw, 104px); }
-.moments__head { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px 64px; margin-bottom: 48px; }
+.moments__head { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
 .moments__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
 .moment { background: var(--white); border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; }
 .moment__art { height: 280px; background: var(--c); display: flex; align-items: flex-end; justify-content: center; padding: 24px 24px 0; }
@@ -420,13 +422,14 @@ b, strong { font-weight: 600; }
 /* Les deux numéros : le N°2 devant, le N°1 qui dépasse derrière */
 .gaz__covers { position: relative; width: min(70%, 340px); }
 .gaz__cover { position: relative; z-index: 1; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; transform: rotate(-3deg); transition: transform .5s var(--ease); }
-.gaz__cover--back { position: absolute; z-index: 0; top: -6px; left: 34%; transform: rotate(5deg); }
+.gaz__cover--back { position: absolute; z-index: 0; top: 0; left: 0; transform: translate(34%, -6px) rotate(5deg); }
 .gaz__cover--back img { filter: brightness(.96); }
 @media (hover: hover) {
   .gaz__cover:hover { transform: rotate(-2deg) translateY(-4px); }
-  .gaz__cover--back:hover { transform: rotate(6deg) translate(6px, -6px); }
+  .gaz__cover--back:hover { transform: translate(36%, -12px) rotate(6deg); }
 }
 .gaz__cover img { width: 100%; border-radius: 2px; box-shadow: 0 30px 60px -30px rgba(31,48,56,.5); }
+.gaz__hint { display: none; }
 .gaz__reader { position: absolute; width: min(56%, 300px); right: 0; bottom: -24px; pointer-events: none; }
 .gaz__txt { display: flex; flex-direction: column; gap: 20px; }
 .gaz__txt .btns { margin-top: 4px; }
@@ -456,6 +459,7 @@ b, strong { font-weight: 600; }
 .foot__contact a:first-child { font-size: 30px; letter-spacing: -.02em; }
 .foot__contact a:hover, .foot__cols a:hover, .foot__bottom a:hover { color: var(--white); }
 .foot__contact a:hover { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.foot__ic, .foot__ct small { display: none; }
 .foot__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 32px; font-size: 15px; }
 .foot__col { display: flex; flex-direction: column; gap: 8px; }
 .foot__col a { color: var(--mist); }
@@ -531,7 +535,8 @@ b, strong { font-weight: 600; }
 /* ══════════════════════════════════════════════════════════════
    NOTRE HISTOIRE (page Qui sommes-nous)
    ══════════════════════════════════════════════════════════════ */
-.hist__intro { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px 64px; padding-top: clamp(56px, 7vw, 96px); align-items: end; }
+.hist__intro { display: flex; flex-direction: column; gap: 20px; padding-top: clamp(56px, 7vw, 96px); }
+.hist__intro .lead { max-width: 34em; }
 .legal { padding-bottom: clamp(48px, 6vw, 80px); }
 .art-body.legal h2 { font-weight: 400; font-size: clamp(26px, 2.8vw, 32px); line-height: 1.15; letter-spacing: -.025em; color: var(--ink); margin-top: 24px; }
 .art-body.legal h3 { font-weight: 500; font-size: 20px; letter-spacing: -.01em; color: var(--ink); margin-top: 4px; }
@@ -705,12 +710,6 @@ b, strong { font-weight: 600; }
 .smodal__dialog { overscroll-behavior: contain; }
 @media (max-width: 719.98px) {
   .chip { min-height: 44px; }
-  .foot__contact a { padding: 9px 0; }
-  .foot__col { gap: 0; }
-  .foot__col a { padding: 12px 0; }
-  .foot__title { margin-bottom: 6px; }
-  .foot__col a.foot__etu { margin-top: 12px; padding-top: 12px; }
-  .foot__links a { padding: 13px 0; }
   .bot__close { width: 44px; height: 44px; }
   .bot__sugg button { min-height: 44px; padding: 10px 14px; font-size: 15px; }
   .bot__teaser .bot__x { width: 36px; height: 36px; }
@@ -732,8 +731,8 @@ b, strong { font-weight: 600; }
 
 
   /* Images bord à bord (comme un post) */
-  .hero__art, .svc-art, .flow__head img, .steps img, .rdv__txt img, .etu__side > img,
-  .benev__grid > img, .lutins__grid > img, .moment__art, .art-photo div, .art-fig div {
+  .hero__art, .svc-art, .flow__head img, .rdv__txt img, .etu__side > img,
+  .benev__grid > img, .lutins__grid > img, .art-photo div, .art-fig div {
     width: calc(100% + 2 * var(--gut)); max-width: none; margin-left: calc(-1 * var(--gut)); margin-right: calc(-1 * var(--gut));
     border-radius: 0;
   }
@@ -774,8 +773,6 @@ b, strong { font-weight: 600; }
   /* Comment ça se passe : chaque étape devient un « post » (dessin puis texte) */
   .flow { padding-top: 56px; }
   .flow__head img { margin-top: 8px; }
-  .steps li { padding: 24px 0 28px; gap: 16px; }
-  .steps img { flex: 0 0 auto; max-height: 220px; object-fit: contain; object-position: center bottom; }
 
   /* Étudiant·e : la carte (date + inscription) avant les étapes */
   .etu__in { padding-top: 56px; padding-bottom: 56px; }
@@ -806,17 +803,30 @@ b, strong { font-weight: 600; }
 
   /* Rouleau collé à gauche pour garder la ligne jusqu'au bord droit */
   .paint { margin-left: calc(-1 * var(--gut)); width: calc(88% + var(--gut)); }
-  .years { grid-template-columns: 1fr 1fr; gap: 20px 0; }
 
   /* Temps forts : chaque moment comme un post, couleur bord à bord */
   .moments__head { margin-bottom: 28px; }
-  .moments__grid { gap: 8px; }
-  .moment { background: transparent; border-radius: 0; overflow: visible; }
-  .moment__art { height: 260px; }
   .moment__body { padding: 20px 0 32px; }
 
-  /* Footer bord à bord */
+  /* Footer : contacts en lignes à toucher, liens sur deux colonnes */
   .foot { margin: 0; border-radius: 16px 16px 0 0; }
+  .foot__art { height: 240px; padding-top: 48px; }
+  .foot__in { padding-top: 24px; gap: 36px; }
+  .foot__contact { flex-direction: column; align-items: stretch; gap: 0; border-top: 1px solid rgba(255,255,255,.14); }
+  .foot__contact a.foot__c, .foot__contact a.foot__c:first-child { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.14); font-size: 17px; font-weight: 400; letter-spacing: 0; }
+  .foot__contact a.foot__c:hover { text-decoration: none; }
+  .foot__c::after { content: "→"; margin-left: auto; color: var(--mist-2); }
+  .foot__ic { display: flex; flex: none; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,.1); }
+  .foot__ct { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .foot__ct small { display: block; font-size: 13px; color: var(--mist-2); }
+  .foot__cols { grid-template-columns: 1fr 1fr; gap: 28px 20px; }
+  .foot__col { gap: 0; }
+  .foot__col a { padding: 11px 0; }
+  .foot__title { margin-bottom: 6px; }
+  .foot__col a.foot__etu { margin-top: 12px; padding-top: 12px; }
+  .foot__bottom { flex-direction: column; gap: 4px; }
+  .foot__links { flex-direction: column; gap: 0; }
+  .foot__links a { padding: 11px 0; }
 
   /* Article */
   .art-photo { padding: 0 var(--gut); }
@@ -857,4 +867,50 @@ b, strong { font-weight: 600; }
   ::view-transition-new(root) { animation: vt-in .42s var(--ease) both; }
   @keyframes vt-out { to { opacity: 0; } }
   @keyframes vt-in { from { opacity: 0; transform: translateY(8px); } }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE — cartes à faire glisser (aimantées), avec un aperçu de la suivante
+   Étapes, temps forts, dates clés. Points indicateurs ajoutés en JS.
+   ══════════════════════════════════════════════════════════════ */
+.rail-dots { display: none; }
+@media (max-width: 719.98px) {
+  .steps, .moments__grid, .years {
+    display: flex; flex-direction: row; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut);
+    margin-inline: calc(-1 * var(--gut)); padding-inline: var(--gut);
+    scrollbar-width: none;
+  }
+  .steps::-webkit-scrollbar, .moments__grid::-webkit-scrollbar, .years::-webkit-scrollbar { display: none; }
+  .steps > li, .moments__grid > .moment { flex: 0 0 84%; scroll-snap-align: start; }
+
+  /* Étapes : une carte par étape, dessin en haut */
+  .steps { border-bottom: 0; padding-bottom: 2px; }
+  .steps li { flex-direction: column-reverse; flex-wrap: nowrap; justify-content: flex-end; align-items: stretch; gap: 0; padding: 0 0 20px; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .steps img { flex: none; width: 100%; height: 190px; max-height: none; padding: 16px 16px 0; background: var(--paper); object-fit: contain; object-position: center bottom; }
+  .steps__txt { flex: none; padding: 18px 18px 0; }
+
+  /* Temps forts : cartes blanches sur le fond gris */
+  .moments__grid > .moment { background: var(--white); border-radius: var(--r); overflow: hidden; }
+  .moments__grid .moment__art { height: 220px; }
+  .moment__body { padding: 18px 18px 24px; }
+
+  /* Dates clés : une frise qui défile, la ligne bleue passe sous chaque date */
+  .years { gap: 0; margin-top: 28px; margin-bottom: 0; }
+  .years li { flex: 0 0 46%; scroll-snap-align: start; position: relative; padding: 18px 16px 0 0; border-top: 2px solid var(--paint); }
+  .years b::before { position: absolute; top: -6px; left: 0; }
+
+  /* Points indicateurs */
+  .rail-dots { display: flex; justify-content: center; margin-top: 12px; }
+  .rail-dots button { width: 24px; height: 24px; border: 0; background: none; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .rail-dots button::before { content: ""; width: 7px; height: 7px; border-radius: 4px; background: var(--line); transition: width .35s var(--ease), background .35s; }
+  .rail-dots button.is-active::before { width: 22px; background: var(--ink); }
+  .years + .rail-dots { margin-bottom: 56px; }
+  .years + .rail-dots button.is-active::before { background: var(--paint); }
+}
+
+/* Gazettes sur mobile : un paquet de deux couvertures à balayer */
+@media (max-width: 719.98px) {
+  .gaz__covers { touch-action: pan-y; }
+  .gaz__hint { display: block; margin-top: 36px; font-size: 14px; color: var(--ink-3); }
 }
