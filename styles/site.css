@@ -232,7 +232,14 @@ b, strong { font-weight: 600; }
 .domains { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 32px 20px; margin-top: 4px; }
 .domains li { display: flex; flex-direction: column; gap: 8px; padding-top: 20px; border-top: 4px solid var(--c); }
 .domains h4 { font-weight: 500; font-size: 20px; letter-spacing: -.015em; }
-.domains p { font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+.domains p { font-size: 15px; line-height: 1.55; color: var(--ink-2); }
+.domains p + p { margin-top: 4px; }
+.domains__end { max-width: 38em; margin-top: 56px; font-size: 21px; }
+/* Textes plus longs : une seule colonne sur téléphone, pour une lecture confortable */
+@media (min-width: 1100px) { .domains { grid-template-columns: repeat(6, 1fr); } }        /* un domaine sous chaque arche */
+@media (min-width: 720px) and (max-width: 1099.98px) { .domains { grid-template-columns: repeat(3, 1fr); gap: 40px 28px; } }
+@media (min-width: 560px) and (max-width: 719.98px) { .domains { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 559.98px) { .domains { grid-template-columns: 1fr; gap: 28px; } .domains p { font-size: 16px; } }
 
 .flow { padding-top: clamp(72px, 8vw, 112px); }
 .flow__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 48px 80px; align-items: start; }
