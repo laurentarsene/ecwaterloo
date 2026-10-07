@@ -216,7 +216,7 @@ for (const p of PAGES) {
     .replace('{{footer}}', footer.trimEnd())
     .replace('{{modals}}', modals)
     .replace('{{scripts}}', p.scripts || '')
-    .replace('{{v_css}}', V.css).replace('{{v_js}}', V.js).replace('{{v_chat}}', V.chat);
+    .replace('{{v_css}}', V.css).replaceAll('{{v_js}}', V.js).replace('{{v_chat}}', V.chat);
 
   for (const [k, v] of Object.entries(LEGAL)) html = html.replaceAll(`{{${k}}}`, v);
   if (p.chapter) html = html.replaceAll(`data-nav="${p.chapter}"`, `data-nav="${p.chapter}" aria-current="page"`);
