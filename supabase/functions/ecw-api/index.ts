@@ -1,16 +1,17 @@
 // ═══════════════════════════════════════════════════════
 //  ECW — fonction serveur des formulaires publics et de l'admin
 //
-//  Public : inscriptions (étudiant·es, bénévoles, gazette) et page /suivi/
+//  Public : inscriptions (étudiant·es, bénévoles, lutin·es, gazette) et page /suivi/
 //           (liens des e-mails : confirmer, annuler, présence, désinscription).
-//  Admin  : validation des bénévoles, envoi de la gazette (session admin requise).
+//  Admin  : validation des bénévoles, déplacement ou annulation d'une date (avec e-mails
+//           aux personnes inscrites), envoi de la gazette (session admin requise).
 //
 //  Déployer : supabase functions deploy ecw-api
 //  Secrets  : RESEND_API_KEY (déjà en place) ; SITE_URL facultatif
 // ═══════════════════════════════════════════════════════
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.2';
-import { adminClient, dateBxl, envoyer } from '../_shared/mail.ts';
+import { adminClient, dateBxl, envoyer, Mail } from '../_shared/mail.ts';
 import * as M from '../_shared/modeles.ts';
 
 const CORS = {
@@ -100,6 +101,115 @@ async function benevoleDecision(b: Record<string, unknown>) {
     await db.from('benevole_inscriptions').update({ mail_decision_at: new Date().toISOString() }).eq('id', id);
   }
   return { statut: decision };
+}
+
+// ── Admin : changer une date, avec les conséquences ─────────────────────
+const ACTIFS_ETU = ['confirmé', 'rappel_envoyé', 'liste_attente'];
+const ACTIFS_BEN = ['a_confirmer', 'confirme', 'valide'];
+const libelle = async (d: string) => (await db.rpc('ecw_libelle_date', { d })).data as string;
+const premierJeudi = (mois: string) => { const d = new Date(`${mois}-01T12:00:00Z`); d.setUTCDate(1 + (4 - d.getUTCDay() + 7) % 7); return d.toISOString().slice(0, 10); };
+
+// Remplit les places libérées (ou ajoutées) avec la liste d'attente, dans l'ordre d'arrivée
+async function promouvoir(lib: string, mois: string) {
+  const { data: m } = await db.from('epicerie_mois').select('capacite').eq('mois', mois).maybeSingle();
+  const { data: reg } = await db.from('settings').select('value').eq('key', 'capacite_etudiants').maybeSingle();
+  const cap = m?.capacite ?? (reg?.value ? parseInt(reg.value, 10) : null);
+  const { data: rows } = await db.from('inscriptions_etudiantes').select('id, nb_personnes, statut, created_at').eq('date_rdv', lib).in('statut', ['confirmé', 'rappel_envoyé', 'présent', 'liste_attente']).order('created_at');
+  let pris = (rows || []).filter(r => r.statut !== 'liste_attente').reduce((a, r) => a + r.nb_personnes, 0);
+  const promus: string[] = [];
+  for (const r of (rows || []).filter(r => r.statut === 'liste_attente')) {
+    if (cap != null && pris + r.nb_personnes > cap) break;
+    await db.from('inscriptions_etudiantes').update({ statut: 'confirmé', depuis_attente: true, mail_confirmation_at: null }).eq('id', r.id);
+    pris += r.nb_personnes; promus.push(r.id);
+  }
+  for (const id of promus) await mailEtudiant(id);
+  return promus.length;
+}
+
+async function epicerieMaj(b: Record<string, unknown>) {
+  const mois = txt(b.mois, 7);
+  if (!/^\d{4}-\d{2}$/.test(mois)) throw new Refus('mois');
+  const { data: avant } = await db.from('epicerie_mois').select('*').eq('mois', mois).maybeSingle();
+  const jourAvant = (await db.rpc('epicerie_date_mois', { p_mois: mois })).data as string;
+  let jour = 'jour' in b ? (txt(b.jour, 10) || null) : (avant?.jour ?? null);
+  if (jour && !jour.startsWith(mois)) throw new Refus('hors_mois');
+  if (jour === premierJeudi(mois)) jour = null;
+  const annule = 'annule' in b ? !!b.annule : !!avant?.annule;
+  const capacite = 'capacite' in b ? (b.capacite == null || b.capacite === '' ? null : Math.max(1, parseInt(String(b.capacite), 10))) : (avant?.capacite ?? null);
+  const note = 'note' in b ? txt(b.note, 200) : (avant?.note ?? '');
+  const { error } = await db.from('epicerie_mois').upsert({ mois, jour, annule, capacite, note, updated_at: new Date().toISOString() });
+  if (error) throw new Error(error.message);
+  const jourApres = jour || premierJeudi(mois);
+  if (jourApres < dateBxl(new Date()) && jourApres !== jourAvant) throw new Refus('date_passee');
+
+  const prevenir = b.prevenir !== false, message = txt(b.message, 600);
+  const libAvant = await libelle(jourAvant), libApres = await libelle(jourApres);
+  const { data: inscrits } = await db.from('inscriptions_etudiantes').select('*').eq('date_rdv', libAvant).in('statut', ACTIFS_ETU);
+  const mails: Mail[] = [];
+  let touches = 0, promus = 0;
+
+  if (annule && !avant?.annule) {
+    const prochaine = await db.rpc('epicerie_prochaine');
+    for (const e of inscrits || []) {
+      await db.from('inscriptions_etudiantes').update({ statut: 'annulé', annule_at: new Date().toISOString() }).eq('id', e.id);
+      if (prevenir) mails.push(M.etudiantMoisAnnule(e, message, prochaine.data?.libelle ?? null));
+      touches++;
+    }
+  } else if (!annule && jourApres !== jourAvant) {
+    for (const e of inscrits || []) {
+      const maj = { date_rdv: libApres, date_jour: jourApres, statut: e.statut === 'rappel_envoyé' ? 'confirmé' : e.statut };
+      await db.from('inscriptions_etudiantes').update(maj).eq('id', e.id);
+      if (prevenir) mails.push(M.etudiantDeplace({ ...e, ...maj }, libAvant, message));
+      touches++;
+    }
+  }
+  if (mails.length) await envoyer(mails);
+  if (!annule) promus = await promouvoir(libApres, mois);
+  return { touches, prevenus: mails.length, promus };
+}
+
+async function creneauMaj(b: Record<string, unknown>) {
+  const id = requis(txt(b.id, 40), 'id');
+  const { data: avant } = await db.from('benevole_creneaux').select('*').eq('id', id).single();
+  if (!avant) throw new Refus('introuvable');
+  const maj: Record<string, unknown> = {};
+  for (const k of ['categorie_id', 'debut', 'fin', 'note', 'publie', 'places']) if (k in b) maj[k] = b[k];
+  if (maj.debut && Date.parse(String(maj.debut)) < Date.now() && Date.parse(avant.debut) !== Date.parse(String(maj.debut))) throw new Refus('date_passee');
+  const { error } = await db.from('benevole_creneaux').update(maj).eq('id', id);
+  if (error) throw new Refus(error.message.includes('check') ? 'horaire' : 'serveur');
+  const deplace = Date.parse(String(maj.debut ?? avant.debut)) !== Date.parse(avant.debut) || Date.parse(String(maj.fin ?? avant.fin)) !== Date.parse(avant.fin);
+  if (!deplace) return { prevenus: 0 };
+  const { data: inscrits } = await db.from('benevole_inscriptions').select('*').eq('creneau_id', id).in('statut', ACTIFS_BEN);
+  // Le rappel repartira la veille de la nouvelle date ; la présence est à reconfirmer
+  if (inscrits?.length) await db.from('benevole_inscriptions').update({ mail_rappel_at: null, presence: null }).eq('creneau_id', id).in('statut', ACTIFS_BEN);
+  if (b.prevenir === false || !inscrits?.length) return { prevenus: 0 };
+  const c = await creneau(id); const message = txt(b.message, 600);
+  await envoyer(inscrits.map(i => M.benevoleDeplace(i, c, avant, message)));
+  return { prevenus: inscrits.length };
+}
+
+async function creneauSupprimer(b: Record<string, unknown>) {
+  const id = requis(txt(b.id, 40), 'id');
+  const c = await creneau(id);
+  const { data: inscrits } = await db.from('benevole_inscriptions').select('*').eq('creneau_id', id).in('statut', ACTIFS_BEN);
+  const prevenir = b.prevenir !== false && Date.parse(c.debut) > Date.now();
+  if (prevenir && inscrits?.length) await envoyer(inscrits.map(i => M.benevoleCreneauAnnule(i, c, txt(b.message, 600))));
+  const { error } = await db.from('benevole_creneaux').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  return { prevenus: prevenir ? inscrits?.length || 0 : 0 };
+}
+
+// ── Lutins de Noël ─────────────────────────────────────────────────────
+async function lutinInscrire(b: Record<string, unknown>) {
+  const email = txt(b.email, 254) ? emailValide(b.email) : null;
+  const telephone = txt(b.telephone, 40) || null;
+  if (!email && !telephone) throw new Refus('champ_contact');
+  const ligne = { prenom: requis(txt(b.prenom, 80), 'prenom'), nom: requis(txt(b.nom, 80), 'nom'), email, telephone, nb_lettres: Math.max(1, Math.min(20, parseInt(String(b.nb_lettres), 10) || 1)) };
+  const { error } = await db.from('inscriptions_lutins').insert(ligne);
+  if (error) throw new Error(error.message);
+  // L'inscription est enregistrée : un e-mail en échec ne doit pas la faire échouer
+  try { await envoyer([...(email ? [M.lutinMerci(ligne)] : []), M.adminNouveauLutin(await emailAdmin(), ligne)]); } catch (e) { console.error('mails lutin', e); }
+  return { ok: true };
 }
 
 // ── Gazette ────────────────────────────────────────────────────────────
@@ -212,10 +322,14 @@ Deno.serve(async (req) => {
       case 'etudiant_inscrire': return json(await etudiantInscrire(b));
       case 'benevole_inscrire': return json(await benevoleInscrire(b));
       case 'gazette_abonner':   return json(await gazetteAbonner(b));
+      case 'lutin_inscrire':    return json(await lutinInscrire(b));
       case 'suivi':             return json(await resume(txt(b.token, 40)));
       case 'suivi_action':      return json(await action(txt(b.token, 40), txt(b.quoi, 30)));
       case 'benevole_decision': await exigerAdmin(req); return json(await benevoleDecision(b));
       case 'gazette_envoyer':   await exigerAdmin(req); return json(await gazetteEnvoyer(b));
+      case 'epicerie_maj':      await exigerAdmin(req); return json(await epicerieMaj(b));
+      case 'creneau_maj':       await exigerAdmin(req); return json(await creneauMaj(b));
+      case 'creneau_supprimer': await exigerAdmin(req); return json(await creneauSupprimer(b));
       case 'etudiant_mail':     await exigerAdmin(req); await mailEtudiant(txt(b.id, 40)); return json({ ok: true });
       default: return json({ erreur: 'action_inconnue' }, 400);
     }

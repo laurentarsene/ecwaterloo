@@ -28,6 +28,7 @@ function showLogin() {
 function showDashboard() {
   document.getElementById('loginScreen').hidden  = true;
   document.getElementById('dashboard').hidden    = false;
+  document.getElementById('navQui').textContent  = currentUser?.email ? `Connecté·e : ${currentUser.email}` : '';
   showTab(location.hash.slice(1));
 }
 
@@ -53,6 +54,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   }
 
   currentUser = data.user;
+  btn.disabled = false; btn.textContent = 'Se connecter';
   showDashboard();
 });
 
@@ -130,7 +132,6 @@ function renderTable() {
     tr.dataset.id = row.id;
     tr.innerHTML = `
       <td class="td-name">${esc(row.prenom)} ${esc(row.nom)}</td>
-      <td class="td-muted">${esc(row.genre)}</td>
       <td>${esc(row.universite)}</td>
       <td class="text-center">${row.nb_personnes}</td>
       <td class="td-muted"><a href="tel:${esc(row.telephone)}" style="color:inherit;">${esc(row.telephone)}</a></td>
@@ -140,10 +141,10 @@ function renderTable() {
       <td class="text-center">${statutBadge(row.statut)}</td>
       <td class="text-center">
         <div class="action-btns">${row.statut === 'liste_attente'
-          ? `<button class="action-btn action-btn--present" data-id="${row.id}" data-action="promouvoir" title="Lui donner une place (un e-mail de confirmation part)">Donner une place</button>`
+          ? `<button class="action-btn action-btn--present" data-id="${row.id}" data-action="promouvoir">Donner une place</button>`
           : row.statut === 'annulé' ? '<span class="td-muted">—</span>'
-          : `<button class="action-btn action-btn--present" data-id="${row.id}" data-action="présent" title="Marquer présent">✓ Présent</button>
-          <button class="action-btn action-btn--absent"  data-id="${row.id}" data-action="absent"  title="Marquer absent">✗ Absent</button>`}
+          : `<button class="action-btn action-btn--present" data-id="${row.id}" data-action="présent">Présent</button>
+          <button class="action-btn action-btn--absent"  data-id="${row.id}" data-action="absent">Absent</button>`}
         </div>
       </td>`;
     tbody.appendChild(tr);
@@ -156,20 +157,19 @@ function renderTable() {
 }
 
 function updateStats() {
-  const dateFilter = document.getElementById('filterDate').value || getNextFirstThursdayStr();
-  const forDate    = allRows.filter(r => r.date_rdv === dateFilter && !['annulé', 'liste_attente'].includes(r.statut));
-  const nbInscrits = forDate.length;
-  const nbPersonnes = forDate.reduce((sum, r) => sum + (r.nb_personnes || 1), 0);
-
-  document.getElementById('statInscrits').textContent  = nbInscrits;
-  document.getElementById('statPersonnes').textContent = nbPersonnes;
-  document.getElementById('statDate').textContent      = dateFilter || getNextFirstThursdayStr();
+  // Remplacé par la carte « prochaine épicerie » (admin-plus.js), rafraîchie à chaque chargement
+  if (typeof chargerHeroEtudiants === 'function') chargerHeroEtudiants();
 }
 
 // ── Actions ───────────────────────────────────────────────────────────────────
 async function updateStatut(id, statut) {
   if (statut === 'promouvoir') {
-    if (!confirm('Donner une place à cette personne ? Elle recevra un e-mail de confirmation.')) return;
+    const r = allRows.find(x => x.id === id);
+    const ok = await decision({ titre: `Donner une place à ${r.prenom} ${r.nom} ?`,
+      points: [{ type: 'info', html: `${esc(r.prenom)} passe de la liste d'attente aux inscrit·es confirmé·es pour le <strong>${esc(r.date_rdv)}</strong>, pour ${r.nb_personnes} personne${r.nb_personnes > 1 ? 's' : ''}. Un e-mail de confirmation part tout de suite, avec la date à ajouter à son agenda.` },
+        { type: 'attention', html: 'La limite de places de ce jour-là peut alors être dépassée : c\'est vous qui décidez.' }],
+      actions: [{ valeur: 'ok', label: 'Donner la place et envoyer l\'e-mail', style: 'primary' }] });
+    if (!ok) return;
     const { error } = await sb.from('inscriptions_etudiantes').update({ statut: 'confirmé', depuis_attente: true, mail_confirmation_at: null }).eq('id', id);
     if (error) { console.error(error); return; }
     await sb.functions.invoke('ecw-api', { body: { action: 'etudiant_mail', id } });
@@ -189,7 +189,7 @@ async function updateStatut(id, statut) {
   // Re-render only the changed row's badge + action area
   const tr = document.querySelector(`tr[data-id="${id}"]`);
   if (tr) {
-    tr.querySelector('td:nth-child(9)').innerHTML = statutBadge(statut);
+    tr.querySelector('td:nth-child(8)').innerHTML = statutBadge(statut);
   }
 
   updateStats();
@@ -269,18 +269,22 @@ function formatDateFr(date) {
   return `Jeudi ${date.getDate()} ${mois[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-// ── Tab switching ─────────────────────────────────────────────────────────────
-// Chaque onglet a son panneau (#panel + Nom) ; l'adresse garde l'onglet (#benevoles…) pour les liens des e-mails
-const PANELS = { inscriptions: 'panelInscriptions', dates: 'panelDates', benevoles: 'panelBenevoles', lutins: 'panelLutins', agenda: 'panelAgenda', besoins: 'panelBesoins', gazette: 'panelGazette', parametres: 'panelParametres' };
-function showTab(target) {
-  if (!PANELS[target]) target = 'inscriptions';
-  document.querySelectorAll('.dash__tab').forEach(t => t.classList.toggle('is-active', t.dataset.tab === target));
+// ── Navigation ────────────────────────────────────────────────────────────────
+// Six rubriques ; les anciennes adresses (#dates, #agenda, #gazette… des e-mails et favoris) restent valables
+const PANELS = { accueil: 'panelAccueil', etudiants: 'panelInscriptions', benevoles: 'panelBenevoles', lutins: 'panelLutins', site: 'panelSite', reglages: 'panelParametres' };
+const ALIAS = { inscriptions: ['etudiants', 'etuListe'], dates: ['etudiants', 'etuMois'], agenda: ['site', 'panelAgenda'], besoins: ['site', 'panelBesoins'], gazette: ['site', 'panelGazette'], chiffres: ['site', 'panelChiffres'], parametres: ['reglages'] };
+function showTab(cible) {
+  let [target, seg] = ALIAS[cible] || [cible];
+  if (!PANELS[target]) target = 'accueil';
+  document.querySelectorAll('.dash__tab').forEach(t => { const on = t.dataset.tab === target; t.classList.toggle('is-active', on); on ? t.setAttribute('aria-current', 'page') : t.removeAttribute('aria-current'); });
   Object.entries(PANELS).forEach(([k, id]) => { const el = document.getElementById(id); if (el) el.hidden = k !== target; });
-  if (target === 'parametres') loadSettings();
-  if (target === 'lutins')     loadLutins();
-  if (target === 'inscriptions') loadInscriptions();
+  if (target === 'reglages') loadSettings();
+  if (target === 'lutins')    loadLutins();
+  if (target === 'etudiants') loadInscriptions();
   window.dispatchEvent(new CustomEvent('ecw:onglet', { detail: target }));
-  history.replaceState(null, '', target === 'inscriptions' ? location.pathname : '#' + target);
+  if (seg) window.dispatchEvent(new CustomEvent('ecw:segment', { detail: seg }));
+  history.replaceState(null, '', target === 'accueil' ? location.pathname : '#' + (seg && ALIAS[cible] ? cible : target));
+  window.scrollTo(0, 0);
 }
 document.querySelectorAll('.dash__tab').forEach(tab => tab.addEventListener('click', () => showTab(tab.dataset.tab)));
 
@@ -458,7 +462,7 @@ document.getElementById('saveSettings').addEventListener('click', async () => {
     feedback.textContent = 'Erreur lors de la sauvegarde.';
     feedback.style.color = '#a03030';
   } else {
-    feedback.textContent = `✓ Enregistré — inscriptions ouvertes ${val} jour${val > 1 ? 's' : ''} avant chaque rendez-vous.`;
+    feedback.textContent = `Enregistré : les inscriptions s'ouvrent ${val} jour${val > 1 ? 's' : ''} avant chaque épicerie étudiante.`;
     feedback.style.color = '#1a6e40';
   }
 });

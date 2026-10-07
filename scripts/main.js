@@ -602,7 +602,7 @@ function makeModal(overlay, { onOpen } = {}) {
       email: emailInput.value.trim() || null,
       nb_lettres: nbLettres,
     };
-    try { await ECW.ajouter('inscriptions_lutins', data); } catch (insertError) {
+    try { await ECW.api('lutin_inscrire', { ...data, site_web: form.querySelector('[name=site_web]')?.value || '' }); } catch (insertError) {
       console.error(insertError);
       submitBtn.disabled = false;
       submitBtn.textContent = origLabel;

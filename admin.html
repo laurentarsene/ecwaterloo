@@ -6,7 +6,7 @@
   <title>Admin — Espace Convivial de Waterloo</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="assets/images/ecw-icon.png">
-  <link rel="stylesheet" href="styles/admin.css?v=8">
+  <link rel="stylesheet" href="styles/admin.css?v=9">
 </head>
 <body>
 
@@ -50,150 +50,86 @@
     </div>
   </div>
 
-  <!-- ══════════ DASHBOARD ══════════ -->
+  <!-- ══════════ ESPACE ADMIN ══════════ -->
   <div id="dashboard" class="dash" hidden>
 
-    <header class="dash__header">
-      <div class="dash__header-inner">
-        <a href="index.html" class="dash__brand" aria-label="Retour au site">
-          <span class="dash__mark" aria-hidden="true">
-            <img src="assets/images/ecw-logo.png" alt="" class="dash__mark-img">
-          </span>
-          <div class="dash__brand-text">
-            <span class="dash__brand-name"><em>Espace</em> Convivial</span>
-            <span class="dash__brand-tag">Admin</span>
+    <aside class="nav" aria-label="Espace admin">
+      <a href="/" class="nav__brand" aria-label="Retour au site"><img src="assets/images/ecw-logo.png" alt="Espace Convivial de Waterloo" width="863" height="335"></a>
+      <nav class="nav__items" id="adminTabs">
+        <button class="dash__tab nav__item" data-tab="accueil"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><path d="M7 13h3v3H7z"/></svg><span>Tableau de bord</span></button>
+        <button class="dash__tab nav__item" data-tab="etudiants"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M7 11v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5"/></svg><span>Épicerie étudiante</span><b class="nav__badge" id="countAttente" hidden></b></button>
+        <button class="dash__tab nav__item" data-tab="benevoles"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V7a2 2 0 1 1 4 0v4M11 10V5a2 2 0 1 1 4 0v6M15 9a2 2 0 1 1 4 0v5a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4a1.8 1.8 0 0 1 3-2L7 14"/></svg><span>Bénévoles</span><b class="nav__badge nav__badge--alerte" id="countAValider" hidden></b></button>
+        <button class="dash__tab nav__item" data-tab="lutins"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 12h18M12 8c-2-4-6-4-6-1s4 1 6 1c2 0 6 2 6-1s-4-3-6 1z"/></svg><span>Lutins de Noël</span></button>
+        <button class="dash__tab nav__item" data-tab="site"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 13h6M7 16h10"/></svg><span>Contenus du site</span></button>
+        <button class="dash__tab nav__item" data-tab="reglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Réglages</span></button>
+      </nav>
+      <div class="nav__bas">
+        <a href="/" class="nav__lien" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Voir le site</span></a>
+        <button class="nav__lien" id="logoutBtn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Se déconnecter</span></button>
+        <p class="nav__qui" id="navQui"></p>
+      </div>
+    </aside>
+
+    <div class="dash__corps">
+
+    <!-- Tableau de bord : à faire + grand agenda (admin-agenda.js) -->
+    <main class="dash__main dash__main--large" id="panelAccueil" hidden></main>
+
+    <!-- Épicerie étudiante -->
+    <main class="dash__main" id="panelInscriptions" hidden>
+      <div class="dash__heading"><h1 class="dash__title">Épicerie étudiante</h1></div>
+      <section id="etuHero" class="hero-etu" aria-live="polite"></section>
+      <div class="segments" role="tablist" aria-label="Épicerie étudiante">
+        <button class="segment is-on" role="tab" aria-selected="true" data-seg="etuListe">Les inscriptions</button>
+        <button class="segment" role="tab" aria-selected="false" data-seg="etuMois">Les 12 prochains mois</button>
+      </div>
+      <section id="etuListe" class="seg-panel">
+        <div class="toolbar">
+          <div class="toolbar__left">
+            <select class="input" id="filterDate" aria-label="Date"><option value="">Toutes les dates</option></select>
+            <select class="input" id="filterStatut" aria-label="Statut">
+              <option value="">Tous les statuts</option>
+              <option value="confirmé">Confirmé</option>
+              <option value="rappel_envoyé">Rappel envoyé</option>
+              <option value="présent">Présent</option>
+              <option value="absent">Absent</option>
+              <option value="liste_attente">Liste d'attente</option>
+              <option value="annulé">Annulé</option>
+            </select>
           </div>
-        </a>
-        <nav class="dash__tabs" id="adminTabs" aria-label="Sections">
-          <button class="dash__tab is-active" data-tab="inscriptions">Étudiants</button>
-          <button class="dash__tab" data-tab="dates">Dates &amp; places</button>
-          <button class="dash__tab" data-tab="benevoles">Bénévoles <span class="dash__count" id="countAValider" hidden></span></button>
-          <button class="dash__tab" data-tab="lutins">Lutins</button>
-          <button class="dash__tab" data-tab="agenda">Agenda</button>
-          <button class="dash__tab" data-tab="besoins">Besoins</button>
-          <button class="dash__tab" data-tab="gazette">Gazette</button>
-          <button class="dash__tab" data-tab="parametres">Réglages</button>
-        </nav>
-        <button class="dash__logout" id="logoutBtn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Déconnexion
-        </button>
-      </div>
-    </header>
-
-    <!-- Panel : Inscriptions -->
-    <main class="dash__main" id="panelInscriptions">
-
-      <div class="dash__heading">
-        <div>
-          <span class="dash__kicker">Inscriptions étudiantes</span>
-          <h1 class="dash__title">Vue <em>d'ensemble</em></h1>
+          <div class="toolbar__right">
+            <button class="btn btn--ghost" id="exportBtn">Exporter en CSV</button>
+            <button class="btn btn--ghost" id="refreshBtn">Actualiser</button>
+          </div>
         </div>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <span class="stat__val" id="statInscrits">—</span>
-          <span class="stat__lbl">inscrit·e·s</span>
+        <div class="table-wrap">
+          <table class="table" id="inscriptionsTable">
+            <thead><tr><th>Nom</th><th>Université</th><th class="text-center">Pers.</th><th>Téléphone</th><th>E-mail</th><th>Inscrit le</th><th>Date</th><th class="text-center">Statut</th><th class="text-center">Le jour J</th></tr></thead>
+            <tbody id="inscriptionsBody"></tbody>
+          </table>
+          <div class="empty" id="adminEmpty" hidden><p>Aucune inscription pour cette sélection.</p></div>
+          <div class="loading" id="adminLoading"><div class="spinner"></div></div>
         </div>
-        <div class="stat">
-          <span class="stat__val" id="statPersonnes">—</span>
-          <span class="stat__lbl">personnes attendues</span>
-        </div>
-        <div class="stat stat--accent">
-          <span class="stat__val" id="statDate">—</span>
-          <span class="stat__lbl">prochain rendez-vous</span>
-        </div>
-      </div>
-
-      <div class="toolbar">
-        <div class="toolbar__left">
-          <select class="input" id="filterDate">
-            <option value="">Toutes les dates</option>
-          </select>
-          <select class="input" id="filterStatut">
-            <option value="">Tous les statuts</option>
-            <option value="confirmé">Confirmé</option>
-            <option value="rappel_envoyé">Rappel envoyé</option>
-            <option value="présent">Présent</option>
-            <option value="absent">Absent</option>
-            <option value="liste_attente">Liste d'attente</option>
-            <option value="annulé">Annulé</option>
-          </select>
-        </div>
-        <div class="toolbar__right">
-          <button class="btn btn--ghost" id="exportBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Exporter CSV
-          </button>
-          <button class="btn btn--primary" id="refreshBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-            Actualiser
-          </button>
-        </div>
-      </div>
-
-      <div class="table-wrap">
-        <table class="table" id="inscriptionsTable">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Genre</th>
-              <th>Université</th>
-              <th class="text-center">Pers.</th>
-              <th>Téléphone</th>
-              <th>Email</th>
-              <th>Inscrit le</th>
-              <th>Date RDV</th>
-              <th class="text-center">Statut</th>
-              <th class="text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="inscriptionsBody"></tbody>
-        </table>
-        <div class="empty" id="adminEmpty" hidden>
-          <p>Aucune inscription pour cette sélection.</p>
-        </div>
-        <div class="loading" id="adminLoading">
-          <div class="spinner"></div>
-        </div>
-      </div>
-
+      </section>
+      <section id="etuMois" class="seg-panel" hidden></section>
     </main>
 
-    <!-- Panel : Lutins -->
+    <main class="dash__main" id="panelBenevoles" hidden></main>
+
+    <!-- Lutins -->
     <main class="dash__main" id="panelLutins" hidden>
-
-      <div class="dash__heading">
-        <div>
-          <span class="dash__kicker">Opération Lutins &amp; Lutines</span>
-          <h1 class="dash__title">Les <em>lutins</em></h1>
-        </div>
+      <div class="dash__heading"><h1 class="dash__title">Lutins de Noël</h1></div>
+      <p class="lead-admin">Chaque personne inscrite reçoit une ou plusieurs lettres d'enfants, achète le cadeau et le dépose à l'épicerie. Cochez chaque étape au fur et à mesure : les compteurs ci-dessous montrent ce qu'il reste à faire.</p>
+      <div class="stats stats--4">
+        <div class="stat"><span class="stat__val" id="statLutins">—</span><span class="stat__lbl">lutin·es inscrit·es</span></div>
+        <div class="stat"><span class="stat__val" id="statLettresTotal">—</span><span class="stat__lbl">lettres demandées</span></div>
+        <div class="stat"><span class="stat__val" id="statLettresAEnvoyer">—</span><span class="stat__lbl">lettres encore à envoyer</span></div>
+        <div class="stat stat--accent"><span class="stat__val" id="statCadeauxRestants">—</span><span class="stat__lbl">cadeaux encore attendus</span></div>
       </div>
-
-      <div class="stats">
-        <div class="stat">
-          <span class="stat__val" id="statLutins">—</span>
-          <span class="stat__lbl">lutins inscrit·e·s</span>
-        </div>
-        <div class="stat">
-          <span class="stat__val" id="statLettresTotal">—</span>
-          <span class="stat__lbl">lettres demandées</span>
-        </div>
-        <div class="stat">
-          <span class="stat__val" id="statLettresAEnvoyer">—</span>
-          <span class="stat__lbl">lettres à envoyer</span>
-        </div>
-        <div class="stat stat--accent">
-          <span class="stat__val" id="statCadeauxRestants">—</span>
-          <span class="stat__lbl">cadeaux à récupérer</span>
-        </div>
-      </div>
-
       <div class="toolbar">
         <div class="toolbar__left">
-          <select class="input" id="filterLutinStatut">
-            <option value="">Tous les statuts</option>
+          <select class="input" id="filterLutinStatut" aria-label="Étape">
+            <option value="">Toutes les étapes</option>
             <option value="a_envoyer">Lettre à envoyer</option>
             <option value="a_confirmer">Cadeau à confirmer</option>
             <option value="a_recuperer">Cadeau à récupérer</option>
@@ -202,66 +138,43 @@
           </select>
         </div>
         <div class="toolbar__right">
-          <button class="btn btn--ghost" id="exportLutinsBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Exporter CSV
-          </button>
-          <button class="btn btn--primary" id="refreshLutinsBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-            Actualiser
-          </button>
+          <button class="btn btn--ghost" id="exportLutinsBtn">Exporter en CSV</button>
+          <button class="btn btn--ghost" id="refreshLutinsBtn">Actualiser</button>
         </div>
       </div>
-
       <div class="table-wrap">
         <table class="table" id="lutinsTable">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Contact</th>
-              <th class="text-center">Lettres</th>
-              <th class="text-center">Lettre<br>envoyée</th>
-              <th class="text-center">Cadeau<br>confirmé</th>
-              <th class="text-center">Cadeau<br>reçu</th>
-              <th class="text-center">Cadeau<br>remis</th>
-              <th>Notes</th>
-              <th>Inscrit le</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Nom</th><th>Contact</th><th class="text-center">Lettres</th><th class="text-center">Lettre<br>envoyée</th><th class="text-center">Cadeau<br>confirmé</th><th class="text-center">Cadeau<br>reçu</th><th class="text-center">Cadeau<br>remis</th><th>Notes</th><th>Inscrit le</th></tr></thead>
           <tbody id="lutinsBody"></tbody>
         </table>
-        <div class="empty" id="lutinsEmpty" hidden>
-          <p>Aucun lutin pour cette sélection.</p>
-        </div>
-        <div class="loading" id="lutinsLoading" hidden>
-          <div class="spinner"></div>
-        </div>
+        <div class="empty" id="lutinsEmpty" hidden><p>Aucun lutin pour cette sélection.</p></div>
+        <div class="loading" id="lutinsLoading" hidden><div class="spinner"></div></div>
       </div>
-
     </main>
 
-    <!-- Panels remplis par admin-plus.js -->
-    <main class="dash__main" id="panelDates" hidden></main>
-    <main class="dash__main" id="panelBenevoles" hidden></main>
-    <main class="dash__main" id="panelAgenda" hidden></main>
-    <main class="dash__main" id="panelBesoins" hidden></main>
-    <main class="dash__main" id="panelGazette" hidden></main>
-
-    <!-- Panel : Paramètres -->
-    <main class="dash__main" id="panelParametres" hidden>
-
-      <div class="dash__heading">
-        <div>
-          <span class="dash__kicker">Paramètres</span>
-          <h1 class="dash__title">Configuration du <em>site</em></h1>
-        </div>
+    <!-- Contenus du site -->
+    <main class="dash__main" id="panelSite" hidden>
+      <div class="dash__heading"><h1 class="dash__title">Contenus du site</h1></div>
+      <div class="segments" role="tablist" aria-label="Contenus du site">
+        <button class="segment is-on" role="tab" aria-selected="true" data-seg="panelAgenda">Agenda &amp; nouvelles</button>
+        <button class="segment" role="tab" aria-selected="false" data-seg="panelBesoins">Besoins du moment</button>
+        <button class="segment" role="tab" aria-selected="false" data-seg="panelGazette">La Gazette</button>
+        <button class="segment" role="tab" aria-selected="false" data-seg="panelChiffres">Chiffres de l'impact</button>
       </div>
+      <section class="seg-panel" id="panelAgenda"></section>
+      <section class="seg-panel" id="panelBesoins" hidden></section>
+      <section class="seg-panel" id="panelGazette" hidden></section>
+      <section class="seg-panel" id="panelChiffres" hidden></section>
+    </main>
 
+    <!-- Réglages -->
+    <main class="dash__main" id="panelParametres" hidden>
+      <div class="dash__heading"><h1 class="dash__title">Réglages</h1></div>
       <div class="settings">
-        <h2 class="settings__title">Fenêtre d'inscription</h2>
-        <p class="settings__desc">Nombre de jours avant chaque épicerie étudiante où les inscriptions s'ouvrent. Avant, le site affiche un compte à rebours.</p>
+        <h2 class="settings__title">Ouverture des inscriptions étudiantes</h2>
+        <p class="settings__desc">Les inscriptions à l'épicerie étudiante s'ouvrent quelques jours avant chaque date. Avant, le site affiche un compte à rebours. Trois jours laissent le temps de s'organiser sans que les places partent un mois à l'avance.</p>
         <div class="settings__row">
-          <input type="number" class="input input--num" id="settingJours" min="1" max="30" value="3">
+          <input type="number" class="input input--num" id="settingJours" min="1" max="30" value="3" aria-label="Nombre de jours">
           <span class="settings__unit">jours avant la date</span>
           <button class="btn btn--primary" id="saveSettings">Enregistrer</button>
         </div>
@@ -270,11 +183,13 @@
       <div id="reglagesPlus"></div>
     </main>
 
+    </div>
   </div>
 
   <script src="config.js?v=3"></script>
   <script src="assets/vendor/supabase-2.117.2.js"></script>
-  <script src="scripts/admin.js?v=4"></script>
-  <script src="scripts/admin-plus.js?v=2"></script>
+  <script src="scripts/admin.js?v=5"></script>
+  <script src="scripts/admin-plus.js?v=3"></script>
+  <script src="scripts/admin-agenda.js?v=1"></script>
 </body>
 </html>

@@ -36,14 +36,14 @@ Augmenter le numéro correspondant dans `V` en haut de `build.mjs`, puis relance
 
 ## Ce qui se gère dans l'admin (`/admin.html`)
 
-Aucune modification de code n'est nécessaire pour :
+Aucune modification de code n'est nécessaire. Six rubriques :
 
-- **Dates & places** : déplacer ou annuler l'épicerie étudiante d'un mois, fixer le nombre de places (au-delà : liste d'attente, promotion automatique en cas de désistement).
-- **Bénévoles** : catégories (nom, description, consignes, lieu, couleur), créneaux (un par un, dupliquer, séries hebdo/quinzaine/mensuelles), validation des inscriptions, présences, export CSV.
-- **Agenda** : événements et nouvelles (accueil + `/agenda/`).
-- **Besoins** : la liste « En ce moment, il nous manque » de la page Aider.
-- **Gazette** : ajouter un numéro (PDF + couverture), l'envoyer aux abonné·es.
-- **Réglages** : objectif des lutins, e-mail qui reçoit les notifications, chiffres de la page Impact.
+- **Tableau de bord** : ce qui demande une action (bénévoles à valider, prochaine épicerie, créneaux à compléter, Gazette à envoyer, lettres de lutins) et un grand agenda qui réunit l'épicerie étudiante, les créneaux bénévoles et les événements. Glisser un élément sur un autre jour ouvre une fenêtre qui montre les conséquences (qui sera prévenu, doublons, date trop proche) avant d'enregistrer ; les personnes inscrites reçoivent un e-mail avec la nouvelle date.
+- **Épicerie étudiante** : la prochaine date (inscriptions, places, liste d'attente), les inscriptions, et les 12 prochains mois (changer la date, le nombre de places, annuler ou rétablir un mois).
+- **Bénévoles** : validations, créneaux (un par un, copie, séries), catégories, export CSV.
+- **Lutins de Noël** : suivi des lettres et des cadeaux.
+- **Contenus du site** : agenda et nouvelles, besoins du moment, Gazette (mise en ligne et envoi aux abonné·es), chiffres de la page Impact.
+- **Réglages** : ouverture des inscriptions étudiantes, places par défaut, objectif des lutins, adresse des alertes.
 
 Tout compte créé dans Supabase Auth est administrateur : garder « Allow new users to sign up » désactivé et créer les comptes à la main (Authentication › Users › Add user).
 
@@ -52,6 +52,9 @@ Tout compte créé dans Supabase Auth est administrateur : garder « Allow new u
 - **Étudiant·e** : inscription → confirmation (ou liste d'attente) avec fichier agenda → rappel la veille. Annulation par le lien du mail : la place passe à la première personne en attente, qui reçoit un e-mail.
 - **Bénévole** (sans compte) : choix d'un créneau → e-mail « confirmez » → l'admin reçoit « À valider » → validation ou refus dans l'admin (avec un mot facultatif) → e-mail + fichier agenda → rappel la veille avec « Je serai là / Je ne peux plus venir ». Une demande non confirmée en 48 h expire et libère la place.
 - **Gazette** : abonnement avec double confirmation, envoi depuis l'admin, désinscription en un clic.
+- **Lutin·e** : inscription → e-mail de remerciement (étapes à venir) + alerte à l'équipe.
+
+Tous les e-mails partagent le gabarit de `supabase/functions/_shared/mail.ts` (logo, illustration de `assets/images/email/`, carte de rendez-vous, étapes, version texte automatique) ; leurs textes sont dans `modeles.ts`.
 
 ## Informations légales et vie privée
 

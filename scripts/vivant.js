@@ -132,7 +132,11 @@ const majus = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 (function () {
   const carte = document.getElementById('suiviCarte');
   if (!carte) return;
-  const token = new URLSearchParams(location.search).get('t') || '';
+  const params = new URLSearchParams(location.search);
+  const token = params.get('t') || '';
+  // Lien d'e-mail ciblé (?a=annuler / ?a=presence) : la bonne question s'affiche d'emblée, mais rien ne
+  // s'exécute sans clic (certaines messageries ouvrent les liens toutes seules pour les analyser)
+  const voulu = params.get('a') || '';
   const tel = '<a href="tel:+32465927366">0465&nbsp;92&nbsp;73&nbsp;66</a>';
   const STATUTS = {
     etudiant: { 'confirmé': 'Inscription confirmée', 'rappel_envoyé': 'Inscription confirmée', 'liste_attente': "Sur la liste d'attente", 'annulé': 'Inscription annulée', 'présent': 'Présence enregistrée', 'absent': 'Absence enregistrée' },
@@ -167,9 +171,10 @@ const majus = (s) => s.charAt(0).toUpperCase() + s.slice(1);
     if (a.includes('annuler')) boutons.push(confirmerAnnulation ? ['annuler', 'Oui, je ne peux plus venir', 'danger'] : ['pre_annuler', r.type === 'etudiant' && r.statut === 'liste_attente' ? 'Me retirer de la liste' : 'Je ne peux plus venir', 'line']);
     if (r.type === 'gazette' && a.includes('desabonner') && r.statut === 'actif') boutons.push(['desabonner', 'Me désabonner', 'line']);
     if (confirmerAnnulation) h += `<p class="suivi__info">Sûr·e&nbsp;? Votre place sera libérée pour quelqu'un d'autre.</p>`;
-    if (boutons.length) h += `<div class="btns suivi__btns">${boutons.map(([q, l, s]) => `<button type="button" class="btn btn--lg btn--${s}" data-quoi="${q}">${l}</button>`).join('')}${confirmerAnnulation ? '<button type="button" class="btn btn--lg btn--line" data-quoi="garder">Non, je garde ma place</button>' : ''}</div>`;
+    if (boutons.length) h += `<div class="btns suivi__btns">${boutons.map(([q, l, s]) => `<button type="button" class="btn btn--lg btn--${s}" data-quoi="${q}"${voulu === 'presence' && q === 'presence_oui' ? ' data-focus' : ''}>${l}</button>`).join('')}${confirmerAnnulation ? '<button type="button" class="btn btn--lg btn--line" data-quoi="garder">Non, je garde ma place</button>' : ''}</div>`;
     h += `<p class="suivi__aide">Une question&nbsp;? Appelez-nous au ${tel}.</p>`;
     carte.innerHTML = h;
+    carte.querySelector('[data-focus], [data-quoi="annuler"]')?.focus();
   }
 
   const MESSAGES = {
@@ -191,7 +196,7 @@ const majus = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   carte.addEventListener('click', (e) => { const b = e.target.closest('[data-quoi]'); if (b) agir(b.dataset.quoi); });
 
   if (!token || !ECW.pret) { carte.innerHTML = `<h1 class="h-big">Lien incomplet</h1><p class="txt-18">Ce lien semble incomplet. Utilisez le bouton de l'e-mail reçu, ou appelez-nous au ${tel}.</p>`; return; }
-  ECW.api('suivi', { token }).then(r => { dernier = r; rendre(r); })
+  ECW.api('suivi', { token }).then(r => { dernier = r; if (voulu === 'annuler' && (r.actions || []).includes('annuler')) confirmerAnnulation = true; rendre(r); })
     .catch(() => { carte.innerHTML = `<h1 class="h-big">Lien introuvable</h1><p class="txt-18">Ce lien n'est plus valable. Appelez-nous au ${tel}, nous regarderons avec vous.</p>`; });
 })();
 
