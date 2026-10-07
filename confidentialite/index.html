@@ -26,7 +26,7 @@
   <script type="speculationrules">
   { "prefetch": [{ "where": { "and": [{ "href_matches": "/*" }, { "not": { "href_matches": "/admin.html" } }, { "not": { "href_matches": "/assets/*" } }] }, "eagerness": "moderate" }] }
   </script>
-  <link rel="stylesheet" href="/styles/site.css?v=13">
+  <link rel="stylesheet" href="/styles/site.css?v=18">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -86,6 +86,10 @@
   <p>Prénom, nom, genre (avec la possibilité de ne pas répondre), e-mail, téléphone, université ou école, nombre de personnes et date de passage. Ces informations servent à organiser la distribution, à vous envoyer la confirmation et le rappel de la veille, et à appliquer la règle des absences non excusées. Elles sont conservées 12 mois après la date de passage, puis supprimées.</p>
   <h3>Inscription comme lutin·e de Noël</h3>
   <p>Prénom, nom, téléphone et/ou e-mail, nombre de lettres souhaitées. Ces informations servent à vous recontacter pour vous transmettre les lettres d'enfants. Elles sont conservées jusqu'au 31 janvier qui suit l'opération, puis supprimées.</p>
+  <h3>Inscription à un créneau bénévole</h3>
+  <p>Prénom, nom, e-mail, téléphone (facultatif), message éventuel et créneau choisi. Ces informations servent à confirmer votre inscription, à la faire valider par l'équipe, à vous envoyer le rappel de la veille et à noter votre présence. Elles sont conservées 12 mois après la date du créneau, puis supprimées.</p>
+  <h3>Abonnement à la Gazette conviviale</h3>
+  <p>Votre adresse e-mail, utilisée uniquement pour vous envoyer chaque nouveau numéro (deux fois par an). Chaque e-mail contient un lien de désinscription en un clic&nbsp;; l'adresse est alors effacée de la liste d'envoi.</p>
   <h3>Prise de rendez-vous</h3>
   <p>Le calendrier en ligne est fourni par Cal.eu. Les informations que vous y indiquez (nom, e-mail, éventuel message) servent uniquement à organiser le rendez-vous. Ce que vous nous confiez pendant l'accompagnement reste confidentiel, entre vous et l'équipe.</p>
   <h3>Dons</h3>
@@ -125,13 +129,13 @@
       </div>
     </div>
     <div class="foot__cols">
-      <nav class="foot__col" aria-label="Besoin d'aide"><b class="foot__title" style="--c:#f26d5f">Besoin d'aide</b><a href="/aide/#services">Nos services</a><a href="/aide/#workflow">Comment ça se passe</a><a href="/aide/#rdv">Prendre rendez-vous</a><a href="/etudiants/" class="foot__etu">Épicerie étudiante</a></nav>
-      <nav class="foot__col" aria-label="Aider"><b class="foot__title" style="--c:#aeb02b">Aider</b><a href="/aider/#benevoles">Donner du temps</a><a href="/aider/#don">Faire un don</a><a href="/aider/#lutins">Devenir lutin·e</a></nav>
-      <nav class="foot__col" aria-label="L'asbl"><b class="foot__title" style="--c:#fff">L'asbl</b><a href="/qui-sommes-nous/#histoire">Notre histoire</a><a href="/#temps-forts">Temps forts</a><a href="/qui-sommes-nous/#gazette">La gazette</a></nav>
+      <nav class="foot__col" aria-label="Besoin d'aide"><b class="foot__title" style="--c:#f26d5f">Besoin d'aide</b><a href="/aide/#services">Nos services</a><a href="/aide/#workflow">Comment ça se passe</a><a href="/aide/#rdv">Prendre rendez-vous</a><a href="/facile-a-lire/">Facile à lire</a><a href="/etudiants/" class="foot__etu">Épicerie étudiante</a></nav>
+      <nav class="foot__col" aria-label="Aider"><b class="foot__title" style="--c:#aeb02b">Aider</b><a href="/benevoles/">Donner du temps</a><a href="/aider/#don">Faire un don</a><a href="/aider/#lutins">Devenir lutin·e</a></nav>
+      <nav class="foot__col" aria-label="L'asbl"><b class="foot__title" style="--c:#fff">L'asbl</b><a href="/qui-sommes-nous/#histoire">Notre histoire</a><a href="/impact/">Notre impact</a><a href="/agenda/">Agenda</a><a href="/qui-sommes-nous/#gazette">La gazette</a></nav>
     </div>
     <div class="foot__bottom">
       <span>© 2014–2026 Espace Convivial de Waterloo ASBL · BE 1014.707.991 · RPM Brabant wallon</span>
-      <span class="foot__links"><a href="/confidentialite/">Confidentialité et mentions légales</a><a href="/bienvenue.html">English · Українська · العربية…</a><a href="/admin.html">Espace admin</a></span>
+      <span class="foot__links"><a href="/confidentialite/">Confidentialité et mentions légales</a><a href="/en/" lang="en">English</a><a href="/uk/" lang="uk">Українська</a><a href="/ar/" lang="ar">العربية</a><a href="/bienvenue.html">Autres langues</a><a href="/admin.html">Espace admin</a></span>
     </div>
   </div>
 </footer>
@@ -154,12 +158,15 @@
   </nav>
   <div class="menu__more">
     <a href="/etudiants/#inscription">Inscription étudiante</a>
+    <a href="/benevoles/">Devenir bénévole</a>
     <a href="/aider/#don">Faire un don</a>
-    <a href="/aider/#benevoles">Devenir bénévole</a>
     <a href="/aider/#lutins">Devenir lutin·e</a>
+    <a href="/agenda/">Agenda</a>
+    <a href="/impact/">Notre impact</a>
     <a href="/qui-sommes-nous/#gazette">La gazette</a>
-    <a href="/bienvenue.html">Other languages</a>
+    <a href="/facile-a-lire/">Facile à lire</a>
   </div>
+  <div class="menu__langs"><a href="/en/" lang="en">English</a><a href="/uk/" lang="uk">Українська</a><a href="/ar/" lang="ar">العربية</a><a href="/bienvenue.html">+ 11 langues</a></div>
   <div class="menu__info">
     <a href="tel:+32465927366">0465&nbsp;92&nbsp;73&nbsp;66</a>
     <a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a>
@@ -169,8 +176,9 @@
 </div>
 
 
-<script src="/config.js?v=2" defer></script>
-<script src="/scripts/main.js?v=32" defer></script>
+<script src="/config.js?v=3" defer></script>
+<script src="/scripts/main.js?v=36" defer></script>
+<script src="/scripts/vivant.js?v={{v_js}}" defer></script>
 <script src="/scripts/chatbot.js?v=5" defer></script>
 </body>
 </html>

@@ -9,3 +9,6 @@
 supabase/.temp/
 node_modules/
 Website for L'Epicerie Sociale/
+supabase/.branches/
+supabase/.env
+supabase/functions/.env

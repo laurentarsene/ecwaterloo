@@ -10,7 +10,13 @@ Site statique (HTML, CSS, JS sans framework), hébergé sur Cloudflare Pages : c
 | `/aide/` | `aide/index.html` | `src/pages/aide.html` |
 | `/etudiants/` | `etudiants/index.html` | `src/pages/etudiants.html` |
 | `/aider/` | `aider/index.html` | `src/pages/aider.html` |
-| `/qui-sommes-nous/` | `qui-sommes-nous/index.html` | `src/pages/qui-sommes-nous.html` (histoire complète, dates, gazette) |
+| `/benevoles/` | `benevoles/index.html` | `src/pages/benevoles.html` (calendrier public des créneaux) |
+| `/qui-sommes-nous/` | `qui-sommes-nous/index.html` | `src/pages/qui-sommes-nous.html` (histoire complète, dates, gazette, abonnement) |
+| `/impact/` | `impact/index.html` | `src/pages/impact.html` (chiffres, témoignages, partenaires) |
+| `/agenda/` | `agenda/index.html` | `src/pages/agenda.html` (contenu chargé depuis l'admin) |
+| `/facile-a-lire/` | `facile-a-lire/index.html` | `src/pages/facile-a-lire.html` |
+| `/en/`, `/uk/`, `/ar/` | `en/index.html`… | `src/pages/en.html`… (gabarit `src/layout-langue.html`) |
+| `/suivi/?t=…` | `suivi/index.html` | `src/pages/suivi.html` (lien personnel reçu par e-mail : confirmer, annuler, se désabonner) |
 | `/bienvenue` | `bienvenue.html` | `src/pages/bienvenue.html` (14 langues) |
 | `/confidentialite/` | `confidentialite/index.html` | `src/pages/confidentialite.html` |
 | page 404 | `404.html` | `src/pages/404.html` |
@@ -28,16 +34,24 @@ Les liens `href="#ancre"` sont réécrits automatiquement vers la bonne page (`#
 
 Augmenter le numéro correspondant dans `V` en haut de `build.mjs`, puis relancer `node build.mjs` (pour `styles/admin.css`, augmenter le `?v=` dans `admin.html`). Sinon, les visiteurs déjà venus gardent l'ancienne version en cache.
 
-## Épicerie étudiante
+## Ce qui se gère dans l'admin (`/admin.html`)
 
-- Date par défaut : le 1er jeudi du mois.
-- Exception ponctuelle : ajouter `'AAAA-MM': jour` dans `config.js` **et** dans `supabase/functions/send-reminders/index.ts`, puis redéployer la fonction (`supabase functions deploy send-reminders`).
+Aucune modification de code n'est nécessaire pour :
 
-## Ajouter une gazette (N°3, N°4…)
+- **Dates & places** : déplacer ou annuler l'épicerie étudiante d'un mois, fixer le nombre de places (au-delà : liste d'attente, promotion automatique en cas de désistement).
+- **Bénévoles** : catégories (nom, description, consignes, lieu, couleur), créneaux (un par un, dupliquer, séries hebdo/quinzaine/mensuelles), validation des inscriptions, présences, export CSV.
+- **Agenda** : événements et nouvelles (accueil + `/agenda/`).
+- **Besoins** : la liste « En ce moment, il nous manque » de la page Aider.
+- **Gazette** : ajouter un numéro (PDF + couverture), l'envoyer aux abonné·es.
+- **Réglages** : objectif des lutins, e-mail qui reçoit les notifications, chiffres de la page Impact.
 
-1. Déposer le PDF dans `assets/magazines/gazette-03.pdf` et la couverture (JPG, environ 900 px de large) dans `assets/magazines/gazette-03-cover.jpg`.
-2. Dans `src/pages/qui-sommes-nous.html`, section `#gazette` : la nouvelle couverture passe devant (`gaz__cover`), la précédente derrière (`gaz__cover gaz__cover--back`), et les deux boutons « Lire le N°… » pointent vers les deux derniers numéros (`data-pdf`, `data-title`, `href`).
-3. Mettre à jour la ligne « 2026 · Première Gazette conviviale » de la frise si besoin, puis `node build.mjs`.
+Tout compte créé dans Supabase Auth est administrateur : garder « Allow new users to sign up » désactivé et créer les comptes à la main (Authentication › Users › Add user).
+
+## Parcours automatiques
+
+- **Étudiant·e** : inscription → confirmation (ou liste d'attente) avec fichier agenda → rappel la veille. Annulation par le lien du mail : la place passe à la première personne en attente, qui reçoit un e-mail.
+- **Bénévole** (sans compte) : choix d'un créneau → e-mail « confirmez » → l'admin reçoit « À valider » → validation ou refus dans l'admin (avec un mot facultatif) → e-mail + fichier agenda → rappel la veille avec « Je serai là / Je ne peux plus venir ». Une demande non confirmée en 48 h expire et libère la place.
+- **Gazette** : abonnement avec double confirmation, envoi depuis l'admin, désinscription en un clic.
 
 ## Informations légales et vie privée
 
@@ -45,6 +59,22 @@ Augmenter le numéro correspondant dans `V` en haut de `build.mjs`, puis relance
 - La police (Hanken Grotesk) et les bibliothèques (Supabase, StPageFlip, pdf.js) sont hébergées dans `assets/fonts/` et `assets/vendor/` : aucune requête vers Google Fonts ni vers un CDN tiers.
 - Services tiers restants, déclarés dans la page Confidentialité : Supabase, Resend, Cloudflare, Cal.eu, Stripe.
 
-## E-mails automatiques (Supabase)
+## Supabase (base de données et e-mails)
 
-`supabase/functions/send-email` (confirmation d'inscription) et `send-reminders` (rappel la veille, appelé chaque matin par pg_cron). Après modification : `supabase functions deploy send-email` et `supabase functions deploy send-reminders`.
+- `supabase/migrations/` : schéma de la base. `20261001000000_base.sql` est l'état initial (déjà en production), `20261007000000_ecw_v2.sql` ajoute tout ce qui précède.
+- `supabase/functions/ecw-api` : toutes les inscriptions publiques et les actions des liens personnels (le public ne lit jamais de données personnelles).
+- `supabase/functions/send-reminders` : rappels de la veille et expiration des demandes non confirmées, appelée chaque matin par pg_cron.
+- `supabase/functions/_shared/` : envoi via Resend et modèles des e-mails.
+
+Après modification : `supabase functions deploy ecw-api` et `supabase functions deploy send-reminders`.
+
+### Tester en local
+
+Docker requis. Les ports sont décalés (553xx) pour cohabiter avec d'autres projets.
+
+```
+supabase start
+supabase functions serve --env-file supabase/functions/.env --no-verify-jwt
+```
+
+Avec `MAIL_OUTBOX=1` dans `supabase/functions/.env`, aucun e-mail ne part : ils sont écrits dans la table `dev_outbox` (visible dans le Studio local, http://127.0.0.1:55323).

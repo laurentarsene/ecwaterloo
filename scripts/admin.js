@@ -28,7 +28,7 @@ function showLogin() {
 function showDashboard() {
   document.getElementById('loginScreen').hidden  = true;
   document.getElementById('dashboard').hidden    = false;
-  loadInscriptions();
+  showTab(location.hash.slice(1));
 }
 
 // Login form
@@ -139,9 +139,11 @@ function renderTable() {
       <td class="td-muted" style="white-space:nowrap;">${esc(row.date_rdv)}</td>
       <td class="text-center">${statutBadge(row.statut)}</td>
       <td class="text-center">
-        <div class="action-btns">
-          <button class="action-btn action-btn--present" data-id="${row.id}" data-action="présent" title="Marquer présent">✓ Présent</button>
-          <button class="action-btn action-btn--absent"  data-id="${row.id}" data-action="absent"  title="Marquer absent">✗ Absent</button>
+        <div class="action-btns">${row.statut === 'liste_attente'
+          ? `<button class="action-btn action-btn--present" data-id="${row.id}" data-action="promouvoir" title="Lui donner une place (un e-mail de confirmation part)">Donner une place</button>`
+          : row.statut === 'annulé' ? '<span class="td-muted">—</span>'
+          : `<button class="action-btn action-btn--present" data-id="${row.id}" data-action="présent" title="Marquer présent">✓ Présent</button>
+          <button class="action-btn action-btn--absent"  data-id="${row.id}" data-action="absent"  title="Marquer absent">✗ Absent</button>`}
         </div>
       </td>`;
     tbody.appendChild(tr);
@@ -155,7 +157,7 @@ function renderTable() {
 
 function updateStats() {
   const dateFilter = document.getElementById('filterDate').value || getNextFirstThursdayStr();
-  const forDate    = allRows.filter(r => r.date_rdv === dateFilter);
+  const forDate    = allRows.filter(r => r.date_rdv === dateFilter && !['annulé', 'liste_attente'].includes(r.statut));
   const nbInscrits = forDate.length;
   const nbPersonnes = forDate.reduce((sum, r) => sum + (r.nb_personnes || 1), 0);
 
@@ -166,6 +168,13 @@ function updateStats() {
 
 // ── Actions ───────────────────────────────────────────────────────────────────
 async function updateStatut(id, statut) {
+  if (statut === 'promouvoir') {
+    if (!confirm('Donner une place à cette personne ? Elle recevra un e-mail de confirmation.')) return;
+    const { error } = await sb.from('inscriptions_etudiantes').update({ statut: 'confirmé', depuis_attente: true, mail_confirmation_at: null }).eq('id', id);
+    if (error) { console.error(error); return; }
+    await sb.functions.invoke('ecw-api', { body: { action: 'etudiant_mail', id } });
+    return loadInscriptions();
+  }
   const { error } = await sb
     .from('inscriptions_etudiantes')
     .update({ statut })
@@ -242,24 +251,17 @@ function statutBadge(statut) {
     'rappel_envoyé': ['rappel',    'Rappel envoyé'],
     'présent':       ['present',   'Présent'],
     'absent':        ['absent',    'Absent'],
+    'liste_attente': ['attente',   'Liste d\'attente'],
+    'annulé':        ['annule',    'Annulé'],
   };
   const [cls, label] = map[statut] ?? ['confirme', statut];
   return `<span class="statut-badge statut-badge--${cls}">${label}</span>`;
 }
 
-function getNextFirstThursdayStr() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  for (let offset = 0; offset <= 2; offset++) {
-    const d   = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-    const dow = d.getDay();
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    const exceptions = typeof EPICERIE_DATES_EXCEPTIONNELLES !== 'undefined' ? EPICERIE_DATES_EXCEPTIONNELLES : {};
-    const thu = new Date(d.getFullYear(), d.getMonth(), exceptions[key] ?? 1 + (4 - dow + 7) % 7);
-    if (thu >= today) return formatDateFr(thu);
-  }
-  return '';
-}
+// Prochaine épicerie étudiante (calculée par la base : exceptions et annulations comprises)
+let prochaineEpicerie = '';
+sb.rpc('epicerie_prochaine').then(({ data }) => { if (data) { prochaineEpicerie = data.libelle; if (allRows.length) { populateDateFilter(); renderTable(); updateStats(); } } });
+function getNextFirstThursdayStr() { return prochaineEpicerie; }
 
 function formatDateFr(date) {
   const mois = ['janvier','février','mars','avril','mai','juin',
@@ -268,18 +270,19 @@ function formatDateFr(date) {
 }
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
-document.querySelectorAll('.dash__tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.dash__tab').forEach(t => t.classList.remove('is-active'));
-    tab.classList.add('is-active');
-    const target = tab.dataset.tab;
-    document.getElementById('panelInscriptions').hidden = target !== 'inscriptions';
-    document.getElementById('panelLutins').hidden       = target !== 'lutins';
-    document.getElementById('panelParametres').hidden   = target !== 'parametres';
-    if (target === 'parametres') loadSettings();
-    if (target === 'lutins')     loadLutins();
-  });
-});
+// Chaque onglet a son panneau (#panel + Nom) ; l'adresse garde l'onglet (#benevoles…) pour les liens des e-mails
+const PANELS = { inscriptions: 'panelInscriptions', dates: 'panelDates', benevoles: 'panelBenevoles', lutins: 'panelLutins', agenda: 'panelAgenda', besoins: 'panelBesoins', gazette: 'panelGazette', parametres: 'panelParametres' };
+function showTab(target) {
+  if (!PANELS[target]) target = 'inscriptions';
+  document.querySelectorAll('.dash__tab').forEach(t => t.classList.toggle('is-active', t.dataset.tab === target));
+  Object.entries(PANELS).forEach(([k, id]) => { const el = document.getElementById(id); if (el) el.hidden = k !== target; });
+  if (target === 'parametres') loadSettings();
+  if (target === 'lutins')     loadLutins();
+  if (target === 'inscriptions') loadInscriptions();
+  window.dispatchEvent(new CustomEvent('ecw:onglet', { detail: target }));
+  history.replaceState(null, '', target === 'inscriptions' ? location.pathname : '#' + target);
+}
+document.querySelectorAll('.dash__tab').forEach(tab => tab.addEventListener('click', () => showTab(tab.dataset.tab)));
 
 // ── Lutins ────────────────────────────────────────────────────────────────────
 let lutinsRows = [];
@@ -439,7 +442,7 @@ document.getElementById('exportLutinsBtn').addEventListener('click', () => {
 
 // ── Paramètres ────────────────────────────────────────────────────────────────
 async function loadSettings() {
-  const { data } = await sb.from('settings').select('value').eq('key', 'jours_inscription_max').single();
+  const { data } = await sb.from('settings').select('value').eq('key', 'jours_inscription_max').maybeSingle();
   if (data) document.getElementById('settingJours').value = data.value;
 }
 

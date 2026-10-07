@@ -15,9 +15,10 @@
     <div class="benev__txt">
       <h2 class="sr-only">Donner du temps</h2>
       <p class="lead">Une heure par semaine, une compétence, une voiture, une langue ou simplement deux bras&nbsp;: chacun·e apporte ce qu'il peut.</p>
-      <p class="txt-16">Pas besoin d'expérience particulière. Appelez-nous ou écrivez-nous&nbsp;: nous vous proposons de passer à l'épicerie pour faire connaissance, et nous trouvons ensemble ce qui vous convient. Nous cherchons surtout du renfort pour&nbsp;:</p>
+      <p class="txt-16">Pas besoin d'expérience particulière. Choisissez un créneau dans le calendrier et inscrivez-vous en une minute, sans compte&nbsp;: l'équipe valide votre venue et vous envoie un rappel la veille. Nous cherchons surtout du renfort pour&nbsp;:</p>
       <ul class="tags"><li>Logistique &amp; colis</li><li>Accompagnement</li><li>Cuisine</li><li>Transport</li><li>Administratif</li><li>Traduction</li><li>Potager</li><li>Événements</li></ul>
-      <div class="btns"><a href="tel:+32465927366" class="btn btn--dark">Appeler l'équipe</a><a href="mailto:infos.ecwaterloo@gmail.com?subject=Devenir%20b%C3%A9n%C3%A9vole" class="btn btn--line">Écrire un email</a></div>
+      <div class="ben-apercu" id="benApercu" hidden><p class="ben-apercu__t">Prochains créneaux</p><ul id="benApercuListe"></ul></div>
+      <div class="btns"><a href="/benevoles/" class="btn btn--dark">Voir le calendrier et m'inscrire<span aria-hidden="true">→</span></a><a href="tel:+32465927366" class="btn btn--line">Appeler l'équipe</a></div>
     </div>
   </div>
 </section>
@@ -32,9 +33,14 @@
           <a href="https://buy.stripe.com/dRm4gz0KQ0Yd5tE9ae4Rq00" class="btn btn--line-light">Choisir un autre montant</a>
           <span>Paiement sécurisé par Stripe.</span>
         </div>
-        <div class="don__nature">
+        <div class="don__nature" id="besoins">
           <h3>Plutôt un don en nature&nbsp;?</h3>
           <p>Produits, fournitures scolaires, matériel&nbsp;: passez à l'épicerie ou <a href="mailto:infos.ecwaterloo@gmail.com?subject=Don%20en%20nature">écrivez-nous</a> pour savoir ce dont nous avons besoin en ce moment.</p>
+          <div class="besoins" id="besoinsBloc" hidden>
+            <p class="besoins__t">En ce moment, il nous manque surtout&nbsp;:</p>
+            <ul class="besoins__liste" id="besoinsListe"></ul>
+            <button type="button" class="besoins__partager" id="besoinsPartager" hidden>Partager cette liste</button>
+          </div>
         </div>
       </div>
       <div class="amounts">
@@ -57,6 +63,10 @@
         <li><b>2</b>Vous recevez la lettre d'un enfant au Père Noël.</li>
         <li><b>3</b>Vous déposez le cadeau à l'épicerie, et nous le lui remettons.</li>
       </ol>
+      <div class="jauge" id="lutinsJauge" hidden>
+        <div class="jauge__barre" role="progressbar" aria-valuemin="0" id="lutinsBarre"><span></span></div>
+        <p class="jauge__txt" id="lutinsTxt"></p>
+      </div>
       <button type="button" class="btn btn--lg btn--coral" id="openLutinForm">Je veux être lutin·e cette année</button>
     </div>
     <div class="ribbon-art">

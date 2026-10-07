@@ -1,0 +1,35 @@
+<section class="chap chap--olive" id="calendrier-benevoles">
+  <div class="chap__in">
+    <h2 class="h-chap">Donner un coup de main</h2>
+    <nav class="chips" aria-label="Bénévoles : dans cette partie">
+      <a href="#calendrier" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Le calendrier</a>
+      <a href="#comment" class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h5a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h5"/></svg>Comment ça marche</a>
+    </nav>
+  </div>
+</section>
+
+<section class="wrap ben-intro" id="comment">
+  <p class="lead lead--lg">Choisissez un créneau qui vous convient et inscrivez-vous en une minute, sans créer de compte. Une heure, une matinée, une fois par mois ou chaque semaine&nbsp;: chaque coup de main compte.</p>
+  <ol class="ben-etapes">
+    <li><b>1</b><div><span>Vous choisissez un créneau</span><span>Distribution, épicerie, potager, transport, événements…</span></div></li>
+    <li><b>2</b><div><span>Vous confirmez par e-mail</span><span>Un clic sur le lien reçu, pour être sûr·e que c'est bien vous.</span></div></li>
+    <li><b>3</b><div><span>L'équipe valide votre venue</span><span>Vous recevez la validation, puis un rappel la veille.</span></div></li>
+  </ol>
+</section>
+
+<section class="wrap cal" id="calendrier" aria-label="Calendrier des créneaux bénévoles">
+  <div class="cal__filtres" id="calFiltres" role="group" aria-label="Filtrer par activité"></div>
+  <div class="cal__grid">
+    <div class="cal__mois" id="calMois">
+      <div class="cal__nav"><button type="button" class="cal__fl" id="calPrec" aria-label="Mois précédent">←</button><h2 class="cal__titre" id="calTitre" aria-live="polite">—</h2><button type="button" class="cal__fl" id="calSuiv" aria-label="Mois suivant">→</button></div>
+      <div class="cal__jours" aria-hidden="true"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="cal__cases" id="calCases"></div>
+      <p class="cal__legende">Les jours en couleur ont des créneaux. Touchez un jour pour le voir.</p>
+    </div>
+    <div class="cal__liste">
+      <div class="cal__liste-h"><h2 class="cal__titre-liste" id="calListeTitre">Prochains créneaux</h2><button type="button" class="cal__tout" id="calTout" hidden>Voir tous les créneaux</button></div>
+      <div id="calListe" aria-live="polite"><p class="cal__vide">Chargement du calendrier…</p></div>
+    </div>
+  </div>
+  <p class="cal__aide">Aucun créneau ne vous convient&nbsp;? Appelez-nous au <a href="tel:+32465927366">0465&nbsp;92&nbsp;73&nbsp;66</a> ou <a href="mailto:infos.ecwaterloo@gmail.com?subject=Devenir%20b%C3%A9n%C3%A9vole">écrivez-nous</a>&nbsp;: nous trouverons ensemble ce qui vous convient.</p>
+</section>

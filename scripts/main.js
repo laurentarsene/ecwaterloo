@@ -6,9 +6,36 @@
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const EASE = 'cubic-bezier(.16,1,.3,1)';
-// Un seul client Supabase pour toute la page (inscriptions étudiantes + lutins)
-const sb = (typeof supabase !== 'undefined' && typeof SUPABASE_URL !== 'undefined')
-  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+// Client léger vers Supabase (pas de bibliothèque à charger) : lectures publiques et fonction serveur
+const ECW = (() => {
+  const pret = typeof SUPABASE_URL !== 'undefined';
+  const H = () => ({ apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' });
+  const verif = async (r) => { const j = await r.json().catch(() => null); if (!r.ok) { const e = new Error((j && (j.erreur || j.message)) || 'serveur'); e.code = (j && j.erreur) || 'serveur'; throw e; } return j; };
+  return {
+    pret,
+    rpc: (nom, args = {}) => fetch(`${SUPABASE_URL}/rest/v1/rpc/${nom}`, { method: 'POST', headers: H(), body: JSON.stringify(args) }).then(verif),
+    lire: (table, requete) => fetch(`${SUPABASE_URL}/rest/v1/${table}?${requete}`, { headers: H() }).then(verif),
+    ajouter: (table, ligne) => fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: { ...H(), Prefer: 'return=minimal' }, body: JSON.stringify(ligne) }).then(r => { if (!r.ok) throw new Error('insertion'); }),
+    api: (action, corps = {}) => fetch(`${SUPABASE_URL}/functions/v1/ecw-api`, { method: 'POST', headers: H(), body: JSON.stringify({ action, ...corps }) }).then(verif),
+  };
+})();
+const TZ = 'Europe/Brussels';
+const fmtJour = (d, opts = { weekday: 'long', day: 'numeric', month: 'long' }) => new Intl.DateTimeFormat('fr-BE', { timeZone: TZ, ...opts }).format(new Date(d));
+// « 9h », « 9h30 » (heure de Bruxelles)
+const fmtHeure = (d) => { const p = new Intl.DateTimeFormat('fr-BE', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(d)); const h = +p.find(x => x.type === 'hour').value, m = p.find(x => x.type === 'minute').value; return m === '00' ? `${h}h` : `${h}h${m}`; };
+const echap = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// Ajout à l'agenda : fichier .ics (Apple, Outlook…) et lien Google Agenda
+function lienAgenda({ titre, lieu, details, debut, fin, jourEntier }) {
+  const f = (d) => new Date(d).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const jour = jourEntier && jourEntier.replace(/-/g, '');
+  const lendemain = jourEntier && new Date(Date.parse(jourEntier) + 864e5).toISOString().slice(0, 10).replace(/-/g, '');
+  const dates = jourEntier ? `${jour}/${lendemain}` : `${f(debut)}/${f(fin)}`;
+  const google = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titre)}&dates=${dates}&location=${encodeURIComponent(lieu)}&details=${encodeURIComponent(details)}`;
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ECW//FR', 'BEGIN:VEVENT', `UID:${Date.now()}@ecwaterloo.com`, `DTSTAMP:${f(new Date())}`,
+    ...(jourEntier ? [`DTSTART;VALUE=DATE:${jour}`, `DTEND;VALUE=DATE:${lendemain}`] : [`DTSTART:${f(debut)}`, `DTEND:${f(fin)}`]),
+    `SUMMARY:${titre}`, `LOCATION:${lieu.replace(/,/g, '\\,')}`, `DESCRIPTION:${details.replace(/\n/g, '\\n')}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  return { google, ics: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })) };
+}
 
 /* ══════════════════════════════════════════════════════════════
    ANCIENS LIENS — l'ancien one-page (ecwaterloo.com/#etudiants…)
@@ -295,81 +322,81 @@ function makeModal(overlay, { onOpen } = {}) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ÉPICERIE ÉTUDIANTE — date, ouverture des inscriptions, modale
+   ÉPICERIE ÉTUDIANTE — date, places, ouverture, inscription
+   La date, la capacité et l'ouverture viennent de la base (onglet « Dates & places »)
    ══════════════════════════════════════════════════════════════ */
 (function () {
+  const card = document.getElementById('nextThursdayCard');
+  const overlay = document.getElementById('studentModal');
+  if (!card && !overlay) return;
   const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-  const JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const setText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
 
-  // Jour de l'épicerie pour le mois de `d` : exception éventuelle (config.js), sinon le 1er jeudi
-  function epicerieDay(d, firstThuDay) {
-    const exceptions = typeof EPICERIE_DATES_EXCEPTIONNELLES !== 'undefined' ? EPICERIE_DATES_EXCEPTIONNELLES : {};
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    return exceptions[key] ?? firstThuDay;
-  }
-  function getNextFirstThursday() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    for (let offset = 0; offset <= 2; offset++) {
-      const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-      const daysToThu = (4 - d.getDay() + 7) % 7;
-      const firstThu = new Date(d.getFullYear(), d.getMonth(), epicerieDay(d, 1 + daysToThu));
-      if (firstThu > today) return firstThu;
+  // Repli si la base ne répond pas : le prochain premier jeudi
+  function premierJeudi() {
+    const t = new Date(); t.setHours(0, 0, 0, 0);
+    for (let k = 0; k <= 2; k++) {
+      const d = new Date(t.getFullYear(), t.getMonth() + k, 1);
+      const j = new Date(d.getFullYear(), d.getMonth(), 1 + (4 - d.getDay() + 7) % 7);
+      if (j > t) return j;
     }
   }
-  // Format enregistré en base (admin + rappels s'appuient dessus) : ne pas changer
-  function formatDateFr(date) {
-    return `Jeudi ${date.getDate()} ${MOIS[date.getMonth()]} ${date.getFullYear()}`;
-  }
-  const formatShort = (d) => `${JOURS[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]}`;
+  const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const libelle = (d) => { const s = fmtJour(d, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); return s.charAt(0).toUpperCase() + s.slice(1); };
 
-  const nextThursday = getNextFirstThursday();
-  const nextThursdayStr = formatDateFr(nextThursday);
-
-  const setText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
-  setText('nextThursdayCard', formatShort(nextThursday));
-  setText('nextThursdayDisplay', nextThursdayStr);
-  document.querySelectorAll('.thursday-ref').forEach(el => el.textContent = nextThursdayStr);
-  const hiddenDate = document.getElementById('hiddenDateRdv');
-  if (hiddenDate) hiddenDate.value = nextThursdayStr;
-
-  const overlay = document.getElementById('studentModal');
   const openBtn = document.getElementById('openStudentForm');
-  const form = document.getElementById('studentForm');
-  if (!overlay || !openBtn || !form) return;
-  if (!sb) return;
+  let info = null;
 
-  // Les inscriptions ouvrent X jours avant (réglage de l'admin) ; avant, compte à rebours
-  (async function initButtonState() {
-    let joursMax = 3;
-    try {
-      const { data } = await sb.from('settings').select('value').eq('key', 'jours_inscription_max').single();
-      if (data) joursMax = parseInt(data.value, 10);
-    } catch (_) {}
+  function afficher(i) {
+    info = i;
+    const d = new Date(i.date + 'T12:00');
+    setText('nextThursdayCard', fmtJour(d));
+    setText('nextThursdayDisplay', libelle(d));
+    document.querySelectorAll('.thursday-ref').forEach(el => el.textContent = libelle(d));
+    const note = document.getElementById('etuNote');
+    if (note) { note.textContent = i.note || ''; note.hidden = !i.note; }
+    const places = document.getElementById('etuPlaces');
+    if (places && i.capacite != null) {
+      places.hidden = false;
+      places.classList.toggle('is-complet', i.restantes <= 0);
+      places.innerHTML = i.restantes > 0
+        ? `<b>${i.restantes}</b> place${i.restantes > 1 ? 's' : ''} restante${i.restantes > 1 ? 's' : ''} sur ${i.capacite}`
+        : `<b>Complet.</b> Tu peux t'inscrire sur la liste d'attente : si une place se libère, ton inscription est confirmée automatiquement.`;
+      if (openBtn && i.restantes <= 0 && !openBtn.disabled) openBtn.textContent = "M'inscrire sur la liste d'attente";
+    }
+    const annule = document.getElementById('etuAnnule');
+    if (annule && (i.mois_annules || []).length) {
+      annule.hidden = false;
+      annule.textContent = `Pas d'épicerie étudiante en ${(i.mois_annules || []).map(m => MOIS[Number(m.slice(5)) - 1]).join(' ni en ')} : la prochaine a lieu le ${fmtJour(d)}.`;
+    }
+    compteARebours(new Date(i.ouverture + 'T00:00'));
+  }
 
-    const openDate = new Date(nextThursday);
-    openDate.setDate(openDate.getDate() - joursMax); // ouverture à minuit
-    if (Date.now() >= openDate.getTime()) return;
-
-    const info = document.getElementById('studentOpen');
+  function compteARebours(ouverture) {
+    const zone = document.getElementById('studentOpen');
+    if (!openBtn || Date.now() >= ouverture.getTime()) return;
     openBtn.disabled = true;
     openBtn.textContent = 'Inscriptions pas encore ouvertes';
-    if (!info) return;
-    info.hidden = false;
+    if (!zone) return;
+    zone.hidden = false;
     const pad = (n) => String(n).padStart(2, '0');
     const tick = () => {
-      let ms = openDate.getTime() - Date.now();
+      let ms = ouverture.getTime() - Date.now();
       if (ms <= 0) { location.reload(); return; }
-      const d = Math.floor(ms / 86400000); ms -= d * 86400000;
-      const h = Math.floor(ms / 3600000); ms -= h * 3600000;
-      const m = Math.floor(ms / 60000); ms -= m * 60000;
-      const s = Math.floor(ms / 1000);
-      info.innerHTML = `Les inscriptions ouvrent le <b>${formatShort(openDate)}</b> à minuit, dans ${d}&nbsp;j ${pad(h)}&nbsp;h ${pad(m)}&nbsp;min ${pad(s)}&nbsp;s.`;
+      const d = Math.floor(ms / 864e5); ms -= d * 864e5;
+      const h = Math.floor(ms / 36e5); ms -= h * 36e5;
+      const m = Math.floor(ms / 6e4); ms -= m * 6e4;
+      zone.innerHTML = `Les inscriptions ouvrent le <b>${fmtJour(ouverture)}</b> à minuit, dans ${d}&nbsp;j ${pad(h)}&nbsp;h ${pad(m)}&nbsp;min ${pad(Math.floor(ms / 1000))}&nbsp;s.`;
       setTimeout(tick, 1000);
     };
     tick();
-  })();
+  }
 
+  const repli = () => { const j = premierJeudi(); const o = new Date(j); o.setDate(o.getDate() - 3); afficher({ date: iso(j), ouverture: iso(o), capacite: null }); };
+  if (ECW.pret) ECW.rpc('epicerie_prochaine').then(i => i ? afficher(i) : repli()).catch(repli); else repli();
+
+  if (!overlay || !openBtn) return;
+  const form = document.getElementById('studentForm');
   const progressBar = document.getElementById('sformProgressBar');
   const successEl = document.getElementById('sformSuccess');
   const errorEl = document.getElementById('studentFormError');
@@ -397,41 +424,35 @@ function makeModal(overlay, { onOpen } = {}) {
     form.querySelectorAll('.sform__input--error').forEach(el => el.classList.remove('sform__input--error'));
     document.getElementById('genreGroup')?.classList.remove('sform__radio-group--error');
     document.getElementById('engagementLabel')?.classList.remove('sform__checkbox--error');
-
     if (step === 2) {
       const prenom = document.getElementById('inputPrenom');
       const nom = document.getElementById('inputNom');
-      const genre = form.querySelector('input[name="genre"]:checked');
       if (!prenom.value.trim()) { prenom.classList.add('sform__input--error'); ok = false; }
       if (!nom.value.trim()) { nom.classList.add('sform__input--error'); ok = false; }
-      if (!genre) { document.getElementById('genreGroup').classList.add('sform__radio-group--error'); ok = false; }
+      if (!form.querySelector('input[name="genre"]:checked')) { document.getElementById('genreGroup').classList.add('sform__radio-group--error'); ok = false; }
       if (!ok) (form.querySelector('.sform__input--error') || prenom).focus();
     }
     if (step === 3) {
       const email = document.getElementById('inputEmail');
       const tel = document.getElementById('inputTel');
-      if (!email.value.trim() || !/\S+@\S+\.\S+/.test(email.value)) { email.classList.add('sform__input--error'); ok = false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { email.classList.add('sform__input--error'); ok = false; }
       if (!tel.value.trim()) { tel.classList.add('sform__input--error'); ok = false; }
       if (!ok) form.querySelector('.sform__input--error').focus();
     }
     if (step === 4) {
       const univ = document.getElementById('inputUniv');
-      const check = document.getElementById('engagementCheck');
-      if (!univ.value.trim()) { univ.classList.add('sform__input--error'); ok = false; }
-      if (!check.checked) { document.getElementById('engagementLabel').classList.add('sform__checkbox--error'); ok = false; }
-      if (!ok && !univ.value.trim()) univ.focus();
+      if (!univ.value.trim()) { univ.classList.add('sform__input--error'); ok = false; univ.focus(); }
+      if (!document.getElementById('engagementCheck').checked) { document.getElementById('engagementLabel').classList.add('sform__checkbox--error'); ok = false; }
     }
     return ok;
   }
 
   let nbPersonnes = 1;
   const stepperVal = document.getElementById('stepperVal');
-  const hiddenNb = document.getElementById('hiddenNbPersonnes');
   const minusBtn = document.getElementById('stepperMinus');
   const plusBtn = document.getElementById('stepperPlus');
   function updateStepper() {
     stepperVal.textContent = nbPersonnes;
-    hiddenNb.value = nbPersonnes;
     minusBtn.disabled = nbPersonnes <= 1;
     plusBtn.disabled = nbPersonnes >= 10;
   }
@@ -439,44 +460,51 @@ function makeModal(overlay, { onOpen } = {}) {
   plusBtn.addEventListener('click', () => { if (nbPersonnes < 10) { nbPersonnes++; updateStepper(); } });
   updateStepper();
 
+  const MESSAGES = {
+    deja_inscrit: 'Tu es déjà inscrit·e avec cette adresse e-mail pour cette date. Regarde dans ta boîte mail (et les spams).',
+    pas_ouvert: "Les inscriptions ne sont pas encore ouvertes pour cette date.",
+    aucune_date: "Aucune date n'est prévue pour le moment. Repasse bientôt !",
+    champ_email: "L'adresse e-mail ne semble pas valide.",
+  };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validateStep(4)) return;
     errorEl.hidden = true;
-
     const submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
     const origLabel = submitBtn.textContent;
     submitBtn.textContent = 'Envoi…';
-
-    const data = {
-      prenom: document.getElementById('inputPrenom').value.trim(),
-      nom: document.getElementById('inputNom').value.trim(),
-      genre: form.querySelector('input[name="genre"]:checked')?.value,
-      email: document.getElementById('inputEmail').value.trim(),
-      telephone: document.getElementById('inputTel').value.trim(),
-      universite: document.getElementById('inputUniv').value.trim(),
-      nb_personnes: nbPersonnes,
-      date_rdv: nextThursdayStr,
-    };
-
-    const { error: insertError } = await sb.from('inscriptions_etudiantes').insert([data]);
-    if (insertError) {
-      console.error(insertError);
+    try {
+      const r = await ECW.api('etudiant_inscrire', {
+        prenom: document.getElementById('inputPrenom').value, nom: document.getElementById('inputNom').value,
+        genre: form.querySelector('input[name="genre"]:checked')?.value, email: document.getElementById('inputEmail').value,
+        telephone: document.getElementById('inputTel').value, universite: document.getElementById('inputUniv').value,
+        nb: nbPersonnes, site_web: form.querySelector('[name="site_web"]')?.value,
+      });
+      form.hidden = true;
+      progressBar.style.width = '100%';
+      successEl.hidden = false;
+      const attente = r.statut === 'liste_attente';
+      setText('successKicker', attente ? "Liste d'attente" : "C'est bon !");
+      setText('successTitle', attente ? 'Tu es sur la liste' : 'À très vite !');
+      setText('successDate', r.date_rdv || '');
+      setText('successNote', attente
+        ? "L'épicerie est complète pour le moment. Si une place se libère, tu reçois un e-mail et ton inscription est confirmée automatiquement."
+        : `Un e-mail de confirmation t'a été envoyé (pense aux spams). N'oublie pas ${nbPersonnes * 5}€ en liquide et un sac le jour J.`);
+      const ag = document.getElementById('successAgenda');
+      if (ag && !attente && r.date) {
+        const l = lienAgenda({ titre: 'Épicerie étudiante · ECW', lieu: 'Rue de la Station 139A, 1410 Waterloo', details: `${nbPersonnes * 5}€ en liquide et un sac.`, jourEntier: r.date });
+        ag.innerHTML = `<a class="btn btn--line" href="${l.ics}" download="epicerie-etudiante.ics">Ajouter à mon agenda</a><a class="btn btn--line" href="${l.google}" target="_blank" rel="noopener">Google Agenda</a>`;
+        ag.hidden = false;
+      }
+      document.getElementById('closeSuccess')?.focus();
+    } catch (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = origLabel;
-      errorEl.textContent = "L'inscription n'a pas pu être envoyée. Réessaie, ou écris-nous à infos.ecwaterloo@gmail.com.";
+      errorEl.textContent = MESSAGES[err.code] || "L'inscription n'a pas pu être envoyée. Réessaie, ou écris-nous à infos.ecwaterloo@gmail.com.";
       errorEl.hidden = false;
-      return;
     }
-
-    sb.functions.invoke('send-email', { body: { type: 'confirmation', data } }).catch(err => console.warn('Email non envoyé :', err));
-
-    form.hidden = true;
-    progressBar.style.width = '100%';
-    successEl.hidden = false;
-    document.getElementById('successDate').textContent = nextThursdayStr;
-    document.getElementById('closeSuccess')?.focus();
   });
 })();
 
@@ -505,8 +533,7 @@ function makeModal(overlay, { onOpen } = {}) {
 (function () {
   const overlay = document.getElementById('lutinModal');
   const openBtn = document.getElementById('openLutinForm');
-  if (!overlay || !openBtn) return;
-  if (!sb) return;
+  if (!overlay || !openBtn || !ECW.pret) return;
 
   const form = document.getElementById('lutinForm');
   const successEl = document.getElementById('lutinSuccess');
@@ -575,8 +602,7 @@ function makeModal(overlay, { onOpen } = {}) {
       email: emailInput.value.trim() || null,
       nb_lettres: nbLettres,
     };
-    const { error: insertError } = await sb.from('inscriptions_lutins').insert([data]);
-    if (insertError) {
+    try { await ECW.ajouter('inscriptions_lutins', data); } catch (insertError) {
       console.error(insertError);
       submitBtn.disabled = false;
       submitBtn.textContent = origLabel;
@@ -754,11 +780,11 @@ function makeModal(overlay, { onOpen } = {}) {
     thumbsEl.querySelector('.reader__thumb.is-active')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
   };
 
-  const openReader = async (e) => {
+  const openReader = async (e, el) => {
     e.preventDefault();
     lastFocus = document.activeElement;
-    const url = e.currentTarget.dataset.pdf;
-    if (titleEl) titleEl.textContent = e.currentTarget.dataset.title || '';
+    const url = el.dataset.pdf;
+    if (titleEl) titleEl.textContent = el.dataset.title || '';
     if (dlEl) dlEl.href = url;
     reader.inert = false;
     reader.classList.add('is-open');
@@ -794,7 +820,8 @@ function makeModal(overlay, { onOpen } = {}) {
     lastFocus?.focus?.();
   };
 
-  document.querySelectorAll('[data-open-gazette]').forEach(b => b.addEventListener('click', openReader));
+  // Délégation : les couvertures et boutons peuvent être remplacés par les numéros de la base
+  document.addEventListener('click', (e) => { const el = e.target.closest('[data-open-gazette]'); if (el) openReader(e, el); });
   closeBtn.addEventListener('click', closeReader);
   backdrop.addEventListener('click', closeReader);
   prevBtn.addEventListener('click', () => flip?.flipPrev());

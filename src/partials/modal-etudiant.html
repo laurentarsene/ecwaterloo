@@ -8,7 +8,7 @@
     <div class="smodal__progress" aria-hidden="true"><div class="smodal__progress-fill" id="sformProgressBar"></div></div>
 
     <form id="studentForm" class="sform" novalidate>
-      <input type="hidden" name="date_rdv" id="hiddenDateRdv">
+      <input type="text" name="site_web" class="sform__piege" tabindex="-1" autocomplete="off" aria-hidden="true">
 
       <div class="sform__step is-active" data-step="1">
         <p class="sform__kicker">Épicerie étudiante</p>
@@ -100,10 +100,11 @@
 
     <div class="sform__success" id="sformSuccess" hidden>
       <div class="sform__success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <p class="sform__kicker">C'est bon&nbsp;!</p>
-      <h2 class="sform__title">À jeudi&nbsp;!</h2>
+      <p class="sform__kicker" id="successKicker">C'est bon&nbsp;!</p>
+      <h2 class="sform__title" id="successTitle">À très vite&nbsp;!</h2>
       <p class="sform__success-date" id="successDate"></p>
-      <p class="sform__success-note">Un email de confirmation t'a été envoyé. N'oublie pas d'apporter tes <strong>5€</strong> le jour J.</p>
+      <p class="sform__success-note" id="successNote"></p>
+      <div class="sform__agenda" id="successAgenda" hidden></div>
       <button type="button" class="btn btn--dark" id="closeSuccess">Fermer</button>
     </div>
   </div>

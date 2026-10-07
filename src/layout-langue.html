@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" dir="{{dir}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ecwaterloo.com{{path}}">
+  <link rel="alternate" hreflang="fr" href="https://ecwaterloo.com/aide/">
+  <link rel="alternate" hreflang="en" href="https://ecwaterloo.com/en/">
+  <link rel="alternate" hreflang="uk" href="https://ecwaterloo.com/uk/">
+  <link rel="alternate" hreflang="ar" href="https://ecwaterloo.com/ar/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ecwaterloo.com{{path}}">
+  <meta property="og:title" content="{{og_title}}">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:image" content="https://ecwaterloo.com/assets/images/og-ecw.jpg">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light only">
+  <link rel="icon" type="image/png" href="/assets/images/ecw-icon.png">
+  <link rel="preload" href="/assets/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles/site.css?v={{v_css}}">
+</head>
+<body data-page="{{page}}" class="page-langue">
+<a class="skip" href="#contenu">{{t_skip}}</a>
+<div class="site">
+
+<header class="lhdr">
+  <div class="lhdr__in">
+    <a href="/" class="lhdr__logo"><img src="/assets/images/ecw-logo.png" width="863" height="335" alt="Espace Convivial de Waterloo"></a>
+    <nav class="lhdr__langs" aria-label="{{t_langues}}">
+      <a href="/aide/" lang="fr" hreflang="fr">FR</a><a href="/en/" lang="en" hreflang="en">EN</a><a href="/uk/" lang="uk" hreflang="uk">УКР</a><a href="/ar/" lang="ar" hreflang="ar">عربي</a>
+    </nav>
+    <a href="tel:+32465927366" class="btn btn--dark lhdr__tel">{{t_appeler}}</a>
+  </div>
+</header>
+
+<main id="contenu">
+{{content}}
+</main>
+
+<footer class="lfoot">
+  <div class="wrap lfoot__in">
+    <p><strong>Espace Convivial de Waterloo</strong> · {{t_asbl}}</p>
+    <p><a href="tel:+32465927366">0465&nbsp;92&nbsp;73&nbsp;66</a> · <a href="mailto:infos.ecwaterloo@gmail.com">infos.ecwaterloo@gmail.com</a></p>
+    <p><a href="https://www.google.com/maps/dir/?api=1&amp;destination=Rue+de+la+Station+139A,+1410+Waterloo" target="_blank" rel="noopener">Rue de la Station 139A, 1410 Waterloo</a></p>
+    <p class="lfoot__autres"><a href="/bienvenue.html">{{t_autres}}</a> · <a href="/confidentialite/">{{t_vie_privee}}</a></p>
+  </div>
+</footer>
+</div>
+</body>
+</html>

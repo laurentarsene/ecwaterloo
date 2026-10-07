@@ -1,169 +1,64 @@
 // ═══════════════════════════════════════════════════════
-//  ECW — Edge Function : rappels automatiques
-//  Appelée chaque matin à 8h via pg_cron (voir schema.sql)
+//  ECW — rappels automatiques, appelée chaque matin à 8 h (pg_cron, voir README)
+//  · épicerie étudiante : rappel la veille, avec lien d'annulation
+//  · bénévoles : rappel la veille d'un créneau validé, avec « je serai là / je ne peux plus venir »
+//  · inscriptions bénévoles non confirmées depuis 48 h : marquées expirées (place libérée)
 //  Déployer : supabase functions deploy send-reminders
-//  Secrets requis : RESEND_API_KEY + SUPABASE_SERVICE_ROLE_KEY
 // ═══════════════════════════════════════════════════════
 
-import { serve }        from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { adminClient, dateBxl, envoyer } from '../_shared/mail.ts';
+import * as M from '../_shared/modeles.ts';
 
-const RESEND_KEY      = Deno.env.get('RESEND_API_KEY')!;
-const SUPABASE_URL    = Deno.env.get('SUPABASE_URL')!;
-const SERVICE_KEY     = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const FROM_EMAIL      = 'Espace Convivial de Waterloo <noreply@ecwaterloo.com>';
-const REPLY_TO        = 'infos.ecwaterloo@gmail.com';
-const ADRESSE         = 'Rue de la Station 139A, 1410 Waterloo';
+const db = adminClient();
+const jour = (decalage: number) => dateBxl(new Date(Date.now() + decalage * 864e5));
 
-// Dates exceptionnelles de l'épicerie ('AAAA-MM': jour) — garder en phase avec config.js
-const EPICERIE_DATES_EXCEPTIONNELLES: Record<string, number> = {
-  '2026-10': 8, // octobre 2026 : 2e jeudi (8/10) au lieu du 1er
-};
-
-serve(async () => {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-
-  // Ne rien faire si demain n'est pas un jour d'épicerie (1er jeudi du mois, sauf exception)
-  if (!isEpicerieDay(tomorrow)) {
-    return new Response(JSON.stringify({ skipped: true, reason: 'pas un jour d\'épicerie' }), { status: 200 });
-  }
-
-  const dateStr = formatDateFr(tomorrow);
-  console.log(`Envoi des rappels pour : ${dateStr}`);
-
-  const sb = createClient(SUPABASE_URL, SERVICE_KEY);
-
-  // Récupérer tous les inscrits confirmés pour cette date
-  const { data: inscrits, error } = await sb
-    .from('inscriptions_etudiantes')
-    .select('*')
-    .eq('date_rdv', dateStr)
-    .in('statut', ['confirmé', 'rappel_envoyé']); // on renvoie pas si déjà rappelé, sauf sécurité
-
-  if (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
-  }
-
-  const confirmed = (inscrits ?? []).filter(r => r.statut === 'confirmé');
-  let sent = 0;
-
-  for (const inscrit of confirmed) {
+async function rappelsEtudiants() {
+  const demain = jour(1);
+  const { data: d } = await db.rpc('epicerie_date_mois', { p_mois: demain.slice(0, 7) });
+  if (d !== demain) return { etudiants: 'pas_demain' };
+  const { data: mois } = await db.from('epicerie_mois').select('annule').eq('mois', demain.slice(0, 7)).maybeSingle();
+  if (mois?.annule) return { etudiants: 'annule' };
+  const { data: libelle } = await db.rpc('ecw_libelle_date', { d: demain });
+  const { data: inscrits } = await db.from('inscriptions_etudiantes').select('*').eq('date_rdv', libelle).eq('statut', 'confirmé');
+  let n = 0;
+  for (const e of inscrits || []) {
     try {
-      await sendReminderEmail(inscrit, dateStr);
+      await envoyer(M.etudiantRappel(e));
+      await db.from('inscriptions_etudiantes').update({ statut: 'rappel_envoyé' }).eq('id', e.id);
+      n++;
+    } catch (err) { console.error('rappel étudiant', e.id, err); }
+  }
+  return { etudiants: n };
+}
 
-      await sb
-        .from('inscriptions_etudiantes')
-        .update({ statut: 'rappel_envoyé' })
-        .eq('id', inscrit.id);
-
-      sent++;
-    } catch (e) {
-      console.error(`Erreur rappel pour ${inscrit.email}:`, e);
+async function rappelsBenevoles() {
+  const demain = jour(1);
+  const { data: proches } = await db.from('benevole_creneaux')
+    .select('id, debut, fin, note, categorie:benevole_categories(nom, lieu, consignes)')
+    .gte('debut', new Date().toISOString()).lt('debut', new Date(Date.now() + 3 * 864e5).toISOString());
+  const creneaux = (proches || []).filter(c => dateBxl(new Date(c.debut)) === demain);
+  let n = 0;
+  for (const c of creneaux) {
+    const { data: ins } = await db.from('benevole_inscriptions').select('*').eq('creneau_id', c.id).eq('statut', 'valide').is('mail_rappel_at', null);
+    for (const b of ins || []) {
+      try {
+        await envoyer(M.benevoleRappel(b, c as never));
+        await db.from('benevole_inscriptions').update({ mail_rappel_at: new Date().toISOString() }).eq('id', b.id);
+        n++;
+      } catch (err) { console.error('rappel bénévole', b.id, err); }
     }
   }
+  return { benevoles: n };
+}
 
-  console.log(`Rappels envoyés : ${sent}/${confirmed.length}`);
-  return new Response(JSON.stringify({ ok: true, sent, total: confirmed.length }), { status: 200 });
+async function expirer() {
+  const limite = new Date(Date.now() - 48 * 3600e3).toISOString();
+  const { data } = await db.from('benevole_inscriptions').update({ statut: 'expire' }).eq('statut', 'a_confirmer').lt('created_at', limite).select('id');
+  return { expirees: data?.length || 0 };
+}
+
+Deno.serve(async () => {
+  const r = { ...(await rappelsEtudiants()), ...(await rappelsBenevoles()), ...(await expirer()) };
+  console.log('rappels', r);
+  return new Response(JSON.stringify({ ok: true, ...r }), { headers: { 'Content-Type': 'application/json' } });
 });
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function isEpicerieDay(date: Date): boolean {
-  const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  const exception = EPICERIE_DATES_EXCEPTIONNELLES[key];
-  if (exception !== undefined) return date.getDate() === exception;
-  return date.getDay() === 4 && date.getDate() <= 7;
-}
-
-function formatDateFr(date: Date): string {
-  const mois = ['janvier','février','mars','avril','mai','juin',
-                 'juillet','août','septembre','octobre','novembre','décembre'];
-  return `Jeudi ${date.getDate()} ${mois[date.getMonth()]} ${date.getFullYear()}`;
-}
-
-async function sendReminderEmail(d: any, dateStr: string): Promise<void> {
-  const montant = d.nb_personnes * 5;
-  const subject = `⏰ Rappel — Demain à l'épicerie étudiante !`;
-  const html    = reminderHtml(d, dateStr, montant);
-
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_KEY}`,
-      'Content-Type':  'application/json',
-    },
-    body: JSON.stringify({
-      from:     FROM_EMAIL,
-      reply_to: REPLY_TO,
-      to:       [d.email],
-      subject,
-      html,
-    }),
-  });
-
-  if (!res.ok) throw new Error(`Resend error: ${await res.text()}`);
-}
-
-// ── Template : rappel ─────────────────────────────────────────────────────────
-function reminderHtml(d: any, dateStr: string, montant: number): string {
-  return `<!DOCTYPE html>
-<html lang="fr">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f4f4f0;font-family:'Helvetica Neue',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
-<tr><td align="center">
-<table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#fff;border-radius:4px;overflow:hidden;">
-
-  <!-- Header -->
-  <tr><td style="background:#1c3038;padding:36px 40px 28px;">
-    <p style="margin:0 0 6px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.45);">Espace Convivial de Waterloo</p>
-    <h1 style="margin:0;font-size:30px;font-weight:900;color:#fff;text-transform:uppercase;line-height:1.05;">C'est demain ! ⏰</h1>
-  </td></tr>
-
-  <!-- Date badge -->
-  <tr><td style="padding:28px 40px 0;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#eef5d0;border-radius:3px;">
-    <tr><td style="padding:14px 18px;">
-      <p style="margin:0;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#1c3038;">📅 ${dateStr}</p>
-      <p style="margin:4px 0 0;font-size:12px;color:rgba(28,48,56,.55);">${ADRESSE}</p>
-    </td></tr>
-    </table>
-  </td></tr>
-
-  <!-- Body -->
-  <tr><td style="padding:24px 40px;">
-    <p style="margin:0 0 16px;font-size:15px;color:#1c3038;">Bonjour <strong>${d.prenom}</strong> 👋</p>
-    <p style="margin:0 0 20px;font-size:14px;color:rgba(28,48,56,.6);line-height:1.65;">
-      Nous t'attendons <strong style="color:#1c3038;">demain</strong> pour l'épicerie étudiante !
-    </p>
-
-    <!-- Checklist -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="border:1.5px solid rgba(28,48,56,.1);border-radius:3px;overflow:hidden;margin-bottom:20px;">
-      <tr><td style="padding:13px 18px;border-bottom:1px solid rgba(28,48,56,.08);">
-        <p style="margin:0;font-size:13px;color:#1c3038;">💛 <strong>${montant}€ en cash</strong> — ${d.nb_personnes} pers. × 5€</p>
-      </td></tr>
-      <tr><td style="padding:13px 18px;border-bottom:1px solid rgba(28,48,56,.08);">
-        <p style="margin:0;font-size:13px;color:#1c3038;">📍 <strong>${ADRESSE}</strong></p>
-      </td></tr>
-      <tr><td style="padding:13px 18px;">
-        <p style="margin:0;font-size:12px;color:rgba(28,48,56,.45);">En cas d'empêchement, merci de nous prévenir dès que possible.</p>
-      </td></tr>
-    </table>
-
-    <p style="margin:0;font-size:13px;color:rgba(28,48,56,.4);">À demain !</p>
-  </td></tr>
-
-  <!-- Footer -->
-  <tr><td style="background:#f9f9f7;padding:18px 40px;border-top:1px solid rgba(28,48,56,.07);">
-    <p style="margin:0;font-size:11px;color:rgba(28,48,56,.35);line-height:1.6;">
-      Espace Convivial de Waterloo · ASBL 100% bénévole<br>${ADRESSE}
-    </p>
-  </td></tr>
-
-</table>
-</td></tr>
-</table>
-</body></html>`;
-}

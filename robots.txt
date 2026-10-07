@@ -1,4 +1,6 @@
 User-agent: *
 Disallow: /admin.html
 Disallow: /src/
+Disallow: /suivi/
+Disallow: /supabase/
 Sitemap: https://ecwaterloo.com/sitemap.xml
