@@ -108,10 +108,12 @@ function populateDateFilter() {
 function renderTable() {
   const dateFilter   = document.getElementById('filterDate').value;
   const statutFilter = document.getElementById('filterStatut').value;
+  const texte = sansAccents(document.getElementById('filterTexte').value.trim());
 
   const filtered = allRows.filter(r => {
     if (dateFilter   && r.date_rdv !== dateFilter)     return false;
     if (statutFilter && r.statut   !== statutFilter)   return false;
+    if (texte && !sansAccents([r.prenom, r.nom, r.email, r.telephone, r.universite].join(' ')).includes(texte)) return false;
     return true;
   });
 
@@ -145,6 +147,7 @@ function renderTable() {
           : row.statut === 'annulé' ? '<span class="td-muted">—</span>'
           : `<button class="action-btn action-btn--present" data-id="${row.id}" data-action="présent">Présent</button>
           <button class="action-btn action-btn--absent"  data-id="${row.id}" data-action="absent">Absent</button>`}
+          ${['confirmé', 'rappel_envoyé', 'liste_attente'].includes(row.statut) ? `<button class="action-btn" data-id="${row.id}" data-action="annuler">Annuler</button>` : ''}
         </div>
       </td>`;
     tbody.appendChild(tr);
@@ -163,6 +166,17 @@ function updateStats() {
 
 // ── Actions ───────────────────────────────────────────────────────────────────
 async function updateStatut(id, statut) {
+  if (statut === 'annuler') {
+    const r = allRows.find(x => x.id === id);
+    const v = await decision({ titre: `Annuler l'inscription de ${r.prenom} ${r.nom} ?`,
+      points: [{ type: 'info', html: `À utiliser quand la personne vous a prévenu·e (appel, message) qu'elle ne viendra pas le <strong>${esc(r.date_rdv)}</strong>. Ce n'est pas une absence : elle pourra se réinscrire normalement.` },
+        ...(r.statut === 'liste_attente' ? [] : [{ type: 'ok', html: 'Sa place passe automatiquement à la première personne de la liste d\'attente, qui reçoit un e-mail de confirmation.' }])],
+      champs: [{ nom: 'prevenir', label: `Envoyer à ${r.prenom} un e-mail qui confirme l'annulation`, type: 'checkbox', defaut: true }],
+      actions: [{ valeur: 'ok', label: 'Annuler l\'inscription', style: 'danger' }] });
+    if (!v) return;
+    try { const res = await api({ action: 'etudiant_annuler', id, prevenir: v.prevenir }); toast(`Inscription annulée.${res.promus ? ` ${res.promus > 1 ? `${res.promus} personnes ont reçu` : 'Une personne de la liste d\'attente a reçu'} sa place.` : ''}`); changement(); } catch (e) { erreur(e); }
+    return;
+  }
   if (statut === 'promouvoir') {
     const r = allRows.find(x => x.id === id);
     const ok = await decision({ titre: `Donner une place à ${r.prenom} ${r.nom} ?`,
@@ -226,6 +240,8 @@ document.getElementById('exportBtn').addEventListener('click', () => {
 // ── Filters & refresh ─────────────────────────────────────────────────────────
 document.getElementById('filterDate').addEventListener('change',   () => { renderTable(); updateStats(); });
 document.getElementById('filterStatut').addEventListener('change', () => { renderTable(); });
+document.getElementById('filterTexte').addEventListener('input', () => { renderTable(); });
+const sansAccents = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 document.getElementById('refreshBtn').addEventListener('click',    () => loadInscriptions());
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

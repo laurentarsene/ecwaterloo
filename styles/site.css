@@ -1119,6 +1119,32 @@ b, strong { font-weight: 600; }
 .menu__langs { display: flex; flex-wrap: wrap; gap: 0 18px; margin-top: 12px; font-size: 15px; color: var(--mist); }
 .menu__langs a { padding: 10px 0; }
 
+
+/* Inscription bénévole : plusieurs dates, coordonnées retenues */
+.ben-desc { margin: -6px 0 18px; font-size: 15px; line-height: 1.55; color: var(--ink-2); }
+.ben-dates { border: 0; padding: 0; margin: 0 0 20px; }
+.ben-dates__liste { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.ben-date { display: grid; grid-template-columns: 24px 1fr auto; grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 12px 14px; border: 2px solid var(--line); border-radius: var(--r); cursor: pointer; transition: border-color .15s, background .15s; }
+.ben-date input { grid-row: span 2; width: 22px; height: 22px; accent-color: var(--ink); }
+.ben-date__j { font-weight: 600; font-size: 16px; }
+.ben-date__h { grid-column: 2; font-size: 15px; color: var(--ink-2); }
+.ben-date__p { grid-row: 1 / span 2; grid-column: 3; font-size: 14px; font-weight: 500; color: var(--olive-d); }
+.ben-date.is-presque .ben-date__p { color: var(--coral-d); }
+.ben-date:has(input:checked) { border-color: var(--ink); background: #eef0d4; }
+.ben-date:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ben-dates__aide { margin-top: 8px; font-size: 14px; color: var(--ink-2); }
+.ben-moi { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 14px 16px; margin-bottom: 18px; border-radius: var(--r); background: var(--paper); }
+.ben-moi p { display: flex; flex-direction: column; gap: 2px; }
+.ben-moi p span:last-child { color: var(--ink-2); font-size: 15px; }
+.ben-moi__modif { min-height: 44px; padding: 0; border: 0; background: none; font: 500 15px var(--f); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.ben-succes__dates { display: flex; flex-direction: column; gap: 4px; margin: 0 0 20px; padding: 14px 16px; border-radius: var(--r); background: #eef0d4; text-align: left; font-size: 15px; }
+.suivi__lot { padding-top: 8px; }
+.suivi__lot-t { font-weight: 500; font-size: 20px; margin-bottom: 10px; }
+.suivi__lot ul { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.suivi__lot li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 16px; }
+.suivi__lot li span:first-child { flex: 1 1 260px; }
+.suivi__lot a { font-size: 15px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; padding: 10px 0; }
+
 /* ══════════════════════════════════════════════════════════════
    TRANSITIONS ENTRE PAGES (View Transitions, navigateurs récents)
    Le header et le chatbot restent en place ; le contenu se fond.

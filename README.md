@@ -45,12 +45,14 @@ Aucune modification de code n'est nécessaire. Six rubriques :
 - **Contenus du site** : agenda et nouvelles, besoins du moment, Gazette (mise en ligne et envoi aux abonné·es), chiffres de la page Impact.
 - **Réglages** : ouverture des inscriptions étudiantes, places par défaut, objectif des lutins, adresse des alertes.
 
+Une **visite guidée** se lance à la première connexion de chaque compte (mémorisé dans le compte) ; le bouton « Visite guidée » du menu la relance (`scripts/admin-tuto.js`).
+
 Tout compte créé dans Supabase Auth est administrateur : garder « Allow new users to sign up » désactivé et créer les comptes à la main (Authentication › Users › Add user).
 
 ## Parcours automatiques
 
 - **Étudiant·e** : inscription → confirmation (ou liste d'attente) avec fichier agenda → rappel la veille. Annulation par le lien du mail : la place passe à la première personne en attente, qui reçoit un e-mail.
-- **Bénévole** (sans compte) : choix d'un créneau → e-mail « confirmez » → l'admin reçoit « À valider » → validation ou refus dans l'admin (avec un mot facultatif) → e-mail + fichier agenda → rappel la veille avec « Je serai là / Je ne peux plus venir ». Une demande non confirmée en 48 h expire et libère la place.
+- **Bénévole** (sans compte) : choix d'un ou plusieurs créneaux de la même activité (coordonnées retenues sur l'appareil pour la fois suivante) → e-mail « confirmez » → l'admin reçoit « À valider » → validation ou refus dans l'admin (avec un mot facultatif) → e-mail + fichier agenda → rappel la veille avec « Je serai là / Je ne peux plus venir ». Une demande non confirmée en 48 h expire et libère la place. Plusieurs dates choisies ensemble forment un « lot » : un seul e-mail de confirmation, une seule alerte, une validation groupée. L'équipe peut aussi inscrire quelqu'un qui a appelé, désinscrire à la demande de la personne, et noter les présences.
 - **Gazette** : abonnement avec double confirmation, envoi depuis l'admin, désinscription en un clic.
 - **Lutin·e** : inscription → e-mail de remerciement (étapes à venir) + alerte à l'équipe.
 
@@ -64,7 +66,7 @@ Tous les e-mails partagent le gabarit de `supabase/functions/_shared/mail.ts` (l
 
 ## Supabase (base de données et e-mails)
 
-- `supabase/migrations/` : schéma de la base. `20261001000000_base.sql` est l'état initial (déjà en production), `20261007000000_ecw_v2.sql` ajoute tout ce qui précède.
+- `supabase/migrations/` : schéma de la base. `20261001000000_base.sql` est l'état initial (déjà en production), `20261007000000_ecw_v2.sql` ajoute tout ce qui précède, `20261008000000_benevoles_lots.sql` regroupe les inscriptions faites ensemble.
 - `supabase/functions/ecw-api` : toutes les inscriptions publiques et les actions des liens personnels (le public ne lit jamais de données personnelles).
 - `supabase/functions/send-reminders` : rappels de la veille et expiration des demandes non confirmées, appelée chaque matin par pg_cron.
 - `supabase/functions/_shared/` : envoi via Resend et modèles des e-mails.

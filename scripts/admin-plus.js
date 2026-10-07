@@ -375,7 +375,7 @@ function rendreBenevoles() {
   const prises = (c) => BEN.ins.filter(i => i.creneau_id === c.id && (['confirme', 'valide'].includes(i.statut) || (i.statut === 'a_confirmer' && Date.now() - Date.parse(i.created_at) < 48 * 3600e3))).length;
   const libres = avenir.reduce((a, c) => a + Math.max(c.places - prises(c), 0), 0);
 
-  p.innerHTML = entete('Bénévoles', `<a class="btn btn--ghost" href="/benevoles/" target="_blank" rel="noopener">Voir le calendrier public</a><button class="btn btn--ghost" id="btnSerie">Créer une série</button><button class="btn btn--primary" id="btnCreneau">Nouveau créneau</button>`) + `
+  p.innerHTML = entete('Bénévoles', `<button class="btn btn--ghost" id="btnLien">Copier le lien d'inscription</button><a class="btn btn--ghost" href="/benevoles/" target="_blank" rel="noopener">Voir le calendrier public</a><button class="btn btn--ghost" id="btnSerie">Créer une série</button><button class="btn btn--primary" id="btnCreneau">Nouveau créneau</button>`) + `
     <p class="lead-admin">Les bénévoles s'inscrivent sans compte sur le calendrier public, puis confirment leur adresse e-mail. Vous recevez alors une alerte et validez ici leur venue : un e-mail part avec le créneau à ajouter à leur agenda, puis un rappel la veille.</p>
     <div class="stats stats--4">
       <div class="stat ${aValider.length ? 'stat--accent' : ''}"><span class="stat__val">${aValider.length}</span><span class="stat__lbl">à valider</span></div>
@@ -386,13 +386,13 @@ function rendreBenevoles() {
 
     <section class="bloc">
       <h2 class="bloc__t">À valider ${aValider.length ? `<span class="pill pill--alerte">${aValider.length}</span>` : ''}</h2>
-      ${aValider.length ? `<div class="cartes">${aValider.map(i => { const c = crById[i.creneau_id]; return `
-        <article class="carte" style="--c:${COULEURS[cat(c?.categorie_id).couleur]}">
-          <div class="carte__h"><strong>${esc(i.prenom)} ${esc(i.nom)}</strong><span class="td-muted">confirmé ${fDateHeure(i.confirme_at)}</span></div>
-          <p class="carte__cr">${c ? `${esc(cat(c.categorie_id).nom)} · ${fJour(c.debut)}, ${fHeure(c.debut)}–${fHeure(c.fin)}` : 'Créneau passé ou supprimé'}</p>
-          <p class="td-contact"><a href="mailto:${esc(i.email)}">${esc(i.email)}</a>${i.telephone ? ` · <a href="tel:${esc(i.telephone)}">${esc(i.telephone)}</a>` : ''}</p>
-          ${i.message ? `<p class="carte__msg">« ${esc(i.message)} »</p>` : ''}
-          <div class="carte__a"><button class="btn btn--primary btn--sm" data-dec="valide" data-id="${i.id}">Valider</button><button class="btn btn--ghost btn--sm" data-dec="refuse" data-id="${i.id}">Refuser</button></div>
+      ${aValider.length ? `<div class="cartes">${grouperLots(aValider).map(g => { const i = g[0]; return `
+        <article class="carte" style="--c:${COULEURS[cat(crById[i.creneau_id]?.categorie_id).couleur]}">
+          <div class="carte__h"><strong>${esc(i.prenom)} ${esc(i.nom)}</strong>${g.length > 1 ? `<span class="pill">${g.length} créneaux</span>` : ''}</div>
+          <ul class="carte__crs">${g.map(x => { const c = crById[x.creneau_id]; return `<li>${c ? `<b>${esc(cat(c.categorie_id).nom)}</b> ${majusc(jourMois(new Date(c.debut)))}, ${fHeure(c.debut)} – ${fHeure(c.fin)}` : 'Créneau passé ou supprimé'}</li>`; }).join('')}</ul>
+          <p class="td-contact">${i.email ? `<a href="mailto:${esc(i.email)}">${esc(i.email)}</a>` : ''}${tel(i.telephone)}</p>
+          ${i.message ? `<p class="carte__msg">«&nbsp;${esc(i.message)}&nbsp;»</p>` : ''}
+          <div class="carte__a"><button class="btn btn--primary btn--sm" data-dec="valide" data-ids="${g.map(x => x.id).join(',')}">${g.length > 1 ? `Tout valider (${g.length})` : 'Valider'}</button><button class="btn btn--ghost btn--sm" data-dec="refuse" data-ids="${g.map(x => x.id).join(',')}">${g.length > 1 ? 'Tout refuser' : 'Refuser'}</button></div>
         </article>`; }).join('')}</div>` : '<p class="vide">Personne n\'attend de validation : toutes les inscriptions confirmées ont reçu une réponse.</p>'}
     </section>
 
@@ -432,7 +432,7 @@ function rendreBenevoles() {
         <td class="text-center">${badgeBen(i.statut)}</td>
         <td class="text-center">${i.presence === 'oui' ? '✓' : i.presence === 'non' ? '✗' : '—'}</td>
         <td class="td-muted">${fDateHeure(i.created_at)}</td>
-        <td>${['confirme', 'valide', 'refuse', 'a_confirmer'].includes(i.statut) && c && new Date(c.debut) > new Date() ? `<button class="btn btn--ghost btn--sm" data-dec="${i.statut === 'valide' ? 'refuse' : 'valide'}" data-id="${i.id}">${i.statut === 'valide' ? 'Retirer' : 'Valider'}</button>` : ''}</td>
+        <td class="text-right">${c && new Date(c.debut) > new Date() ? (['confirme', 'a_confirmer', 'refuse'].includes(i.statut) ? `<button class="btn btn--ghost btn--sm" data-dec="valide" data-id="${i.id}">Valider</button>` : i.statut === 'valide' ? `<button class="btn btn--ghost btn--sm" data-desinscrire="${i.id}">Désinscrire</button>` : '') : ''}</td>
       </tr>`; }).join('') || '<tr><td colspan="7" class="vide">Aucune inscription.</td></tr>'}
       </tbody></table></div>
     </section>`;
@@ -444,19 +444,68 @@ function rendreBenevoles() {
   $('#exportBen').onclick = exporterBenevoles;
   $$('[data-cat]', p).forEach(b => b.onclick = () => editerCategorie(BEN.cats.find(k => k.id === b.dataset.cat)));
   $$('[data-cr]', p).forEach(b => b.onclick = () => { const c = BEN.creneaux.find(x => x.id === b.dataset.cr); ({ dup: dupliquer, suppr: supprimerCreneau, edit: editerCreneau })[b.dataset.act](c); });
-  $$('[data-dec]', p).forEach(b => b.onclick = () => decider(b.dataset.id, b.dataset.dec));
+  $$('[data-dec]', p).forEach(b => b.onclick = () => decider((b.dataset.ids || b.dataset.id).split(','), b.dataset.dec));
+  $('#btnLien').onclick = copierLien;
+  $$('[data-desinscrire]', p).forEach(b => b.onclick = () => desinscrire(b.dataset.desinscrire));
 }
 
-async function decider(id, decision) {
-  const i = BEN.ins.find(x => x.id === id) || (await sb.from('benevole_inscriptions').select('*').eq('id', id).single()).data;
-  const v = await formulaire({
-    titre: decision === 'valide' ? `Valider ${i.prenom} ${i.nom}` : `${i.statut === 'valide' ? 'Retirer' : 'Refuser'} ${i.prenom} ${i.nom}`,
-    aide: decision === 'valide' ? 'Un e-mail de validation part avec le créneau à ajouter à l\'agenda et un lien pour se désister.' : 'Un e-mail poli part pour prévenir la personne et l\'inviter à choisir un autre créneau.',
-    champs: [{ nom: 'note', label: 'Petit mot ajouté à l\'e-mail (facultatif)', type: 'textarea', lignes: 2 }],
-    valider: decision === 'valide' ? 'Valider et envoyer l\'e-mail' : 'Confirmer et envoyer l\'e-mail',
-  });
+const grouperLots = (liste) => Object.values(liste.reduce((g, i) => ((g[i.lot || i.id] ||= []).push(i), g), {}));
+async function copierLien() {
+  const url = `${location.origin}/benevoles/`;
+  try { await navigator.clipboard.writeText(url); toast('Lien copié : collez-le dans un message, un groupe WhatsApp ou un e-mail.'); } catch (_) { toast(url); }
+}
+
+async function decider(ids, decision) {
+  ids = Array.isArray(ids) ? ids : [ids];
+  await assurerCats();
+  const { data: liste } = await sb.from('benevole_inscriptions').select('*').in('id', ids);
+  const { data: crs } = await sb.from('benevole_creneaux').select('*').in('id', liste.map(x => x.creneau_id));
+  const i = liste[0], n = liste.length, valide = decision === 'valide';
+  const retrait = !valide && liste.some(x => x.statut === 'valide');
+  const v = await decision_({ titre: valide ? `Valider ${i.prenom} ${i.nom}${n > 1 ? ` pour ${n} créneaux` : ''} ?` : retrait ? `Retirer ${i.prenom} ${i.nom} ?` : `Refuser ${i.prenom} ${i.nom} ?`,
+    points: [
+      { type: 'info', html: `<ul class="dz-gens">${(crs || []).sort((a, b) => Date.parse(a.debut) - Date.parse(b.debut)).map(c => `<li><strong>${esc(catDe(c.categorie_id).nom)}</strong> · ${horaire(c.debut, c.fin)}</li>`).join('')}</ul>` },
+      i.email ? { type: 'mail', html: valide ? `${esc(i.prenom)} reçoit ${n > 1 ? 'un seul e-mail avec toutes les dates' : 'un e-mail avec le créneau'} à ajouter à son agenda, puis un rappel la veille${n > 1 ? ' de chaque créneau' : ''}.` : `${esc(i.prenom)} reçoit un e-mail aimable qui explique que l'équipe ne peut pas retenir ${n > 1 ? 'ces créneaux' : 'ce créneau'}, et l'invite à en choisir d'autres.` }
+        : { type: 'attention', html: `${esc(i.prenom)} n'a pas d'adresse e-mail : prévenez-le ou la par téléphone${tel(i.telephone)}.` },
+      ...(retrait ? [{ type: 'attention', html: `Si c'est ${esc(i.prenom)} qui vous a prévenu·e qu'il ou elle ne vient plus, utilisez plutôt « Désinscrire à sa demande » : le message envoyé sera le bon.` }] : []),
+    ],
+    champs: i.email ? [{ nom: 'note', label: 'Ajouter un mot de l\'équipe dans l\'e-mail (facultatif)', type: 'textarea', lignes: 2, placeholder: valide ? 'ex. Merci ! Sonnez à la porte de derrière en arrivant.' : 'ex. Ce créneau est complet, mais le samedi suivant nous manquons de monde.' }] : [],
+    actions: [{ valeur: 'ok', label: valide ? (i.email ? 'Valider et envoyer l\'e-mail' : 'Valider') : (i.email ? 'Confirmer et envoyer l\'e-mail' : 'Confirmer'), style: valide ? 'primary' : 'danger' }] });
   if (!v) return;
-  try { await api({ action: 'benevole_decision', id, decision, note: v.note }); toast(decision === 'valide' ? `${i.prenom} est validé·e, l'e-mail est parti.` : `L'e-mail est parti à ${i.prenom}.`); changement(); } catch (e) { erreur(e); }
+  try { const r = await api({ action: 'benevole_decision', ids, decision, note: v.note || '' }); toast(valide ? `${i.prenom} est validé·e${r.traitees > 1 ? ` pour ${r.traitees} créneaux` : ''}${i.email ? ', l\'e-mail est parti' : ''}.` : `C'est fait${i.email ? `, l'e-mail est parti à ${i.prenom}` : ''}.`); changement(); } catch (e) { erreur(e); }
+}
+const decision_ = (o) => decision(o);
+
+async function desinscrire(id) {
+  const { data: i } = await sb.from('benevole_inscriptions').select('*').eq('id', id).single();
+  const { data: c } = await sb.from('benevole_creneaux').select('*').eq('id', i.creneau_id).single();
+  await assurerCats();
+  const v = await decision({ titre: `Désinscrire ${i.prenom} ${i.nom} ?`, apres: `<span>Ne viendra pas</span><strong class="barre">${esc(catDe(c.categorie_id).nom)} · ${horaire(c.debut, c.fin)}</strong>`,
+    points: [{ type: 'info', html: `À utiliser quand ${esc(i.prenom)} vous a prévenu·e (appel, message) qu'il ou elle ne pourra pas venir. La place se libère aussitôt sur le calendrier public.` }],
+    champs: i.email ? [{ nom: 'prevenir', label: `Envoyer à ${i.prenom} un e-mail qui confirme la désinscription`, type: 'checkbox', defaut: true }] : [],
+    actions: [{ valeur: 'ok', label: 'Désinscrire', style: 'danger' }] });
+  if (!v) return;
+  try { await api({ action: 'benevole_annuler', id, prevenir: !!v.prevenir }); toast(`${i.prenom} est désinscrit·e, la place est libérée.`); changement(); } catch (e) { erreur(e); }
+}
+
+async function inscrireQuelquun(c) {
+  await assurerCats();
+  const ins = await inscritsCreneau(c.id);
+  const v = await formulaire({ titre: `Inscrire quelqu'un · ${catDe(c.categorie_id).nom}`, valider: 'Inscrire',
+    aide: `Pour une personne qui s'est proposée par téléphone ou en passant à l'épicerie, ${horaire(c.debut, c.fin).toLowerCase()}. Elle est directement validée, sans étape de confirmation.${ins.length >= c.places ? ` <strong>Attention : le créneau est déjà complet (${ins.length} sur ${c.places}).</strong>` : ''}`,
+    champs: [
+      { nom: 'prenom', label: 'Prénom', requis: true, demi: true }, { nom: 'nom', label: 'Nom', requis: true, demi: true },
+      { nom: 'telephone', label: 'Téléphone', type: 'tel', demi: true }, { nom: 'email', label: 'E-mail', type: 'email', demi: true },
+      { nom: 'prevenir', label: 'Lui envoyer l\'e-mail avec le créneau et le fichier pour son agenda (si une adresse est indiquée)', type: 'checkbox', defaut: true },
+    ] });
+  if (!v) return;
+  if (!v.email && !v.telephone) return toast('Indiquez au moins un téléphone ou un e-mail, pour pouvoir prévenir la personne si besoin.', false);
+  try { const r = await api({ action: 'benevole_ajouter', creneau_id: c.id, ...v }); toast(`${v.prenom} est inscrit·e${r.prevenu ? ', l\'e-mail est parti' : ''}.`); changement(); } catch (e) { erreur(e); }
+}
+
+async function marquerPresence(id, presence) {
+  const { error } = await sb.from('benevole_inscriptions').update({ presence }).eq('id', id);
+  error ? erreur(error) : (toast(presence === 'oui' ? 'Présence notée.' : 'Absence notée.'), changement());
 }
 
 const champsCreneau = () => [

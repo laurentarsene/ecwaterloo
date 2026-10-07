@@ -89,40 +89,62 @@ const majus = (s) => s.charAt(0).toUpperCase() + s.slice(1);
     .catch(() => { listeEl.innerHTML = '<p class="cal__vide">Le calendrier ne répond pas pour le moment. Appelez-nous au 0465&nbsp;92&nbsp;73&nbsp;66.</p>'; });
   charger();
 
-  // ── Inscription ──
+  // ── Inscription : le créneau choisi + les autres dates de la même activité, en une fois ──
   const overlay = document.getElementById('benModal');
   const form = document.getElementById('benForm'), succes = document.getElementById('benSucces'), err = document.getElementById('benErreur');
+  const datesEl = document.getElementById('benDates'), envoyer = document.getElementById('benEnvoyer');
+  const moi = document.getElementById('benMoi'), champs = document.getElementById('benChamps');
   const modal = makeModal(overlay, { onOpen: () => { form.hidden = false; succes.hidden = true; err.hidden = true; } });
+  const MEMO = 'ecw-benevole';
+  const memoire = () => { try { return JSON.parse(localStorage.getItem(MEMO) || 'null'); } catch (_) { return null; } };
+  const ligneDate = (c, coche) => `<label class="ben-date ${c.restantes <= 1 ? 'is-presque' : ''}"><input type="checkbox" name="creneau" value="${c.id}" ${coche ? 'checked' : ''}>
+      <span class="ben-date__j">${majus(fmtJour(c.debut))}</span><span class="ben-date__h">${fmtHeure(c.debut)} – ${fmtHeure(c.fin)}${c.note ? ` · ${echap(c.note)}` : ''}</span>
+      <span class="ben-date__p">${c.restantes} place${c.restantes > 1 ? 's' : ''}</span></label>`;
+  const majBouton = () => { const n = datesEl.querySelectorAll('input:checked').length; envoyer.textContent = n > 1 ? `Je m'inscris à ces ${n} dates` : "Je m'inscris"; envoyer.disabled = !n; };
+  datesEl.addEventListener('change', majBouton);
   listeEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-creneau]'); if (!b) return;
     const c = creneaux.find(x => x.id === b.dataset.creneau); if (!c) return;
-    document.getElementById('benCreneau').value = c.id;
+    const autres = creneaux.filter(x => x.categorie_id === c.categorie_id && x.id !== c.id && x.restantes > 0).sort((x, y) => Date.parse(x.debut) - Date.parse(y.debut)).slice(0, 7);
     document.getElementById('benTitre').textContent = c.categorie;
-    document.getElementById('benRecap').innerHTML = `<p><strong>${majus(fmtJour(c.debut))}</strong>, de ${fmtHeure(c.debut)} à ${fmtHeure(c.fin)}</p><p>${echap(c.lieu)}</p>${c.consignes ? `<p class="ben-recap__c">${echap(c.consignes)}</p>` : ''}`;
-    modal.open();
+    document.getElementById('benDesc').innerHTML = [c.description, c.lieu].filter(Boolean).map(echap).join('<br>');
+    datesEl.innerHTML = [c, ...autres].sort((x, y) => Date.parse(x.debut) - Date.parse(y.debut)).map(x => ligneDate(x, x.id === c.id)).join('');
+    document.getElementById('benDatesAide').textContent = autres.length ? `Vous pouvez cocher plusieurs dates : un seul e-mail les confirmera toutes.` : '';
+    const m = memoire();
+    if (m) { ['prenom', 'nom', 'email', 'telephone'].forEach(k => { form.querySelector(`[name="${k}"]`).value = m[k] || ''; }); document.getElementById('benMoiNom').textContent = `${m.prenom} ${m.nom}`; document.getElementById('benMoiMail').textContent = m.email; }
+    moi.hidden = !m; champs.hidden = !!m;
+    majBouton(); modal.open();
   });
+  document.getElementById('benMoiModif').addEventListener('click', () => { moi.hidden = true; champs.hidden = false; form.querySelector('[name="prenom"]').focus(); });
   document.getElementById('benFermer').addEventListener('click', modal.close);
   document.getElementById('benBackdrop').addEventListener('click', modal.close);
   document.getElementById('benOk').addEventListener('click', modal.close);
-  const MSG = { complet: 'Ce créneau vient d\'être complété. Choisissez-en un autre.', deja_inscrit: 'Vous êtes déjà inscrit·e à ce créneau avec cette adresse.', creneau_indisponible: 'Ce créneau n\'est plus disponible.', trop_de_demandes: 'Trop d\'inscriptions avec cette adresse aujourd\'hui. Appelez-nous.', champ_email: 'L\'adresse e-mail ne semble pas valide.', champ_prenom: 'Indiquez votre prénom.', champ_nom: 'Indiquez votre nom.' };
+  const MSG = { complet: 'Ce créneau vient d\'être complété. Choisissez-en un autre.', deja_inscrit: 'Vous êtes déjà inscrit·e à cette date avec cette adresse.', creneau_indisponible: 'Cette date n\'est plus disponible.', trop_de_demandes: 'Trop d\'inscriptions avec cette adresse aujourd\'hui. Appelez-nous.', champ_email: 'L\'adresse e-mail ne semble pas valide.', champ_prenom: 'Indiquez votre prénom.', champ_nom: 'Indiquez votre nom.', champ_creneau: 'Cochez au moins une date.' };
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
     form.querySelectorAll('.sform__input--error').forEach(i => i.classList.remove('sform__input--error'));
     const val = (n) => form.querySelector(`[name="${n}"]`).value.trim();
+    const ids = [...datesEl.querySelectorAll('input:checked')].map(i => i.value);
+    if (!ids.length) { err.textContent = MSG.champ_creneau; err.hidden = false; return; }
     const manque = ['prenom', 'nom'].filter(n => !val(n));
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val('email'))) manque.push('email');
-    if (manque.length) { manque.forEach(n => form.querySelector(`[name="${n}"]`).classList.add('sform__input--error')); form.querySelector(`[name="${manque[0]}"]`).focus(); return; }
-    const btn = form.querySelector('[type=submit]'); btn.disabled = true; const lab = btn.textContent; btn.textContent = 'Envoi…';
+    if (manque.length) { moi.hidden = true; champs.hidden = false; manque.forEach(n => form.querySelector(`[name="${n}"]`).classList.add('sform__input--error')); form.querySelector(`[name="${manque[0]}"]`).focus(); return; }
+    const lab = envoyer.textContent; envoyer.disabled = true; envoyer.textContent = 'Envoi…';
     try {
-      await ECW.api('benevole_inscrire', Object.fromEntries(['creneau_id', 'prenom', 'nom', 'email', 'telephone', 'message', 'site_web'].map(n => [n, val(n)])));
+      const r = await ECW.api('benevole_inscrire', { creneau_ids: ids, ...Object.fromEntries(['prenom', 'nom', 'email', 'telephone', 'message', 'site_web'].map(n => [n, val(n)])) });
+      try { localStorage.setItem(MEMO, JSON.stringify(Object.fromEntries(['prenom', 'nom', 'email', 'telephone'].map(n => [n, val(n)])))); } catch (_) {}
+      const ok = ids.filter(id => !(r.refus || []).some(x => x.creneau_id === id)).map(id => creneaux.find(c => c.id === id)).filter(Boolean);
+      document.getElementById('benSuccesNote').innerHTML = `Nous venons d'envoyer un e-mail à <strong>${echap(val('email'))}</strong> (pensez aux spams). <strong>Un clic sur le bouton</strong> confirme ${ok.length > 1 ? `vos ${ok.length} dates` : 'votre inscription'}. Ensuite, l'équipe valide votre venue et vous recevez la confirmation, avec les dates pour votre agenda.${(r.refus || []).length ? ` ${r.refus.length > 1 ? `${r.refus.length} dates n'ont` : 'Une date n\'a'} pas pu être retenue${r.refus.length > 1 ? 's' : ''} (complète${r.refus.length > 1 ? 's' : ''} entre-temps, ou déjà choisie${r.refus.length > 1 ? 's' : ''}).` : ''}`;
+      document.getElementById('benSuccesDates').innerHTML = ok.map(c => `<li><strong>${majus(fmtJour(c.debut))}</strong>, ${fmtHeure(c.debut)} – ${fmtHeure(c.fin)}</li>`).join('');
       form.hidden = true; succes.hidden = false; document.getElementById('benOk').focus();
+      form.querySelector('[name="message"]').value = '';
       charger();
     } catch (x) {
       err.textContent = MSG[x.code] || 'L\'inscription n\'a pas pu être envoyée. Réessayez, ou appelez-nous au 0465 92 73 66.';
       err.hidden = false;
       if (['complet', 'creneau_indisponible'].includes(x.code)) charger();
-    } finally { btn.disabled = false; btn.textContent = lab; }
+    } finally { envoyer.disabled = false; envoyer.textContent = lab; majBouton(); }
   });
 })();
 
@@ -156,7 +178,8 @@ const majus = (s) => s.charAt(0).toUpperCase() + s.slice(1);
       const c = r.creneau;
       h = `<p class="suivi__k">Bénévolat</p><h1 class="h-big">Bonjour ${echap(r.prenom)}</h1>
         <dl class="suivi__dl"><div><dt>Créneau</dt><dd><strong>${echap(c.categorie)}</strong><br>${majus(fmtJour(c.debut))}, de ${fmtHeure(c.debut)} à ${fmtHeure(c.fin)}</dd></div><div><dt>Lieu</dt><dd>${echap(c.lieu)}</dd></div><div><dt>Statut</dt><dd><span class="suivi__st suivi__st--${['annule', 'refuse', 'expire'].includes(r.statut) ? 'off' : 'on'}">${st}</span>${r.presence === 'oui' ? ' · présence confirmée ✓' : ''}</dd></div></dl>
-        ${r.statut === 'valide' && c.consignes ? `<p class="suivi__info">${echap(c.consignes)}</p>` : ''}`;
+        ${r.statut === 'valide' && c.consignes ? `<p class="suivi__info">${echap(c.consignes)}</p>` : ''}
+        ${(r.lot || []).length ? `<div class="suivi__lot"><h2 class="suivi__lot-t">Vos autres dates, choisies en même temps</h2><ul>${r.lot.map(l => `<li><span><strong>${echap(l.categorie)}</strong> · ${majus(fmtJour(l.debut))}, ${fmtHeure(l.debut)} – ${fmtHeure(l.fin)}</span><span class="suivi__st suivi__st--${['annule', 'refuse', 'expire'].includes(l.statut) ? 'off' : 'on'}">${STATUTS.benevole[l.statut] || l.statut}</span>${['a_confirmer', 'confirme', 'valide'].includes(l.statut) ? `<a href="/suivi/?t=${l.token}&amp;a=annuler">Je ne peux pas venir ce jour-là</a>` : ''}</li>`).join('')}</ul></div>` : ''}`;
     }
     if (r.type === 'gazette') {
       h = `<p class="suivi__k">La Gazette conviviale</p><h1 class="h-big">Votre abonnement</h1>
@@ -165,7 +188,8 @@ const majus = (s) => s.charAt(0).toUpperCase() + s.slice(1);
     if (message) h += `<p class="suivi__ok" role="status">${message}</p>`;
     const a = r.actions || [];
     const boutons = [];
-    if (r.type === 'benevole' && a.includes('confirmer')) boutons.push(['confirmer', 'Je confirme mon inscription', 'dark']);
+    const aConfirmer = 1 + (r.lot || []).filter(l => l.statut === 'a_confirmer').length;
+    if (r.type === 'benevole' && a.includes('confirmer')) boutons.push(['confirmer', aConfirmer > 1 ? `Je confirme mes ${aConfirmer} dates` : 'Je confirme mon inscription', 'dark']);
     if (r.type === 'gazette' && a.includes('confirmer')) boutons.push(['confirmer', r.statut === 'desabonne' ? 'Me réabonner' : 'Je confirme mon abonnement', 'dark']);
     if (a.includes('presence_oui') && r.presence !== 'oui') boutons.push(['presence_oui', 'Je serai là', 'dark']);
     if (a.includes('annuler')) boutons.push(confirmerAnnulation ? ['annuler', 'Oui, je ne peux plus venir', 'danger'] : ['pre_annuler', r.type === 'etudiant' && r.statut === 'liste_attente' ? 'Me retirer de la liste' : 'Je ne peux plus venir', 'line']);
@@ -178,7 +202,7 @@ const majus = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   }
 
   const MESSAGES = {
-    confirmer: { benevole: "Merci, c'est confirmé ! L'équipe va valider votre venue : vous recevrez un e-mail.", gazette: 'Merci ! Vous recevrez le prochain numéro par e-mail.' },
+    confirmer: { benevole: "Merci, c'est confirmé ! L'équipe va valider votre venue : vous recevrez un e-mail avec les dates pour votre agenda.", gazette: 'Merci ! Vous recevrez le prochain numéro par e-mail.' },
     presence_oui: 'Merci, à demain !', annuler: "C'est noté. Merci de nous avoir prévenus : votre place est libérée.", desabonner: 'Vous ne recevrez plus la gazette par e-mail.',
   };
   let dernier = null;

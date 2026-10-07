@@ -73,6 +73,8 @@ async function chargerAFaire() {
   const cartes = [];
   if (aValider?.length) cartes.push({ ton: 'alerte', n: aValider.length, texte: `${aValider.length > 1 ? 'bénévoles attendent' : 'bénévole attend'} votre validation : ${aValider.slice(0, 3).map(i => `${esc(i.prenom)} ${esc(i.nom)}`).join(', ')}${aValider.length > 3 ? '…' : ''}. Tant que ce n'est pas fait, ${aValider.length > 1 ? 'elles et ils ne savent' : 'la personne ne sait'} pas si ${aValider.length > 1 ? 'leur venue est' : 'sa venue est'} confirmée.`, bouton: 'Valider', aller: 'benevoles' });
   if (P && dansJours(P.date) <= 7) cartes.push({ ton: 'teal', n: P.inscrits, texte: `${P.inscrits > 1 ? 'personnes inscrites' : 'personne inscrite'} à l'épicerie étudiante ${quandRelatif(P.date) === 'demain' ? 'de demain' : `du ${jourMois(dateDe(P.date))}`}${P.capacite ? ` sur ${P.capacite} places` : ''}${P.attente ? `, et ${P.attente} en liste d'attente` : ''}. ${P.ouverture > auj() ? `Les inscriptions ouvrent le ${jourMois(dateDe(P.ouverture))}.` : 'Le rappel part automatiquement la veille au matin.'}`, bouton: 'Voir la liste', aller: 'etudiants' });
+  const { count: aVenir } = await sb.from('benevole_creneaux').select('id', { count: 'exact', head: true }).eq('publie', true).gte('debut', new Date().toISOString());
+  if (!aVenir) cartes.push({ ton: 'alerte', n: 0, texte: 'créneau bénévole n\'est ouvert sur le calendrier public : les bénévoles qui visitent le site ne peuvent s\'inscrire nulle part. Créez les prochaines distributions, permanences ou journées au potager, une par une ou en série.', bouton: 'Créer une série de créneaux', faire: () => creerSerie() });
   const ids = (proches || []).map(c => c.id);
   if (ids.length) {
     const { data: ins } = await sb.from('benevole_inscriptions').select('creneau_id, statut, created_at').in('creneau_id', ids);
@@ -87,12 +89,13 @@ async function chargerAFaire() {
     if (aEnvoyer) cartes.push({ ton: 'coral', n: aEnvoyer, texte: `${aEnvoyer > 1 ? 'lettres d\'enfants restent' : 'lettre d\'enfant reste'} à envoyer aux lutin·es de Noël. Plus elles partent tôt, plus les cadeaux arrivent à temps.`, bouton: 'Voir les lutins', aller: 'lutins' });
   }
   box.innerHTML = cartes.length
-    ? `<h2 class="afaire__t">À faire</h2><div class="afaire__grille">${cartes.map((c, k) => `<article class="afaire__c afaire__c--${c.ton}"><b class="afaire__n">${c.n}</b><p>${c.texte}</p><button class="btn btn--sm ${c.ton === 'alerte' ? 'btn--primary' : 'btn--ghost'}" data-k="${k}">${c.bouton}</button></article>`).join('')}</div>`
+    ? `<h2 class="afaire__t">À faire</h2><div class="afaire__grille">${cartes.map((c, k) => `<article class="afaire__c afaire__c--${c.ton}"><b class="afaire__n ${c.n === 0 ? "afaire__n--mot" : ""}">${c.n === 0 ? "Aucun" : c.n}</b><p>${c.texte}</p><button class="btn btn--sm ${c.ton === 'alerte' ? 'btn--primary' : 'btn--ghost'}" data-k="${k}">${c.bouton}</button></article>`).join('')}</div>`
     : '<div class="afaire__rien"><b>Tout est à jour.</b> Aucune inscription n\'attend de validation, les créneaux des prochains jours sont complets et la dernière Gazette est partie.</div>';
   box.onclick = async (e) => {
     const o = e.target.closest('[data-ouvrir]'); if (o) { const [t, id] = o.dataset.ouvrir.split(':'); return ouvrirElement(t, id); }
     const b = e.target.closest('[data-k]'); if (!b) return; const c = cartes[b.dataset.k];
     if (c.aller) showTab(c.aller);
+    if (c.faire) c.faire();
     if (c.copier) { try { await navigator.clipboard.writeText(c.copier); toast('Lien copié : collez-le dans le groupe des bénévoles.'); } catch (_) { toast(c.copier); } }
   };
 }
@@ -225,6 +228,7 @@ async function tiroirCreneau(c) {
   const actifs = (ins || []).filter(i => ['a_confirmer', 'confirme', 'valide'].includes(i.statut));
   const pris = actifs.filter(i => i.statut !== 'a_confirmer' || Date.now() - Date.parse(i.created_at) < 48 * 3600e3).length;
   const passe = Date.parse(c.debut) < Date.now();
+  const jourJ = Date.parse(c.debut) < Date.now() + 12 * 3600e3;   // le jour même ou après : noter les présences
   const pct = Math.min(100, Math.round(pris / c.places * 100));
   ouvrirTiroir(`<div class="tiroir__bande" style="--c:${COULEURS[k.couleur]}"></div>
     <p class="tiroir__k">${quandRelatif(isoLocal(c.debut).date)}${c.publie ? '' : ' · caché du calendrier public'}</p>
@@ -239,13 +243,16 @@ async function tiroirCreneau(c) {
       <p class="gl__c"><a href="mailto:${esc(i.email)}">${esc(i.email)}</a>${tel(i.telephone)}</p>
       ${i.message ? `<p class="gl__m">«&nbsp;${esc(i.message)}&nbsp;»</p>` : ''}
       ${!passe && ['confirme', 'a_confirmer'].includes(i.statut) ? `<div class="gl__a"><button class="btn btn--primary btn--sm" data-dec="valide" data-id="${i.id}">Valider</button><button class="btn btn--ghost btn--sm" data-dec="refuse" data-id="${i.id}">Refuser</button></div>` : ''}
-      ${!passe && i.statut === 'valide' ? `<div class="gl__a"><button class="btn btn--ghost btn--sm" data-dec="refuse" data-id="${i.id}">Retirer de ce créneau</button></div>` : ''}
+      ${!passe && i.statut === 'valide' ? `<div class="gl__a"><button class="btn btn--ghost btn--sm" data-desinscrire="${i.id}">Désinscrire à sa demande</button><button class="btn btn--ghost btn--sm btn--rouge" data-dec="refuse" data-id="${i.id}">Retirer</button></div>` : ''}
+      ${jourJ && i.statut === 'valide' ? `<div class="gl__a gl__presence"><span>Le jour même :</span><button class="btn btn--sm ${i.presence === 'oui' ? 'btn--primary' : 'btn--ghost'}" data-presence="oui" data-id="${i.id}" aria-pressed="${i.presence === 'oui'}">Présent·e</button><button class="btn btn--sm ${i.presence === 'non' ? 'btn--danger' : 'btn--ghost'}" data-presence="non" data-id="${i.id}" aria-pressed="${i.presence === 'non'}">Absent·e</button></div>` : ''}
     </li>`).join('')}</ul>` : '<p class="tiroir__vide">Personne pour l\'instant. Le créneau est ouvert aux inscriptions sur le calendrier public.</p>'}
-    <div class="tiroir__a">${passe ? '' : '<button class="btn btn--primary" data-t="edit">Modifier</button>'}<button class="btn btn--ghost" data-t="dup">Copier la semaine suivante</button>${passe ? '' : '<button class="btn btn--ghost btn--rouge" data-t="suppr">Supprimer</button>'}</div>`,
+    <div class="tiroir__a">${passe ? '' : '<button class="btn btn--primary" data-t="ajout">Inscrire quelqu\'un</button><button class="btn btn--ghost" data-t="edit">Modifier</button>'}<button class="btn btn--ghost" data-t="dup">Copier la semaine suivante</button>${passe ? '' : '<button class="btn btn--ghost btn--rouge" data-t="suppr">Supprimer</button>'}</div>`,
     (t) => t.onclick = (e) => {
-      const d = e.target.closest('[data-dec]'); if (d) return decider(d.dataset.id, d.dataset.dec);
+      const d = e.target.closest('[data-dec]'); if (d) return decider([d.dataset.id], d.dataset.dec);
+      const x = e.target.closest('[data-desinscrire]'); if (x) return desinscrire(x.dataset.desinscrire);
+      const pr = e.target.closest('[data-presence]'); if (pr) return marquerPresence(pr.dataset.id, pr.dataset.presence);
       const a = e.target.closest('[data-t]')?.dataset.t; if (!a) return;
-      ({ edit: editerCreneau, dup: dupliquer, suppr: supprimerCreneau })[a](c);
+      ({ ajout: inscrireQuelquun, edit: editerCreneau, dup: dupliquer, suppr: supprimerCreneau })[a](c);
     });
 }
 

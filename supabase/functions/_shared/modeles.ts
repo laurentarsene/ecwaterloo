@@ -4,7 +4,7 @@
 //  Chaque e-mail dit clairement : ce qui est prévu, ce qu'il faut faire, et comment se désister.
 // ═══════════════════════════════════════════════════════
 
-import { ADRESSE, C, SITE_URL, TEL, bouton, carteDate, esc, etapes, h2, heure, ics, jourLong, lien, note, p, page, Mail } from './mail.ts';
+import { ADRESSE, C, SITE_URL, TEL, bouton, carteDate, esc, etapes, h2, heure, ics, jourLong, lien, majuscule, note, p, page, Mail } from './mail.ts';
 
 const suivi = (token: string, a = '') => `${SITE_URL}/suivi/?t=${token}${a ? `&a=${a}` : ''}`;
 const midi = (iso: string) => new Date(`${iso}T12:00:00Z`);
@@ -118,6 +118,23 @@ export function etudiantMoisAnnule(e: Etu, message: string, prochaine: string | 
   };
 }
 
+// L'équipe a annulé à la demande de l'étudiant·e (appel, message)
+export function etudiantAnnuleParEquipe(e: Etu): Mail {
+  return {
+    to: e.email,
+    subject: `Annulation enregistrée : épicerie étudiante, ${e.date_rdv.toLowerCase()}`,
+    html: page({
+      titre: 'C\'est noté, merci de nous avoir prévenus',
+      apercu: 'Ton inscription est annulée et ta place est passée à quelqu\'un sur la liste d\'attente.',
+      couleur: C.teal, illustration: 'etudiants', pourquoi: POURQUOI_ETU,
+      corps: `${p(`Bonjour ${esc(e.prenom)},`)}
+        ${p('Comme tu nous l\'as demandé, ton inscription est annulée. Merci d\'avoir prévenu : ta place profite à quelqu\'un d\'autre, et tu pourras te réinscrire normalement le mois prochain.')}
+        ${carteEtu(e, true)}
+        ${bouton('Voir les prochaines dates', `${SITE_URL}/etudiants/`)}`,
+    }),
+  };
+}
+
 // ── Bénévoles ───────────────────────────────────────────────────────────
 type Cr = { debut: string; fin: string; note?: string; categorie: { nom: string; lieu: string; consignes: string } };
 type Ben = { id: string; prenom: string; nom: string; email: string; telephone: string; message: string; token: string; note_admin?: string; statut?: string };
@@ -126,66 +143,91 @@ const PARCOURS = ['Inscription', 'Votre confirmation', 'Validation par l\'équip
 const horaire = (c: { debut: string; fin: string }) => `de ${heure(new Date(c.debut))} à ${heure(new Date(c.fin))}`;
 const carteCr = (c: Cr, barre = false) => carteDate({ quand: new Date(c.debut), titre: c.categorie.nom + (c.note ? ` · ${c.note}` : ''), horaire: horaire(c), lieu: c.categorie.lieu, couleur: C.olive, itineraire: !barre, barre });
 const quandCourt = (c: { debut: string }) => jourLong(new Date(c.debut));
-const icsBen = (b: Ben, c: Cr) => [ics({ uid: `ben-${b.id}`, debut: new Date(c.debut), fin: new Date(c.fin), titre: `Bénévolat ECW : ${c.categorie.nom}`, lieu: c.categorie.lieu, description: `${c.categorie.consignes}\nUn empêchement : ${suivi(b.token, 'annuler')}` })];
+const evBen = (b: Ben, c: Cr) => ({ uid: `ben-${b.id}`, debut: new Date(c.debut), fin: new Date(c.fin), titre: `Bénévolat ECW : ${c.categorie.nom}`, lieu: c.categorie.lieu, description: `${c.categorie.consignes}\nUn empêchement : ${suivi(b.token, 'annuler')}` });
+const icsBen = (b: Ben, c: Cr) => [ics(evBen(b, c))];
+const plusieurs = (n: number, un: string, des: string) => n > 1 ? des : un;
 const consignes = (c: Cr) => c.categorie.consignes ? note(esc(c.categorie.consignes), C.olive, 'Bon à savoir') : '';
 
-export function benevoleAConfirmer(b: Ben, c: Cr): Mail {
+export function benevoleAConfirmer(b: Ben, crs: Cr[], token: string): Mail {
+  const n = crs.length, c = crs[0];
   return {
     to: b.email,
-    subject: `Confirmez votre inscription : ${c.categorie.nom}, ${quandCourt(c)}`,
+    subject: n > 1 ? `Confirmez vos ${n} créneaux bénévoles` : `Confirmez votre inscription : ${c.categorie.nom}, ${quandCourt(c)}`,
     html: page({
       titre: 'Merci&nbsp;! Il reste un clic',
-      apercu: `Confirmez votre inscription pour ${c.categorie.nom}, ${quandCourt(c)} ${horaire(c)}.`,
+      apercu: n > 1 ? `Un seul clic confirme vos ${n} créneaux, à partir du ${quandCourt(c)}.` : `Confirmez votre inscription pour ${c.categorie.nom}, ${quandCourt(c)} ${horaire(c)}.`,
       couleur: C.olive, illustration: 'benevoles',
-      pourquoi: 'Vous recevez cet e-mail parce que cette adresse a été utilisée pour s\'inscrire à un créneau bénévole sur ecwaterloo.com. Si ce n\'est pas vous, ignorez-le : sans confirmation, l\'inscription expire d\'elle-même.',
+      pourquoi: 'Vous recevez cet e-mail parce que cette adresse a été utilisée pour s\'inscrire comme bénévole sur ecwaterloo.com. Si ce n\'est pas vous, ignorez-le : sans confirmation, l\'inscription expire d\'elle-même.',
       corps: `${p(`Bonjour ${esc(b.prenom)},`)}
-        ${p('Merci de proposer votre aide ! Pour être sûr·es que c\'est bien vous, confirmez votre inscription :')}
-        ${carteCr(c)}
-        ${bouton('Je confirme mon inscription', suivi(b.token))}
-        ${petit('Sans confirmation dans les 48 heures, la place est libérée pour quelqu\'un d\'autre.')}
+        ${p(`Merci de proposer votre aide ! Pour être sûr·es que c'est bien vous, confirmez votre inscription${n > 1 ? ` : <strong>un seul clic confirme les ${n} créneaux</strong>` : ''}.`)}
+        ${crs.map(x => carteCr(x)).join('')}
+        ${bouton(n > 1 ? `Je confirme mes ${n} créneaux` : 'Je confirme mon inscription', suivi(token))}
+        ${petit('Sans confirmation dans les 48 heures, les places sont libérées pour quelqu\'un d\'autre.')}
         ${h2('Et ensuite ?')}
         ${etapes(PARCOURS, 1)}
-        ${p('Après votre confirmation, un membre de l\'équipe valide votre venue. Vous recevez alors un e-mail avec le créneau à ajouter à votre agenda, puis un petit rappel la veille.')}`,
+        ${p('Après votre confirmation, un membre de l\'équipe valide votre venue. Vous recevez alors un e-mail avec les dates à ajouter à votre agenda, puis un petit rappel la veille de chaque créneau.')}`,
     }),
   };
 }
 
-export function benevoleValide(b: Ben, c: Cr): Mail {
+export function benevoleValide(lignes: { i: Ben; c: Cr }[], o: { parEquipe: boolean }): Mail {
+  const b = lignes[0].i, n = lignes.length, c = lignes[0].c;
+  const annulations = n > 1
+    ? `${p('Prévenez-nous dès que possible : la place est libérée et l\'équipe est avertie tout de suite. Chaque créneau a son lien :')}${lignes.map(l => `<p style="margin:0 0 8px;font-size:15px;line-height:1.5;">${lien(`${majuscule(quandCourt(l.c))}, ${l.c.categorie.nom}`, suivi(l.i.token, 'annuler'))}</p>`).join('')}`
+    : `${p('Prévenez-nous dès que possible : la place est libérée et l\'équipe est avertie tout de suite.')}${bouton('Je ne peux plus venir', suivi(b.token, 'annuler'), 'ligne')}`;
   return {
     to: b.email,
-    subject: `C'est validé : ${c.categorie.nom}, ${quandCourt(c)}`,
+    subject: n > 1 ? `C'est validé : vos ${n} créneaux bénévoles` : `C'est validé : ${c.categorie.nom}, ${quandCourt(c)}`,
     html: page({
-      titre: 'C\'est validé, merci&nbsp;!',
-      apercu: `Nous comptons sur vous ${quandCourt(c)} ${horaire(c)}. Le créneau est en pièce jointe pour votre agenda.`,
+      titre: o.parEquipe ? 'C\'est noté, merci&nbsp;!' : 'C\'est validé, merci&nbsp;!',
+      apercu: n > 1 ? `Nous comptons sur vous ${n} fois, à partir du ${quandCourt(c)}. Les dates sont en pièce jointe pour votre agenda.` : `Nous comptons sur vous ${quandCourt(c)} ${horaire(c)}. Le créneau est en pièce jointe pour votre agenda.`,
       couleur: C.olive, illustration: 'benevoles', pourquoi: POURQUOI_BEN,
       corps: `${p(`Bonjour ${esc(b.prenom)},`)}
-        ${p('L\'équipe a validé votre venue. Nous comptons sur vous :')}
-        ${carteCr(c)}
+        ${p(o.parEquipe ? 'Comme convenu, l\'équipe vous a inscrit·e. Nous comptons sur vous :' : `L'équipe a validé votre venue. Nous comptons sur vous${n > 1 ? ` ${n} fois` : ''} :`)}
+        ${lignes.map(l => carteCr(l.c)).join('')}
         ${motEquipe(b.note_admin)}
-        ${consignes(c)}
-        ${etapes(PARCOURS, 3)}
-        ${p('Le fichier joint ajoute le créneau à votre agenda. Vous recevrez un rappel la veille, avec un bouton pour confirmer votre présence.')}
+        ${[...new Set(lignes.map(l => l.c.categorie.consignes).filter(Boolean))].map(t => note(esc(t), C.olive, 'Bon à savoir')).join('')}
+        ${o.parEquipe ? '' : etapes(PARCOURS, 3)}
+        ${p(`Le fichier joint ajoute ${n > 1 ? 'toutes les dates' : 'le créneau'} à votre agenda. Vous recevrez un rappel la veille${n > 1 ? ' de chaque créneau' : ''}, avec un bouton pour confirmer votre présence.`)}
         ${h2('Un empêchement ?')}
-        ${p('Prévenez-nous dès que possible : la place est libérée et l\'équipe est avertie tout de suite.')}
-        ${bouton('Je ne peux plus venir', suivi(b.token, 'annuler'), 'ligne')}`,
+        ${annulations}`,
     }),
-    attachments: icsBen(b, c),
+    attachments: [ics(lignes.map(l => evBen(l.i, l.c)))],
   };
 }
 
-export function benevoleRefuse(b: Ben, c: Cr): Mail {
+export function benevoleRefuse(b: Ben, crs: Cr[]): Mail {
+  const n = crs.length;
   return {
     to: b.email,
-    subject: `Votre inscription du ${quandCourt(c)}`,
+    subject: n > 1 ? 'Votre inscription comme bénévole' : `Votre inscription du ${quandCourt(crs[0])}`,
     html: page({
       titre: 'Merci pour votre proposition',
       apercu: 'Cette fois, l\'équipe ne peut pas retenir votre inscription. D\'autres créneaux vous attendent peut-être.',
       couleur: C.olive, illustration: 'equipe', pourquoi: POURQUOI_BEN,
       corps: `${p(`Bonjour ${esc(b.prenom)},`)}
-        ${p('Merci d\'avoir proposé votre aide. Pour ce créneau-ci, l\'équipe ne peut pas retenir votre inscription : il est peut-être déjà bien rempli, ou demande une expérience particulière.')}
-        ${carteCr(c, true)}
+        ${p(`Merci d'avoir proposé votre aide. Pour ${plusieurs(n, 'ce créneau-ci', 'ces créneaux-ci')}, l'équipe ne peut pas retenir votre inscription : ${plusieurs(n, 'il est', 'ils sont')} peut-être déjà bien ${plusieurs(n, 'rempli', 'remplis')}, ou ${plusieurs(n, 'demande', 'demandent')} une expérience particulière.`)}
+        ${crs.map(c => carteCr(c, true)).join('')}
         ${motEquipe(b.note_admin)}
         ${p('Votre envie d\'aider compte beaucoup pour nous. D\'autres créneaux ont sûrement besoin de vous :')}
+        ${bouton('Voir le calendrier des bénévoles', `${SITE_URL}/benevoles/`)}`,
+    }),
+  };
+}
+
+// L'équipe a enregistré une désinscription signalée par téléphone ou message
+export function benevoleDesinscrit(b: Ben, c: Cr): Mail {
+  return {
+    to: b.email,
+    subject: `Désinscription enregistrée : ${c.categorie.nom}, ${quandCourt(c)}`,
+    html: page({
+      titre: 'C\'est noté, merci de nous avoir prévenus',
+      apercu: `Vous n'êtes plus inscrit·e pour ${c.categorie.nom}, ${quandCourt(c)}. La place est libérée.`,
+      couleur: C.olive, illustration: 'equipe', pourquoi: POURQUOI_BEN,
+      corps: `${p(`Bonjour ${esc(b.prenom)},`)}
+        ${p('Comme vous nous l\'avez signalé, vous n\'êtes plus inscrit·e pour ce créneau. Merci de nous avoir prévenus : la place est libérée pour quelqu\'un d\'autre.')}
+        ${carteCr(c, true)}
+        ${p('Envie de revenir une autre fois ? Toutes les dates sont sur le calendrier :')}
         ${bouton('Voir le calendrier des bénévoles', `${SITE_URL}/benevoles/`)}`,
     }),
   };
@@ -261,18 +303,19 @@ const contact = (b: { prenom: string; nom: string; email?: string | null; teleph
   note([`<strong>${esc(b.prenom)} ${esc(b.nom)}</strong>`, b.email ? `<a href="mailto:${esc(b.email)}" style="color:${C.encre};">${esc(b.email)}</a>` : '', b.telephone ? `<a href="tel:${esc(b.telephone)}" style="color:${C.encre};">${esc(b.telephone)}</a>` : '', b.message ? `<em>«&nbsp;${esc(b.message)}&nbsp;»</em>` : ''].filter(Boolean).join('<br>'), C.navy);
 const POURQUOI_ADMIN = 'Vous recevez cette alerte parce que cette adresse est indiquée dans l\'espace admin (Réglages › Adresse qui reçoit les alertes).';
 
-export function adminNouvelleInscription(to: string, b: Ben, c: Cr): Mail {
+export function adminNouvelleInscription(to: string, b: Ben, crs: Cr[]): Mail {
+  const n = crs.length, c = crs[0];
   return {
     to,
-    subject: `À valider : ${b.prenom} ${b.nom} · ${c.categorie.nom}, ${quandCourt(c)}`,
+    subject: `À valider : ${b.prenom} ${b.nom} · ${n > 1 ? `${n} créneaux` : `${c.categorie.nom}, ${quandCourt(c)}`}`,
     html: page({
-      titre: 'Une inscription bénévole à valider',
-      apercu: `${b.prenom} ${b.nom} a confirmé son adresse pour ${c.categorie.nom}, ${quandCourt(c)}. Il reste à valider sa venue.`,
+      titre: n > 1 ? `${n} créneaux bénévoles à valider` : 'Une inscription bénévole à valider',
+      apercu: `${b.prenom} ${b.nom} a confirmé son adresse${n > 1 ? ` pour ${n} créneaux` : ` pour ${c.categorie.nom}, ${quandCourt(c)}`}. Il reste à valider sa venue.`,
       pourquoi: POURQUOI_ADMIN,
-      corps: `${p(`<strong>${esc(b.prenom)} ${esc(b.nom)}</strong> vient de confirmer son adresse e-mail. Tant que vous n'avez pas validé sa venue, la personne ne sait pas si elle est attendue.`)}
-        ${carteCr(c)}
+      corps: `${p(`<strong>${esc(b.prenom)} ${esc(b.nom)}</strong> vient de confirmer son adresse e-mail${n > 1 ? ` pour <strong>${n} créneaux</strong>` : ''}. Tant que vous n'avez pas validé sa venue, la personne ne sait pas si elle est attendue.`)}
+        ${crs.map(x => carteCr(x)).join('')}
         ${contact(b)}
-        ${bouton('Valider ou refuser', `${SITE_URL}/admin.html#benevoles`)}
+        ${bouton(n > 1 ? 'Tout valider ou choisir' : 'Valider ou refuser', `${SITE_URL}/admin.html#benevoles`)}
         ${petit('Dans l\'espace admin, un petit mot peut accompagner l\'e-mail de validation ou de refus.')}`,
     }),
   };

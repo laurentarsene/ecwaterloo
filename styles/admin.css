@@ -1133,3 +1133,34 @@ body.tiroir-ouvert { overflow: hidden; }
 .ev--creneau.is-passe b.vide { color: inherit; }
 .cal-j.is-passe, .ev.is-passe { opacity: 1; }
 .cal-j.is-passe:not(.is-hors) { background: #fbfcfc; }
+/* La remise à zéro (* { margin: 0 }) annule le centrage natif des <dialog> */
+dialog.modal { margin: auto; inset: 0; }
+@media (max-width: 560px) { dialog.modal { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); } }
+.input--recherche { min-width: 280px; cursor: text; }
+.carte__crs { display: flex; flex-direction: column; gap: 2px; font-size: 0.9rem; }
+.carte__crs b { font-weight: 600; }
+.gl__presence { align-items: center; flex-wrap: wrap; }
+.gl__presence span { font-size: 0.85rem; color: #4b5b61; margin-right: 0.2rem; }
+.afaire__n:not(:empty) { font-variant-numeric: tabular-nums; }
+.afaire__n--mot { font-size: 1.6rem !important; }
+
+/* Visite guidée */
+.tuto { position: fixed; inset: 0; z-index: 300; display: none; }
+.tuto.is-on { display: block; }
+.tuto__trou { position: fixed; border-radius: 12px; box-shadow: 0 0 0 200vmax rgba(19,35,42,.62); transition: left .3s var(--ease), top .3s var(--ease), width .3s var(--ease), height .3s var(--ease); pointer-events: none; }
+.tuto::before { content: ""; position: fixed; inset: 0; }   /* bloque les clics sous la visite */
+.tuto__bulle { position: fixed; width: min(380px, calc(100vw - 24px)); padding: 1.25rem 1.35rem 1.1rem; border-radius: 14px; background: #fff; box-shadow: 0 24px 60px -16px rgba(19,35,42,.55); transition: left .3s var(--ease), top .3s var(--ease); }
+.tuto.is-centre .tuto__bulle { left: 50% !important; top: 50% !important; transform: translate(-50%, -50%); width: min(460px, calc(100vw - 24px)); }
+.tuto.is-bas .tuto__bulle { left: 12px !important; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); top: auto !important; width: auto; }
+.tuto__points { display: flex; gap: 5px; margin-bottom: 0.9rem; }
+.tuto__points i { width: 8px; height: 8px; border-radius: 4px; background: #d5dee0; transition: width .25s, background .25s; }
+.tuto__points i.is-vu { background: #9fb4b9; }
+.tuto__points i.is-on { width: 22px; background: var(--coral); }
+.tuto__t { font-size: 1.3rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.45rem; }
+.tuto__p { font-size: 0.95rem; line-height: 1.6; color: #3b4c53; }
+.tuto__pied { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 1.1rem; }
+.tuto__pied > div { display: flex; gap: 0.4rem; margin-left: auto; }
+.tuto__passer { min-height: 40px; font-size: 0.88rem; color: #4b5b61; text-decoration: underline; text-underline-offset: 3px; }
+.tuto__passer:hover { color: var(--ink); }
+body.tuto-ouvert { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .tuto__trou, .tuto__bulle { transition: none; } }

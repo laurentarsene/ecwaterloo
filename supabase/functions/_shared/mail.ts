@@ -144,14 +144,17 @@ export function page(o: { titre: string; apercu: string; corps: string; couleur?
 // ── Agenda (.ics) ──────────────────────────────────────────────────────
 const ics2 = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 const icsTxt = (s: string) => s.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/[,;]/g, m => '\\' + m);
-export function ics(o: { uid: string; debut: Date; fin: Date; titre: string; lieu: string; description: string; jourEntier?: string }): Piece {
-  // jourEntier : 'AAAA-MM-JJ' pour un événement sur la journée (heure non fixée)
-  const quand = o.jourEntier
-    ? [`DTSTART;VALUE=DATE:${o.jourEntier.replace(/-/g, '')}`, `DTEND;VALUE=DATE:${new Date(Date.parse(o.jourEntier) + 864e5).toISOString().slice(0, 10).replace(/-/g, '')}`]
-    : [`DTSTART:${ics2(o.debut)}`, `DTEND:${ics2(o.fin)}`];
-  const lignes = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ECW//ecwaterloo.com//FR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
-    `UID:${o.uid}@ecwaterloo.com`, `DTSTAMP:${ics2(new Date())}`, ...quand,
-    `SUMMARY:${icsTxt(o.titre)}`, `LOCATION:${icsTxt(o.lieu)}`, `DESCRIPTION:${icsTxt(o.description)}`, 'END:VEVENT', 'END:VCALENDAR'];
+type Evenement = { uid: string; debut: Date; fin: Date; titre: string; lieu: string; description: string; jourEntier?: string };
+export function ics(evs: Evenement | Evenement[]): Piece {
+  // jourEntier : 'AAAA-MM-JJ' pour un événement sur la journée (heure non fixée). Plusieurs événements : un seul fichier.
+  const vevent = (o: Evenement) => {
+    const quand = o.jourEntier
+      ? [`DTSTART;VALUE=DATE:${o.jourEntier.replace(/-/g, '')}`, `DTEND;VALUE=DATE:${new Date(Date.parse(o.jourEntier) + 864e5).toISOString().slice(0, 10).replace(/-/g, '')}`]
+      : [`DTSTART:${ics2(o.debut)}`, `DTEND:${ics2(o.fin)}`];
+    return ['BEGIN:VEVENT', `UID:${o.uid}@ecwaterloo.com`, `DTSTAMP:${ics2(new Date())}`, ...quand,
+      `SUMMARY:${icsTxt(o.titre)}`, `LOCATION:${icsTxt(o.lieu)}`, `DESCRIPTION:${icsTxt(o.description)}`, 'END:VEVENT'];
+  };
+  const lignes = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ECW//ecwaterloo.com//FR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', ...(Array.isArray(evs) ? evs : [evs]).flatMap(vevent), 'END:VCALENDAR'];
   return { filename: 'ecw.ics', content: btoa(unescape(encodeURIComponent(lignes.join('\r\n')))), content_type: 'text/calendar' };
 }
 

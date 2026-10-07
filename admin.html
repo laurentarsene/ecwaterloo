@@ -6,7 +6,7 @@
   <title>Admin — Espace Convivial de Waterloo</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="assets/images/ecw-icon.png">
-  <link rel="stylesheet" href="styles/admin.css?v=9">
+  <link rel="stylesheet" href="styles/admin.css?v=11">
 </head>
 <body>
 
@@ -64,8 +64,9 @@
         <button class="dash__tab nav__item" data-tab="reglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Réglages</span></button>
       </nav>
       <div class="nav__bas">
-        <a href="/" class="nav__lien" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Voir le site</span></a>
-        <button class="nav__lien" id="logoutBtn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Se déconnecter</span></button>
+        <button class="nav__lien" id="tutoRelancer" aria-label="Visite guidée"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg><span>Visite guidée</span></button>
+        <a href="/" class="nav__lien" target="_blank" rel="noopener" aria-label="Voir le site (nouvel onglet)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Voir le site</span></a>
+        <button class="nav__lien" id="logoutBtn" aria-label="Se déconnecter"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Se déconnecter</span></button>
         <p class="nav__qui" id="navQui"></p>
       </div>
     </aside>
@@ -86,6 +87,7 @@
       <section id="etuListe" class="seg-panel">
         <div class="toolbar">
           <div class="toolbar__left">
+            <input type="search" class="input input--recherche" id="filterTexte" placeholder="Rechercher un nom, un e-mail, un téléphone" aria-label="Rechercher une personne">
             <select class="input" id="filterDate" aria-label="Date"><option value="">Toutes les dates</option></select>
             <select class="input" id="filterStatut" aria-label="Statut">
               <option value="">Tous les statuts</option>
@@ -188,8 +190,9 @@
 
   <script src="config.js?v=3"></script>
   <script src="assets/vendor/supabase-2.117.2.js"></script>
-  <script src="scripts/admin.js?v=5"></script>
-  <script src="scripts/admin-plus.js?v=3"></script>
-  <script src="scripts/admin-agenda.js?v=1"></script>
+  <script src="scripts/admin.js?v=6"></script>
+  <script src="scripts/admin-plus.js?v=4"></script>
+  <script src="scripts/admin-agenda.js?v=2"></script>
+  <script src="scripts/admin-tuto.js?v=1"></script>
 </body>
 </html>

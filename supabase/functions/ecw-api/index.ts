@@ -74,33 +74,83 @@ async function etudiantInscrire(b: Record<string, unknown>) {
 
 // ── Bénévoles ──────────────────────────────────────────────────────────
 async function benevoleInscrire(b: Record<string, unknown>) {
-  const r = await rpc<{ id: string }>('inscrire_benevole', {
-    p_creneau: requis(txt(b.creneau_id, 40), 'creneau'), p_prenom: requis(txt(b.prenom, 80), 'prenom'),
-    p_nom: requis(txt(b.nom, 80), 'nom'), p_email: emailValide(b.email),
-    p_telephone: txt(b.telephone, 40), p_message: txt(b.message, 1000),
-  });
-  const { data: ins } = await db.from('benevole_inscriptions').select('*').eq('id', r.id).single();
-  await envoyer(M.benevoleAConfirmer(ins, await creneau(ins.creneau_id)));
-  await db.from('benevole_inscriptions').update({ mail_confirmation_at: new Date().toISOString() }).eq('id', r.id);
-  return { ok: true };
+  // Un ou plusieurs créneaux en une fois : un seul e-mail de confirmation pour l'ensemble (même « lot »)
+  const ids = [...new Set((Array.isArray(b.creneau_ids) ? b.creneau_ids : [b.creneau_id]).map(x => txt(x, 40)).filter(Boolean))].slice(0, 12);
+  if (!ids.length) throw new Refus('champ_creneau');
+  const personne = { p_prenom: requis(txt(b.prenom, 80), 'prenom'), p_nom: requis(txt(b.nom, 80), 'nom'), p_email: emailValide(b.email), p_telephone: txt(b.telephone, 40), p_message: txt(b.message, 1000) };
+  const crees: string[] = []; const refus: { creneau_id: string; code: string }[] = [];
+  for (const id of ids) {
+    try { crees.push((await rpc<{ id: string }>('inscrire_benevole', { p_creneau: id, ...personne })).id); }
+    catch (e) { if (e instanceof Refus) refus.push({ creneau_id: id, code: e.message }); else throw e; }
+  }
+  if (!crees.length) throw new Refus(refus[0]?.code || 'creneau_indisponible');
+  const lot = crees[0];
+  await db.from('benevole_inscriptions').update({ lot, mail_confirmation_at: new Date().toISOString() }).in('id', crees);
+  const { data: ins } = await db.from('benevole_inscriptions').select('*').in('id', crees);
+  const lignes = await Promise.all((ins || []).map(async i => ({ i, c: await creneau(i.creneau_id) })));
+  lignes.sort((x, y) => Date.parse(x.c.debut) - Date.parse(y.c.debut));
+  await envoyer(M.benevoleAConfirmer(lignes[0].i, lignes.map(l => l.c), ins!.find(i => i.id === lot)!.token));
+  return { ok: true, inscrits: crees.length, refus };
+}
+
+// Toutes les inscriptions encore actives d'un même lot (ou l'inscription seule)
+async function duLot(ins: { id: string; lot: string | null }) {
+  if (!ins.lot) return [ins];
+  return (await db.from('benevole_inscriptions').select('*').eq('lot', ins.lot).order('created_at')).data || [ins];
 }
 
 async function benevoleDecision(b: Record<string, unknown>) {
-  const id = requis(txt(b.id, 40), 'id');
+  const ids = (Array.isArray(b.ids) ? b.ids : [b.id]).map(x => txt(x, 40)).filter(Boolean);
+  if (!ids.length) throw new Refus('champ_id');
   const decision = b.decision === 'valide' ? 'valide' : b.decision === 'refuse' ? 'refuse' : null;
   if (!decision) throw new Refus('decision');
-  const { data: ins } = await db.from('benevole_inscriptions').select('*').eq('id', id).single();
-  if (!ins) throw new Refus('introuvable');
-  if (!['a_confirmer', 'confirme', 'valide', 'refuse'].includes(ins.statut)) throw new Refus('etat_' + ins.statut);
   const note = txt(b.note, 500);
-  const maj = { statut: decision, note_admin: note, valide_at: decision === 'valide' ? new Date().toISOString() : null };
-  await db.from('benevole_inscriptions').update(maj).eq('id', id);
-  if (ins.statut !== decision) {
-    const c = await creneau(ins.creneau_id);
-    await envoyer(decision === 'valide' ? M.benevoleValide({ ...ins, note_admin: note }, c) : M.benevoleRefuse({ ...ins, note_admin: note }, c));
-    await db.from('benevole_inscriptions').update({ mail_decision_at: new Date().toISOString() }).eq('id', id);
+  const { data: liste } = await db.from('benevole_inscriptions').select('*').in('id', ids);
+  const aTraiter = (liste || []).filter(i => ['a_confirmer', 'confirme', 'valide', 'refuse'].includes(i.statut));
+  if (!aTraiter.length) throw new Refus('introuvable');
+  await db.from('benevole_inscriptions').update({ statut: decision, note_admin: note, valide_at: decision === 'valide' ? new Date().toISOString() : null }).in('id', aTraiter.map(i => i.id));
+  const changees = aTraiter.filter(i => i.statut !== decision);
+  if (changees.length) {
+    const lignes = await Promise.all(changees.map(async i => ({ i: { ...i, note_admin: note }, c: await creneau(i.creneau_id) })));
+    lignes.sort((x, y) => Date.parse(x.c.debut) - Date.parse(y.c.debut));
+    await envoyer(decision === 'valide' ? M.benevoleValide(lignes, { parEquipe: false }) : M.benevoleRefuse(lignes[0].i, lignes.map(l => l.c)));
+    await db.from('benevole_inscriptions').update({ mail_decision_at: new Date().toISOString() }).in('id', changees.map(i => i.id));
   }
-  return { statut: decision };
+  return { statut: decision, traitees: aTraiter.length };
+}
+
+// L'équipe inscrit quelqu'un qui a appelé : directement validé·e
+async function benevoleAjouter(b: Record<string, unknown>) {
+  const id = requis(txt(b.creneau_id, 40), 'creneau');
+  const email = txt(b.email, 254) ? emailValide(b.email) : '';
+  const ligne = { creneau_id: id, prenom: requis(txt(b.prenom, 80), 'prenom'), nom: requis(txt(b.nom, 80), 'nom'), email, telephone: txt(b.telephone, 40), message: txt(b.message, 1000),
+    statut: 'valide', confirme_at: new Date().toISOString(), valide_at: new Date().toISOString(), note_admin: txt(b.note, 500) };
+  const { data: ins, error } = await db.from('benevole_inscriptions').insert(ligne).select().single();
+  if (error) throw new Error(error.message);
+  if (email && b.prevenir !== false) {
+    await envoyer(M.benevoleValide([{ i: ins, c: await creneau(id) }], { parEquipe: true }));
+    await db.from('benevole_inscriptions').update({ mail_decision_at: new Date().toISOString() }).eq('id', ins.id);
+  }
+  return { ok: true, prevenu: !!(email && b.prevenir !== false) };
+}
+
+// La personne a prévenu l'équipe (téléphone, message) : désinscription sans e-mail de refus
+async function benevoleAnnulerAdmin(b: Record<string, unknown>) {
+  const { data: ins } = await db.from('benevole_inscriptions').select('*').eq('id', requis(txt(b.id, 40), 'id')).single();
+  if (!ins) throw new Refus('introuvable');
+  await db.from('benevole_inscriptions').update({ statut: 'annule', annule_at: new Date().toISOString(), presence: 'non' }).eq('id', ins.id);
+  if (ins.email && b.prevenir) await envoyer(M.benevoleDesinscrit(ins, await creneau(ins.creneau_id)));
+  return { ok: true };
+}
+
+// Une étudiante ou un étudiant a prévenu l'équipe : sa place passe à la liste d'attente
+async function etudiantAnnulerAdmin(b: Record<string, unknown>) {
+  const { data: e } = await db.from('inscriptions_etudiantes').select('*').eq('id', requis(txt(b.id, 40), 'id')).single();
+  if (!e) throw new Refus('introuvable');
+  const r = await rpc<{ promus: string[] }>('etudiant_annuler', { p_token: e.token });
+  for (const id of r.promus || []) await mailEtudiant(id);
+  if (b.prevenir) await envoyer(M.etudiantAnnuleParEquipe(e));
+  return { promus: (r.promus || []).length };
 }
 
 // ── Admin : changer une date, avec les conséquences ─────────────────────
@@ -265,8 +315,12 @@ async function resume(token: string) {
     if (futur && b.statut === 'a_confirmer' && !expire) actions.push('confirmer');
     if (futur && b.statut === 'valide' && Date.parse(c.debut) - Date.now() < 3 * 864e5) actions.push('presence_oui');
     if (futur && ['a_confirmer', 'confirme', 'valide'].includes(b.statut) && !expire) actions.push('annuler');
+    // Les autres créneaux choisis en même temps, chacun avec son propre lien
+    const freres = b.lot ? (await duLot(b)).filter(x => x.id !== b.id) : [];
+    const lot = await Promise.all(freres.map(async x => { const cx = await creneau(x.creneau_id); return { token: x.token, statut: x.statut, debut: cx.debut, fin: cx.fin, categorie: cx.categorie.nom }; }));
     return { type: 'benevole', prenom: b.prenom, statut: expire ? 'expire' : b.statut, presence: b.presence,
-      creneau: { debut: c.debut, fin: c.fin, categorie: c.categorie.nom, lieu: c.categorie.lieu, consignes: c.categorie.consignes }, actions };
+      creneau: { debut: c.debut, fin: c.fin, categorie: c.categorie.nom, lieu: c.categorie.lieu, consignes: c.categorie.consignes }, actions,
+      lot: lot.sort((x, y) => Date.parse(x.debut) - Date.parse(y.debut)) };
   }
   const a = t.ligne;
   return { type: 'gazette', email: a.email, statut: a.statut,
@@ -286,9 +340,13 @@ async function action(token: string, quoi: string) {
   if (t.type === 'benevole') {
     const b = t.ligne; const c = await creneau(b.creneau_id); const admin = await emailAdmin();
     if (quoi === 'confirmer') {
-      await db.from('benevole_inscriptions').update({ statut: 'confirme', confirme_at: now }).eq('id', b.id).eq('statut', 'a_confirmer');
-      await envoyer(M.adminNouvelleInscription(admin, b, c));
-      await db.from('benevole_inscriptions').update({ admin_notifie_at: now }).eq('id', b.id);
+      // Confirmer le lien confirme tous les créneaux choisis en même temps (encore à venir)
+      const lot = (await duLot(b)).filter(x => x.statut === 'a_confirmer');
+      const ids = lot.map(x => x.id);
+      await db.from('benevole_inscriptions').update({ statut: 'confirme', confirme_at: now }).in('id', ids).eq('statut', 'a_confirmer');
+      const crs = (await Promise.all(lot.map(x => creneau(x.creneau_id)))).filter(x => Date.parse(x.debut) > Date.now()).sort((x, y) => Date.parse(x.debut) - Date.parse(y.debut));
+      await envoyer(M.adminNouvelleInscription(admin, b, crs.length ? crs : [c]));
+      await db.from('benevole_inscriptions').update({ admin_notifie_at: now }).in('id', ids);
     }
     if (quoi === 'presence_oui') await db.from('benevole_inscriptions').update({ presence: 'oui' }).eq('id', b.id);
     if (quoi === 'annuler') {
@@ -330,6 +388,9 @@ Deno.serve(async (req) => {
       case 'epicerie_maj':      await exigerAdmin(req); return json(await epicerieMaj(b));
       case 'creneau_maj':       await exigerAdmin(req); return json(await creneauMaj(b));
       case 'creneau_supprimer': await exigerAdmin(req); return json(await creneauSupprimer(b));
+      case 'benevole_ajouter':  await exigerAdmin(req); return json(await benevoleAjouter(b));
+      case 'benevole_annuler':  await exigerAdmin(req); return json(await benevoleAnnulerAdmin(b));
+      case 'etudiant_annuler':  await exigerAdmin(req); return json(await etudiantAnnulerAdmin(b));
       case 'etudiant_mail':     await exigerAdmin(req); await mailEtudiant(txt(b.id, 40)); return json({ ok: true });
       default: return json({ erreur: 'action_inconnue' }, 400);
     }

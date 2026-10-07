@@ -9,26 +9,37 @@
       <div class="sform__step is-active">
         <p class="sform__kicker">Je m'inscris comme bénévole</p>
         <h2 class="sform__title" id="benTitre">—</h2>
-        <div class="ben-recap" id="benRecap"></div>
-        <input type="hidden" name="creneau_id" id="benCreneau">
+        <p class="ben-desc" id="benDesc"></p>
         <input type="text" name="site_web" class="sform__piege" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <div class="sform__row">
-          <div class="sform__group"><label class="sform__label" for="benPrenom">Prénom</label><input class="sform__input" type="text" id="benPrenom" name="prenom" autocomplete="given-name"></div>
-          <div class="sform__group"><label class="sform__label" for="benNom">Nom</label><input class="sform__input" type="text" id="benNom" name="nom" autocomplete="family-name"></div>
+        <fieldset class="ben-dates">
+          <legend class="sform__label">Quand pouvez-vous venir&nbsp;?</legend>
+          <div class="ben-dates__liste" id="benDates"></div>
+          <p class="ben-dates__aide" id="benDatesAide"></p>
+        </fieldset>
+        <div class="ben-moi" id="benMoi" hidden>
+          <p><span class="sform__label">Vous</span><strong id="benMoiNom"></strong><span id="benMoiMail"></span></p>
+          <button type="button" class="ben-moi__modif" id="benMoiModif">Ce n'est pas moi ou je veux modifier</button>
         </div>
-        <div class="sform__group"><label class="sform__label" for="benEmail">E-mail <span class="sform__label-hint">(pour confirmer votre inscription)</span></label><input class="sform__input" type="email" id="benEmail" name="email" autocomplete="email" inputmode="email"></div>
-        <div class="sform__group"><label class="sform__label" for="benTel">Téléphone <span class="sform__label-hint">(facultatif)</span></label><input class="sform__input" type="tel" id="benTel" name="telephone" autocomplete="tel"></div>
+        <div class="ben-champs" id="benChamps">
+          <div class="sform__row">
+            <div class="sform__group"><label class="sform__label" for="benPrenom">Prénom</label><input class="sform__input" type="text" id="benPrenom" name="prenom" autocomplete="given-name"></div>
+            <div class="sform__group"><label class="sform__label" for="benNom">Nom</label><input class="sform__input" type="text" id="benNom" name="nom" autocomplete="family-name"></div>
+          </div>
+          <div class="sform__group"><label class="sform__label" for="benEmail">E-mail <span class="sform__label-hint">(pour confirmer d'un clic)</span></label><input class="sform__input" type="email" id="benEmail" name="email" autocomplete="email" inputmode="email"></div>
+          <div class="sform__group"><label class="sform__label" for="benTel">Téléphone <span class="sform__label-hint">(facultatif, utile en cas d'imprévu)</span></label><input class="sform__input" type="tel" id="benTel" name="telephone" autocomplete="tel"></div>
+        </div>
         <div class="sform__group"><label class="sform__label" for="benMsg">Un mot pour l'équipe <span class="sform__label-hint">(facultatif)</span></label><textarea class="sform__input" id="benMsg" name="message" rows="2" placeholder="ex. Je viens avec une voiture, c'est ma première fois…"></textarea></div>
-        <p class="sform__privacy">Vos coordonnées servent uniquement à organiser votre venue. <a href="/confidentialite/" target="_blank" rel="noopener">En savoir plus</a></p>
+        <p class="sform__privacy">Vos coordonnées servent uniquement à organiser votre venue. Elles sont aussi retenues sur cet appareil, pour aller plus vite la prochaine fois. <a href="/confidentialite/" target="_blank" rel="noopener">En savoir plus</a></p>
         <p class="sform__error" id="benErreur" hidden></p>
-        <div class="sform__nav"><button type="submit" class="btn btn--dark">Je m'inscris</button></div>
+        <div class="sform__nav"><button type="submit" class="btn btn--dark" id="benEnvoyer">Je m'inscris</button></div>
       </div>
     </form>
     <div class="sform__success" id="benSucces" hidden>
       <div class="sform__success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="28" height="28" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></div>
       <p class="sform__kicker">Plus qu'une étape</p>
       <h2 class="sform__title">Regardez vos e-mails</h2>
-      <p class="sform__success-note">Nous venons de vous envoyer un lien pour <strong>confirmer votre inscription</strong> (pensez aux spams). Ensuite, l'équipe valide votre venue et vous recevez un e-mail de validation.</p>
+      <p class="sform__success-note" id="benSuccesNote"></p>
+      <ul class="ben-succes__dates" id="benSuccesDates"></ul>
       <button type="button" class="btn btn--dark" id="benOk">Fermer</button>
     </div>
   </div>
