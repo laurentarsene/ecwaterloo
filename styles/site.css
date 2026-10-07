@@ -471,8 +471,9 @@ b, strong { font-weight: 600; }
 .ask__card .btn--dark:hover { background: var(--deep); }
 
 .foot { position: relative; background: var(--deep); color: var(--white); overflow: hidden; margin: 0 clamp(8px, 1.5vw, 20px) clamp(8px, 1.5vw, 20px); border-radius: clamp(12px, 1.6vw, 20px); }
-.foot__art { height: clamp(260px, 56vw, 420px); overflow: hidden; padding-top: 60px; }
-.foot__art img { width: 100%; height: 100%; object-fit: cover; object-position: 88% center; }
+/* Petits écrans : le personnage recadré, centré, juste sous la carte « Une question ? » (qui déborde de 72px) */
+.foot__art { padding-top: 84px; }
+.foot__art img { display: block; width: min(86%, 440px); height: auto; margin: 0 auto; }
 .foot__in { position: relative; padding-top: 40px; padding-bottom: 36px; display: flex; flex-direction: column; gap: 56px; }
 .foot__intro { display: flex; flex-direction: column; gap: 28px; }
 .foot__contact { display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px 40px; }
@@ -838,8 +839,6 @@ b, strong { font-weight: 600; }
 
   /* Footer : contacts en lignes à toucher, liens sur deux colonnes */
   .foot { margin: 0; border-radius: 0; padding-bottom: env(safe-area-inset-bottom); }
-  .foot__art { height: 256px; padding-top: 52px; }
-  .foot__art img { object-position: 100% 45%; }  /* le personnage cadré, sans bande vide */
   .foot__in { padding-top: 24px; gap: 36px; }
   .foot__contact { flex-direction: column; align-items: stretch; gap: 0; border-top: 1px solid rgba(255,255,255,.14); }
   .foot__contact a.foot__c, .foot__contact a.foot__c:first-child { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.14); font-size: 17px; font-weight: 400; letter-spacing: 0; }
