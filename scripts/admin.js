@@ -25,9 +25,13 @@ function showLogin() {
   document.getElementById('dashboard').hidden    = true;
 }
 
-function showDashboard() {
+async function showDashboard() {
   document.getElementById('loginScreen').hidden  = true;
   document.getElementById('dashboard').hidden    = false;
+  const { data } = await sb.auth.getUser();
+  if (data?.user) currentUser = data.user;
+  superAdmin = currentUser?.app_metadata?.role === 'super_admin';
+  document.querySelector('.nav__item[data-tab="dons"]').hidden = !superAdmin;
   document.getElementById('navQui').textContent  = currentUser?.email ? `Connecté·e : ${currentUser.email}` : '';
   showTab(location.hash.slice(1));
 }
@@ -61,6 +65,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 // Logout
 document.getElementById('logoutBtn').addEventListener('click', async () => {
   await sb.auth.signOut();
+  superAdmin = false; document.querySelector('.nav__item[data-tab="dons"]').hidden = true;
   showLogin();
 });
 
@@ -287,11 +292,13 @@ function formatDateFr(date) {
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 // Six rubriques ; les anciennes adresses (#dates, #agenda, #gazette… des e-mails et favoris) restent valables
-const PANELS = { accueil: 'panelAccueil', etudiants: 'panelInscriptions', benevoles: 'panelBenevoles', lutins: 'panelLutins', site: 'panelSite', reglages: 'panelParametres' };
+const PANELS = { accueil: 'panelAccueil', etudiants: 'panelInscriptions', benevoles: 'panelBenevoles', lutins: 'panelLutins', site: 'panelSite', dons: 'panelDons', reglages: 'panelParametres' };
+// Super-admin : rôle lu sur le serveur (app_metadata) ; le serveur le revérifie pour chaque donnée sensible
+let superAdmin = false;
 const ALIAS = { inscriptions: ['etudiants', 'etuListe'], dates: ['etudiants', 'etuMois'], agenda: ['site', 'panelAgenda'], besoins: ['site', 'panelBesoins'], gazette: ['site', 'panelGazette'], chiffres: ['site', 'panelChiffres'], parametres: ['reglages'] };
 function showTab(cible) {
   let [target, seg] = ALIAS[cible] || [cible];
-  if (!PANELS[target]) target = 'accueil';
+  if (!PANELS[target] || (target === 'dons' && !superAdmin)) target = 'accueil';
   document.querySelectorAll('.dash__tab').forEach(t => { const on = t.dataset.tab === target; t.classList.toggle('is-active', on); on ? t.setAttribute('aria-current', 'page') : t.removeAttribute('aria-current'); });
   Object.entries(PANELS).forEach(([k, id]) => { const el = document.getElementById(id); if (el) el.hidden = k !== target; });
   if (target === 'reglages') loadSettings();

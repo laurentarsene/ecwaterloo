@@ -1145,6 +1145,18 @@ b, strong { font-weight: 600; }
 .suivi__lot li span:first-child { flex: 1 1 260px; }
 .suivi__lot a { font-size: 15px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; padding: 10px 0; }
 
+
+/* Don : une fois ou chaque mois */
+.don__choix { display: flex; flex-direction: column; gap: 14px; }
+.frequence { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.12); width: fit-content; }
+.frequence__b { min-height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: none; color: var(--white); font: 500 16px var(--f); cursor: pointer; }
+.frequence__b.is-on { background: var(--white); color: var(--ink); }
+.frequence__b:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; }
+.amount__sum small { font-size: .4em; font-weight: 400; margin-left: 2px; }
+.don__mensuel { font-size: 15px; line-height: 1.55; color: var(--mist); }
+.don__mensuel a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 719.98px) { .don__choix { order: 3; } .don__choix .amounts { order: 0; } }
+
 /* ══════════════════════════════════════════════════════════════
    TRANSITIONS ENTRE PAGES (View Transitions, navigateurs récents)
    Le header et le chatbot restent en place ; le contenu se fond.

@@ -850,3 +850,17 @@ function makeModal(overlay, { onOpen } = {}) {
     resizeTimer = setTimeout(() => { const t = ++sessionToken; loading.hidden = false; buildBook(t); }, 200);
   });
 })();
+
+/* ══════════════════════════════════════════════════════════════
+   DON : une fois ou chaque mois (visible seulement si les liens mensuels sont configurés)
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  const groupe = document.querySelector('.frequence'); if (!groupe) return;
+  groupe.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-freq]'); if (!b) return;
+    groupe.querySelectorAll('[data-freq]').forEach(x => { const on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on); });
+    document.querySelectorAll('[data-montants]').forEach(el => { el.hidden = el.dataset.montants !== b.dataset.freq; });
+    const libre = document.querySelector('.don__free'); if (libre) libre.hidden = b.dataset.freq === 'mois';   // montant libre : don unique seulement
+  });
+})();
+

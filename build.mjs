@@ -12,9 +12,24 @@ import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 
-const V = { css: 19, js: 38, chat: 5 };
+const V = { css: 20, js: 39, chat: 5 };
 
 // Informations légales (footer, page Confidentialité) : à un seul endroit
+// Dons mensuels : coller ici les liens Stripe « Payment Link » récurrents (chaque mois), un par montant,
+// et le lien de connexion à l'espace client Stripe (Réglages › Billing › Customer portal).
+// Tant qu'un lien manque, le choix « Chaque mois » reste masqué sur le site.
+const DONS_MENSUELS = {
+  montants: [[5, ''], [10, ''], [25, ''], [50, '']],
+  portail: '',
+};
+const donsMensuelsActifs = DONS_MENSUELS.portail && DONS_MENSUELS.montants.every(([, lien]) => lien);
+const COULEURS_DON = ['#f26d5f', '#7fbfcb', '#c9cb45', '#fff'];
+const DONS_HTML = donsMensuelsActifs ? {
+  dons_frequence: `<div class="frequence" role="group" aria-label="Fréquence du don"><button type="button" class="frequence__b is-on" data-freq="une" aria-pressed="true">Une fois</button><button type="button" class="frequence__b" data-freq="mois" aria-pressed="false">Chaque mois</button></div>`,
+  dons_mensuels: `<div class="amounts" data-montants="mois" hidden>${DONS_MENSUELS.montants.map(([m, lien], k) => `<a href="${lien}" class="amount" style="--c:${COULEURS_DON[k]}"><span class="amount__sum">${m}€<small>/mois</small></span><span class="amount__what">Soit ${m * 12}&nbsp;€ sur l'année, sans y penser.</span><span class="amount__cta">Donner ${m}€ par mois →</span></a>`).join('')}</div>
+        <p class="don__mensuel" data-montants="mois" hidden>Un don mensuel nous aide à prévoir les colis et les permanences d'un mois sur l'autre. Vous pouvez le modifier ou l'arrêter à tout moment, en un clic&nbsp;: <a href="${DONS_MENSUELS.portail}">gérer mon don mensuel</a>.</p>`,
+} : { dons_frequence: '', dons_mensuels: '' };
+
 const LEGAL = {
   legal_name: 'Espace Convivial de Waterloo',
   legal_address: 'Rue de la Station 139A, 1410 Waterloo',
@@ -218,7 +233,7 @@ for (const p of PAGES) {
     .replace('{{scripts}}', p.scripts || '')
     .replace('{{v_css}}', V.css).replaceAll('{{v_js}}', V.js).replace('{{v_chat}}', V.chat);
 
-  for (const [k, v] of Object.entries(LEGAL)) html = html.replaceAll(`{{${k}}}`, v);
+  for (const [k, v] of Object.entries({ ...LEGAL, ...DONS_HTML })) html = html.replaceAll(`{{${k}}}`, v);
   if (p.chapter) html = html.replaceAll(`data-nav="${p.chapter}"`, `data-nav="${p.chapter}" aria-current="page"`);
   html = links(html, p.page);
   html = html.replace('<html lang="fr">', '<html lang="fr">\n<!-- Généré par build.mjs depuis src/ : modifier src/, puis lancer `node build.mjs` -->');

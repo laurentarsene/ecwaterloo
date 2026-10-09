@@ -15,11 +15,13 @@ const ETAPES_TUTO = [
   { cible: '.nav__item[data-tab="benevoles"]', titre: 'Bénévoles', texte: 'Les bénévoles s\'inscrivent seul·es sur le site et confirment leur e-mail ; il vous reste à valider leur venue. Vous y gérez aussi les créneaux et les activités, et vous pouvez inscrire vous-même quelqu\'un qui a appelé.' },
   { cible: '.nav__item[data-tab="etudiants"]', titre: 'Épicerie étudiante', texte: 'La prochaine date, les places et la liste d\'attente, la liste des inscrit·es pour le jour J, et les douze prochains mois : changer une date, le nombre de places, ou annuler un mois. Les personnes concernées sont prévenues automatiquement.' },
   { cible: '.nav__item[data-tab="site"]', titre: 'Contenus du site', texte: 'Ce que voient les visiteurs et qui change souvent : l\'agenda et les nouvelles, les besoins du moment (couches, pâtes…), la Gazette à mettre en ligne et à envoyer, et les chiffres de la page Impact.' },
+  { cible: '.nav__item[data-tab="dons"]', titre: 'Dons', texte: 'Visible seulement par les super-admins : la balance Stripe, les dons des douze derniers mois, les virements vers le compte de l\'ASBL et l\'export de l\'année. Les autres membres de l\'équipe ne voient pas cet onglet.' },
   { cible: '.nav__item[data-tab="reglages"]', titre: 'Réglages', texte: 'Les quelques réglages généraux : quand s\'ouvrent les inscriptions étudiantes, le nombre de places par défaut, l\'objectif des lutins de Noël, et l\'adresse qui reçoit les alertes.' },
   { cible: '#tutoRelancer', titre: 'C\'est tout !', texte: 'Un doute plus tard ? Ce bouton relance la visite. Et rien n\'est jamais envoyé ni supprimé sans une fenêtre qui explique ce qui va se passer : vous pouvez explorer sans crainte.' },
 ];
 
 const TUTO = { i: 0, el: null, lance: false };
+let ETAPES = ETAPES_TUTO;
 
 async function lancerTuto() {
   showTab('accueil');
@@ -37,10 +39,10 @@ async function lancerTuto() {
     TUTO.el = document.getElementById('tuto');
     TUTO.el.querySelector('.tuto__passer').onclick = () => finirTuto();
     TUTO.el.querySelector('.tuto__prec').onclick = () => montrerEtape(TUTO.i - 1);
-    TUTO.el.querySelector('.tuto__suiv').onclick = () => TUTO.i === ETAPES_TUTO.length - 1 ? finirTuto() : montrerEtape(TUTO.i + 1);
+    TUTO.el.querySelector('.tuto__suiv').onclick = () => TUTO.i === ETAPES.length - 1 ? finirTuto() : montrerEtape(TUTO.i + 1);
     TUTO.el.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') finirTuto();
-      if (e.key === 'ArrowRight' && TUTO.i < ETAPES_TUTO.length - 1) montrerEtape(TUTO.i + 1);
+      if (e.key === 'ArrowRight' && TUTO.i < ETAPES.length - 1) montrerEtape(TUTO.i + 1);
       if (e.key === 'ArrowLeft' && TUTO.i > 0) montrerEtape(TUTO.i - 1);
       if (e.key === 'Tab') { // la tabulation reste dans la bulle
         const f = [...TUTO.el.querySelectorAll('button:not([hidden])')]; const k = f.indexOf(document.activeElement);
@@ -50,19 +52,20 @@ async function lancerTuto() {
     addEventListener('resize', () => TUTO.el.classList.contains('is-on') && placer());
     addEventListener('scroll', () => TUTO.el.classList.contains('is-on') && placer(), { passive: true });
   }
+  ETAPES = ETAPES_TUTO.filter(e => !e.cible || document.querySelector(e.cible)?.getClientRects().length);
   TUTO.el.classList.add('is-on'); document.body.classList.add('tuto-ouvert');
   montrerEtape(0);
 }
 
 function montrerEtape(i) {
-  TUTO.i = Math.max(0, Math.min(i, ETAPES_TUTO.length - 1));
-  const e = ETAPES_TUTO[TUTO.i], el = TUTO.el;
+  TUTO.i = Math.max(0, Math.min(i, ETAPES.length - 1));
+  const e = ETAPES[TUTO.i], el = TUTO.el;
   el.querySelector('.tuto__t').textContent = e.titre;
   el.querySelector('.tuto__p').textContent = e.texte;
-  el.querySelector('.tuto__points').innerHTML = ETAPES_TUTO.map((_, k) => `<i class="${k === TUTO.i ? 'is-on' : k < TUTO.i ? 'is-vu' : ''}"></i>`).join('');
+  el.querySelector('.tuto__points').innerHTML = ETAPES.map((_, k) => `<i class="${k === TUTO.i ? 'is-on' : k < TUTO.i ? 'is-vu' : ''}"></i>`).join('');
   el.querySelector('.tuto__prec').hidden = TUTO.i === 0;
-  el.querySelector('.tuto__passer').hidden = TUTO.i === ETAPES_TUTO.length - 1;
-  el.querySelector('.tuto__suiv').textContent = TUTO.i === 0 ? 'Commencer la visite' : TUTO.i === ETAPES_TUTO.length - 1 ? 'Terminer' : 'Suivant';
+  el.querySelector('.tuto__passer').hidden = TUTO.i === ETAPES.length - 1;
+  el.querySelector('.tuto__suiv').textContent = TUTO.i === 0 ? 'Commencer la visite' : TUTO.i === ETAPES.length - 1 ? 'Terminer' : 'Suivant';
   const cible = e.cible && document.querySelector(e.cible);
   if (cible) cible.scrollIntoView({ block: cible.offsetHeight > innerHeight * 0.6 ? 'start' : 'center', inline: 'nearest', behavior: 'instant' });
   placer();
@@ -70,7 +73,7 @@ function montrerEtape(i) {
 }
 
 function placer() {
-  const e = ETAPES_TUTO[TUTO.i], el = TUTO.el;
+  const e = ETAPES[TUTO.i], el = TUTO.el;
   const trou = el.querySelector('.tuto__trou'), bulle = el.querySelector('.tuto__bulle');
   const cible = e.cible && document.querySelector(e.cible);
   const W = innerWidth, H = innerHeight, m = 8;

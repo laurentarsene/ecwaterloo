@@ -43,9 +43,20 @@ Aucune modification de code n'est nécessaire. Six rubriques :
 - **Bénévoles** : validations, créneaux (un par un, copie, séries), catégories, export CSV.
 - **Lutins de Noël** : suivi des lettres et des cadeaux.
 - **Contenus du site** : agenda et nouvelles, besoins du moment, Gazette (mise en ligne et envoi aux abonné·es), chiffres de la page Impact.
+- **Dons** (super-admins seulement) : balance Stripe, dons des 12 derniers mois, dons mensuels actifs, virements, export CSV de l'année. Lu en direct chez Stripe, rien n'est stocké dans la base.
 - **Réglages** : ouverture des inscriptions étudiantes, places par défaut, objectif des lutins, adresse des alertes.
 
 Une **visite guidée** se lance à la première connexion de chaque compte (mémorisé dans le compte) ; le bouton « Visite guidée » du menu la relance (`scripts/admin-tuto.js`).
+
+**Super-admin** : rôle posé dans les métadonnées système du compte (impossible à modifier depuis le site), via l'éditeur SQL de Supabase :
+
+```sql
+update auth.users set raw_app_meta_data = raw_app_meta_data || '{"role":"super_admin"}'::jsonb where email = 'adresse@exemple.be';
+```
+
+La personne se déconnecte puis se reconnecte. Le serveur vérifie ce rôle à chaque demande de données de dons. La clé Stripe (restreinte, lecture seule : Balance, Charges, Payouts, Subscriptions) se pose avec `supabase secrets set STRIPE_SECRET_KEY=rk_live_…`.
+
+**Dons mensuels** : coller les liens Stripe récurrents et le lien de l'espace client dans `DONS_MENSUELS`, en haut de `build.mjs`. Tant qu'un lien manque, le choix « Chaque mois » reste masqué.
 
 Tout compte créé dans Supabase Auth est administrateur : garder « Allow new users to sign up » désactivé et créer les comptes à la main (Authentication › Users › Add user).
 

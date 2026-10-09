@@ -1164,3 +1164,35 @@ dialog.modal { margin: auto; inset: 0; }
 .tuto__passer:hover { color: var(--ink); }
 body.tuto-ouvert { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .tuto__trou, .tuto__bulle { transition: none; } }
+
+/* Dons (super-admins) */
+.dons-test { padding: 0.8rem 1rem; margin-bottom: 1.25rem; border-radius: 10px; background: #fbf2da; line-height: 1.5; }
+.dons-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; margin-bottom: 2rem; }
+.dons-c { display: flex; flex-direction: column; gap: 0.3rem; padding: 1.2rem 1.3rem; border-radius: 12px; background: #fff; border: 1px solid var(--ligne); }
+.dons-c span { font-size: 0.9rem; color: #4b5b61; }
+.dons-c b { font-weight: 300; font-size: clamp(1.9rem, 3vw, 2.4rem); letter-spacing: -0.03em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.dons-c p { font-size: 0.88rem; line-height: 1.5; color: #4b5b61; }
+.dons-c--fort { background: var(--ink); border-color: var(--ink); color: #fff; }
+.dons-c--fort span, .dons-c--fort p { color: #c9d6d9; }
+.barres { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; align-items: end; height: 230px; padding: 1rem 1rem 0.5rem; border-radius: 12px; background: #fff; border: 1px solid var(--ligne); }
+.barre { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 4px; min-width: 0; }
+.barre i { display: block; width: 100%; max-width: 46px; border-radius: 6px 6px 2px 2px; background: var(--coral); transition: filter .15s; }
+.barre:hover i { filter: brightness(.9); }
+.barre__v { font-size: 0.72rem; font-weight: 600; color: #3b4c53; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.barre__m { font-size: 0.78rem; color: #4b5b61; }
+@media (max-width: 760px) { .barre__v { display: none; } .barres { gap: 3px; padding-inline: 0.5rem; } }
+.virements { display: flex; flex-direction: column; border-top: 1px solid var(--ligne); }
+.virements li { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; align-items: baseline; padding: 0.8rem 0; border-bottom: 1px solid var(--ligne); }
+.virements b { min-width: 7rem; font-size: 1.1rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.virements span { color: #4b5b61; }
+.dons-vide { max-width: 46rem; padding: 1.5rem 1.6rem; border-radius: 12px; background: #fff; border: 1px solid var(--ligne); display: flex; flex-direction: column; gap: 0.9rem; line-height: 1.6; align-items: flex-start; }
+.dons-etapes { list-style: decimal; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.dons-etapes code { padding: 1px 6px; border-radius: 4px; background: var(--paper); font-size: 0.85em; word-break: break-all; }
+.table thead th.text-right { text-align: right; }
+.dons-c b small { font-size: 0.45em; font-weight: 400; margin-left: 2px; }
+/* Lignes passées ou annulées : signalées par le fond plutôt que par la transparence (contraste AA) */
+.creneau.is-passe, tr.is-off td, tr.is-passe td, .carte.is-off, .mois.is-passe { opacity: 1; }
+.creneau.is-passe, .mois.is-passe { background: #f4f7f7; }
+tr.is-off td, tr.is-passe td { background: #f6f8f8; color: #4b5b61; }
+.statut-badge--annule { color: #4b5b61; }
+tr.is-off, tr.is-passe { opacity: 1; }

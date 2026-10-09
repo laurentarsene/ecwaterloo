@@ -3,11 +3,12 @@
 //
 //  Public : inscriptions (étudiant·es, bénévoles, lutin·es, gazette) et page /suivi/
 //           (liens des e-mails : confirmer, annuler, présence, désinscription).
+//  Super-admin : la balance des dons (lue en direct chez Stripe).
 //  Admin  : validation des bénévoles, déplacement ou annulation d'une date (avec e-mails
 //           aux personnes inscrites), envoi de la gazette (session admin requise).
 //
 //  Déployer : supabase functions deploy ecw-api
-//  Secrets  : RESEND_API_KEY (déjà en place) ; SITE_URL facultatif
+//  Secrets  : RESEND_API_KEY (déjà en place) ; STRIPE_SECRET_KEY (clé restreinte en lecture) ; SITE_URL facultatif
 // ═══════════════════════════════════════════════════════
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.2';
@@ -362,12 +363,84 @@ async function action(token: string, quoi: string) {
   return await resume(token);
 }
 
+// ── Dons (super-admin) : lus en direct chez Stripe ─────────────────────
+// Clé restreinte en lecture seule (Balance, Charges, Payouts) : supabase secrets set STRIPE_SECRET_KEY=rk_live_…
+async function stripe(chemin: string) {
+  const r = await fetch(`https://api.stripe.com/v1/${chemin}`, { headers: { Authorization: `Bearer ${Deno.env.get('STRIPE_SECRET_KEY')}` } });
+  const j = await r.json();
+  if (!r.ok) { console.error('stripe', chemin, j?.error?.message); throw new Refus(r.status === 401 ? 'stripe_cle' : r.status === 403 ? 'stripe_droits' : 'stripe'); }
+  return j;
+}
+const moisDe = (sec: number) => dateBxl(new Date(sec * 1000)).slice(0, 7);
+
+async function donsResume() {
+  if (Deno.env.get('STRIPE_MOCK') === '1') return donsFictifs();
+  if (!Deno.env.get('STRIPE_SECRET_KEY')) return { relie: false };
+  const depuis = new Date(); depuis.setMonth(depuis.getMonth() - 11, 1); depuis.setHours(0, 0, 0, 0);
+  const [solde, virements] = await Promise.all([stripe('balance'), stripe('payouts?limit=6')]);
+  const charges: Record<string, any>[] = [];
+  let apres = '';
+  for (let page = 0; page < 10; page++) {   // jusqu'à 1 000 paiements sur 12 mois
+    const j = await stripe(`charges?limit=100&created[gte]=${Math.floor(depuis.getTime() / 1000)}&expand[]=data.balance_transaction${apres ? `&starting_after=${apres}` : ''}`);
+    charges.push(...j.data);
+    if (!j.has_more) break;
+    apres = j.data.at(-1).id;
+  }
+  const reussis = charges.filter(c => c.paid && c.status === 'succeeded');
+  const net = (c: any) => (c.balance_transaction?.net ?? c.amount) - (c.amount_refunded || 0);
+  const frais = (c: any) => c.balance_transaction?.fee ?? 0;
+  const eur = (l: { amount: number; currency: string }[]) => l.filter(x => x.currency === 'eur').reduce((a, x) => a + x.amount, 0);
+  const cles = Array.from({ length: 12 }, (_, k) => { const d = new Date(depuis); d.setMonth(d.getMonth() + k); return dateBxl(new Date(d.getTime() + 864e5)).slice(0, 7); });
+  const annee = dateBxl(new Date()).slice(0, 4);
+  const deLAnnee = reussis.filter(c => moisDe(c.created).startsWith(annee));
+  const qui = (c: any) => (c.billing_details?.email || c.receipt_email || c.billing_details?.name || c.id).toLowerCase();
+  // Dons mensuels actifs (facultatif : demande l'accès en lecture aux « Subscriptions »)
+  let mensuels: { nb: number; total: number } | null = null;
+  try {
+    const subs = await stripe('subscriptions?status=active&limit=100');
+    const parMois = (it: any) => { const pr = it.price || it.plan; const u = (pr?.unit_amount ?? pr?.amount ?? 0) * (it.quantity || 1); const r = pr?.recurring || pr; const n = r?.interval_count || 1; return r?.interval === 'year' ? u / (12 * n) : r?.interval === 'week' ? u * 52 / (12 * n) : u / n; };
+    mensuels = { nb: subs.data.length, total: Math.round(subs.data.reduce((a: number, sub: any) => a + sub.items.data.reduce((b: number, it: any) => b + parMois(it), 0), 0)) };
+  } catch (_) { /* clé sans accès aux abonnements : la carte n'est pas affichée */ }
+  const tableau = `https://dashboard.stripe.com/${solde.livemode ? '' : 'test/'}`;
+  return {
+    relie: true, test: !solde.livemode, tableau, mensuels,
+    solde: { disponible: eur(solde.available), en_cours: eur(solde.pending) },
+    mois: cles.map(m => { const l = reussis.filter(c => moisDe(c.created) === m); return { mois: m, brut: l.reduce((a, c) => a + c.amount - (c.amount_refunded || 0), 0), net: l.reduce((a, c) => a + net(c), 0), nb: l.length }; }),
+    annee: { annee, brut: deLAnnee.reduce((a, c) => a + c.amount - (c.amount_refunded || 0), 0), net: deLAnnee.reduce((a, c) => a + net(c), 0), frais: deLAnnee.reduce((a, c) => a + frais(c), 0), nb: deLAnnee.length, donateurs: new Set(deLAnnee.map(qui)).size },
+    dons: charges.slice(0, 1000).map(c => ({ id: c.id, date: new Date(c.created * 1000).toISOString(), nom: c.billing_details?.name || '', email: c.billing_details?.email || c.receipt_email || '', montant: c.amount, frais: frais(c), net: net(c), rembourse: c.amount_refunded || 0,
+      statut: c.refunded ? 'rembourse' : c.status === 'succeeded' && c.paid ? 'ok' : c.status, recurrent: !!c.invoice, lien: `${tableau}payments/${c.payment_intent || c.id}` })),
+    virements: (virements.data || []).map((v: any) => ({ montant: v.amount, arrivee: new Date(v.arrival_date * 1000).toISOString(), statut: v.status })),
+  };
+}
+
+// Données d'exemple pour développer en local sans compte Stripe (STRIPE_MOCK=1)
+function donsFictifs() {
+  const noms = ['Claire Dubois', 'Marc Janssens', 'Fatima El Amrani', 'Pierre Lambert', 'Sophie Martin', 'Anonyme', 'Jean Peeters', 'Nadia Benali'];
+  const montants = [1000, 2500, 5000, 10000, 2000, 1500];
+  const dons = Array.from({ length: 46 }, (_, k) => { const d = new Date(Date.now() - k * 7.3 * 864e5); const m = montants[(k * 7) % montants.length]; const f = Math.round(m * 0.015 + 25);
+    return { id: `ch_${k}`, date: d.toISOString(), nom: noms[k % noms.length], email: `${noms[k % noms.length].split(' ')[0].toLowerCase()}@exemple.be`, montant: m, frais: f, net: m - f, rembourse: k === 9 ? m : 0, statut: k === 9 ? 'rembourse' : 'ok', recurrent: k % 4 === 0, lien: 'https://dashboard.stripe.com/test/payments' }; });
+  const parMois: Record<string, { brut: number; net: number; nb: number }> = {};
+  for (const d of dons.filter(d => d.statut === 'ok')) { const m = dateBxl(new Date(d.date)).slice(0, 7); parMois[m] ||= { brut: 0, net: 0, nb: 0 }; parMois[m].brut += d.montant; parMois[m].net += d.net; parMois[m].nb++; }
+  const cles = Array.from({ length: 12 }, (_, k) => { const d = new Date(); d.setMonth(d.getMonth() - 11 + k, 15); return dateBxl(d).slice(0, 7); });
+  const annee = dateBxl(new Date()).slice(0, 4); const da = dons.filter(d => d.statut === 'ok' && d.date.startsWith(annee));
+  return { relie: true, test: true, tableau: 'https://dashboard.stripe.com/test/', solde: { disponible: 18450, en_cours: 4925 }, mensuels: { nb: 6, total: 9500 },
+    mois: cles.map(m => ({ mois: m, ...(parMois[m] || { brut: 0, net: 0, nb: 0 }) })),
+    annee: { annee, brut: da.reduce((a, d) => a + d.montant, 0), net: da.reduce((a, d) => a + d.net, 0), frais: da.reduce((a, d) => a + d.frais, 0), nb: da.length, donateurs: new Set(da.map(d => d.email)).size },
+    dons, virements: [{ montant: 32000, arrivee: new Date(Date.now() - 12 * 864e5).toISOString(), statut: 'paid' }, { montant: 21500, arrivee: new Date(Date.now() + 2 * 864e5).toISOString(), statut: 'in_transit' }] };
+}
+
 // ── Session admin ──────────────────────────────────────────────────────
 async function exigerAdmin(req: Request) {
   const auth = req.headers.get('Authorization') || '';
   const client = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: auth } }, auth: { persistSession: false } });
   const { data } = await client.auth.getUser();
   if (!data?.user) throw new Refus('non_autorise');
+  return data.user;
+}
+// Super-admin : rôle posé dans app_metadata (modifiable seulement côté serveur, jamais par l'utilisateur)
+async function exigerSuperAdmin(req: Request) {
+  const u = await exigerAdmin(req);
+  if (u.app_metadata?.role !== 'super_admin') throw new Refus('non_autorise');
 }
 
 Deno.serve(async (req) => {
@@ -391,6 +464,7 @@ Deno.serve(async (req) => {
       case 'benevole_ajouter':  await exigerAdmin(req); return json(await benevoleAjouter(b));
       case 'benevole_annuler':  await exigerAdmin(req); return json(await benevoleAnnulerAdmin(b));
       case 'etudiant_annuler':  await exigerAdmin(req); return json(await etudiantAnnulerAdmin(b));
+      case 'dons_resume':       await exigerSuperAdmin(req); return json(await donsResume());
       case 'etudiant_mail':     await exigerAdmin(req); await mailEtudiant(txt(b.id, 40)); return json({ ok: true });
       default: return json({ erreur: 'action_inconnue' }, 400);
     }

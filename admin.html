@@ -6,7 +6,7 @@
   <title>Admin — Espace Convivial de Waterloo</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="assets/images/ecw-icon.png">
-  <link rel="stylesheet" href="styles/admin.css?v=11">
+  <link rel="stylesheet" href="styles/admin.css?v=12">
 </head>
 <body>
 
@@ -61,6 +61,7 @@
         <button class="dash__tab nav__item" data-tab="benevoles"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V7a2 2 0 1 1 4 0v4M11 10V5a2 2 0 1 1 4 0v6M15 9a2 2 0 1 1 4 0v5a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4a1.8 1.8 0 0 1 3-2L7 14"/></svg><span>Bénévoles</span><b class="nav__badge nav__badge--alerte" id="countAValider" hidden></b></button>
         <button class="dash__tab nav__item" data-tab="lutins"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 12h18M12 8c-2-4-6-4-6-1s4 1 6 1c2 0 6 2 6-1s-4-3-6 1z"/></svg><span>Lutins de Noël</span></button>
         <button class="dash__tab nav__item" data-tab="site"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 13h6M7 16h10"/></svg><span>Contenus du site</span></button>
+        <button class="dash__tab nav__item" data-tab="dons" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9A5 5 0 0 1 12 6a5 5 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9z"/></svg><span>Dons</span></button>
         <button class="dash__tab nav__item" data-tab="reglages"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Réglages</span></button>
       </nav>
       <div class="nav__bas">
@@ -169,6 +170,9 @@
       <section class="seg-panel" id="panelChiffres" hidden></section>
     </main>
 
+    <!-- Dons : réservé aux super-admins (admin-dons.js) -->
+    <main class="dash__main" id="panelDons" hidden></main>
+
     <!-- Réglages -->
     <main class="dash__main" id="panelParametres" hidden>
       <div class="dash__heading"><h1 class="dash__title">Réglages</h1></div>
@@ -190,9 +194,10 @@
 
   <script src="config.js?v=3"></script>
   <script src="assets/vendor/supabase-2.117.2.js"></script>
-  <script src="scripts/admin.js?v=6"></script>
+  <script src="scripts/admin.js?v=7"></script>
   <script src="scripts/admin-plus.js?v=4"></script>
   <script src="scripts/admin-agenda.js?v=2"></script>
-  <script src="scripts/admin-tuto.js?v=1"></script>
+  <script src="scripts/admin-dons.js?v=1"></script>
+  <script src="scripts/admin-tuto.js?v=2"></script>
 </body>
 </html>
