@@ -435,7 +435,7 @@ function donsFictifs() {
 // le serveur crée donc la page de paiement Stripe pour le montant choisi sur le site.
 const PRODUITS_DON = {
   mois: Deno.env.get('STRIPE_PRODUIT_DON_MENSUEL') || 'prod_VPOXRJMFgQMZp4',   // « Don mensuel — Espace Convivial de Waterloo »
-  une: Deno.env.get('STRIPE_PRODUIT_DON') || '',                               // un produit « Don — Espace Convivial de Waterloo »
+  une: Deno.env.get('STRIPE_PRODUIT_DON') || 'prod_UHSX56BblLQZ0H',            // « Don — Espace Convivial de Waterloo »
 };
 async function don(b: Record<string, unknown>) {
   const frequence = b.frequence === 'une' ? 'une' : 'mois';

@@ -20,8 +20,8 @@ const V = { css: 22, js: 41, chat: 5 };
 // Stripe (Settings › Billing › Customer portal › Activate link) : tant qu'il manque, le choix
 // « Chaque mois » reste masqué sur le site.
 const DONS_MENSUELS = { portail: 'https://billing.stripe.com/p/login/dRm4gz0KQ0Yd5tE9ae4Rq00', suggestions: [5, 10, 25, 50] };
-// Don unique à montant libre : passer à true une fois le produit « Don » renseigné dans ecw-api (PRODUITS_DON.une)
-const DON_UNIQUE_LIBRE = false;
+// Don unique à montant libre (2 € minimum), sur le produit « Don » renseigné dans ecw-api (PRODUITS_DON.une)
+const DON_UNIQUE_LIBRE = true;
 const COULEURS_DON = ['#f26d5f', '#7fbfcb', '#c9cb45', '#fff'];
 const DONS_HTML = DONS_MENSUELS.portail ? {
   dons_frequence: `<div class="frequence" role="group" aria-label="Fréquence du don"><button type="button" class="frequence__b is-on" data-freq="une" aria-pressed="true">Une fois</button><button type="button" class="frequence__b" data-freq="mois" aria-pressed="false">Chaque mois</button></div>`,

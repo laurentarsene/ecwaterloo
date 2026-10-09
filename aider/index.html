@@ -100,7 +100,12 @@
         <h2 class="h-big">Faire un don</h2>
         <p class="lead">Personne n'est payé chez nous. Chaque euro sert directement aux personnes que nous accompagnons.</p>
         <div class="don__free">
-          
+          <form class="don__libre" id="donLibre" data-montants="une" novalidate>
+            <label for="donLibreMontant">Un autre montant</label>
+            <span class="mensuel__champ"><input type="number" id="donLibreMontant" min="2" max="10000" step="1" inputmode="numeric" placeholder="ex. 20"><span>€</span></span>
+            <button type="submit" class="btn btn--line-light" id="donLibreEnvoyer">Donner</button>
+            <p class="mensuel__err" id="donLibreErreur" role="alert" hidden></p>
+          </form>
           <span>Paiement sécurisé par Stripe.</span>
         </div>
         <div class="don__nature" id="besoins">
