@@ -8,11 +8,12 @@
 //           aux personnes inscrites), envoi de la gazette (session admin requise).
 //
 //  Déployer : supabase functions deploy ecw-api
-//  Secrets  : RESEND_API_KEY (déjà en place) ; STRIPE_SECRET_KEY (clé restreinte en lecture) ; SITE_URL facultatif
+//  Secrets  : RESEND_API_KEY (déjà en place) ; STRIPE_SECRET_KEY (clé restreinte en lecture) ;
+//             STRIPE_CHECKOUT_KEY (clé restreinte : Checkout Sessions en écriture, pour les dons mensuels) ; SITE_URL facultatif
 // ═══════════════════════════════════════════════════════
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.2';
-import { adminClient, dateBxl, envoyer, Mail } from '../_shared/mail.ts';
+import { adminClient, dateBxl, envoyer, Mail, SITE_URL } from '../_shared/mail.ts';
 import * as M from '../_shared/modeles.ts';
 
 const CORS = {
@@ -429,6 +430,42 @@ function donsFictifs() {
     dons, virements: [{ montant: 32000, arrivee: new Date(Date.now() - 12 * 864e5).toISOString(), statut: 'paid' }, { montant: 21500, arrivee: new Date(Date.now() + 2 * 864e5).toISOString(), statut: 'in_transit' }] };
 }
 
+// ── Dons à montant libre : une fois (2 € minimum) ou chaque mois (5 € minimum) ──
+// Les liens de paiement Stripe ne laissent pas choisir le montant d'un paiement récurrent :
+// le serveur crée donc la page de paiement Stripe pour le montant choisi sur le site.
+const PRODUITS_DON = {
+  mois: Deno.env.get('STRIPE_PRODUIT_DON_MENSUEL') || 'prod_VPOXRJMFgQMZp4',   // « Don mensuel — Espace Convivial de Waterloo »
+  une: Deno.env.get('STRIPE_PRODUIT_DON') || '',                               // un produit « Don — Espace Convivial de Waterloo »
+};
+async function don(b: Record<string, unknown>) {
+  const frequence = b.frequence === 'une' ? 'une' : 'mois';
+  const montant = Math.round(Number(String(b.montant ?? '').replace(',', '.')));
+  if (!Number.isFinite(montant) || montant < (frequence === 'mois' ? 5 : 2)) throw new Refus('montant_min');
+  if (montant > (frequence === 'mois' ? 2000 : 10000)) throw new Refus('montant_max');
+  const retour = (etat: string) => `${SITE_URL}/aider/?don=${etat}${frequence === 'une' ? '-unique' : ''}#don`;
+  if (Deno.env.get('STRIPE_MOCK') === '1') return { url: retour('merci'), montant };   // développement local
+  const cle = Deno.env.get('STRIPE_CHECKOUT_KEY');
+  if (!cle || !PRODUITS_DON[frequence]) throw new Refus('indisponible');
+  const p = new URLSearchParams({
+    mode: frequence === 'mois' ? 'subscription' : 'payment', locale: 'fr',
+    'line_items[0][quantity]': '1',
+    'line_items[0][price_data][currency]': 'eur',
+    'line_items[0][price_data][product]': PRODUITS_DON[frequence],
+    'line_items[0][price_data][unit_amount]': String(montant * 100),
+    success_url: retour('merci'), cancel_url: retour('annule'),
+  });
+  if (frequence === 'mois') {
+    p.set('line_items[0][price_data][recurring][interval]', 'month');
+    p.set('custom_text[submit][message]', 'Vous pourrez modifier ou arrêter votre don mensuel à tout moment, depuis le lien présent dans chaque reçu.');
+  } else {
+    p.set('submit_type', 'donate');
+  }
+  const r = await fetch('https://api.stripe.com/v1/checkout/sessions', { method: 'POST', headers: { Authorization: `Bearer ${cle}`, 'Content-Type': 'application/x-www-form-urlencoded' }, body: p });
+  const j = await r.json();
+  if (!r.ok) { console.error('checkout', j?.error?.message); throw new Refus('indisponible'); }
+  return { url: j.url };
+}
+
 // ── Session admin ──────────────────────────────────────────────────────
 async function exigerAdmin(req: Request) {
   const auth = req.headers.get('Authorization') || '';
@@ -454,6 +491,8 @@ Deno.serve(async (req) => {
       case 'benevole_inscrire': return json(await benevoleInscrire(b));
       case 'gazette_abonner':   return json(await gazetteAbonner(b));
       case 'lutin_inscrire':    return json(await lutinInscrire(b));
+      case 'don':               return json(await don(b));
+      case 'don_mensuel':       return json(await don({ ...b, frequence: 'mois' }));
       case 'suivi':             return json(await resume(txt(b.token, 40)));
       case 'suivi_action':      return json(await action(txt(b.token, 40), txt(b.quoi, 30)));
       case 'benevole_decision': await exigerAdmin(req); return json(await benevoleDecision(b));

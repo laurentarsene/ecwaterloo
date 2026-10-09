@@ -1157,6 +1157,25 @@ b, strong { font-weight: 600; }
 .don__mensuel a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 719.98px) { .don__choix { order: 3; } .don__choix .amounts { order: 0; } }
 
+.amounts--choix .amount { border: 0; font: inherit; text-align: left; cursor: pointer; min-height: 150px; }
+.amounts--choix .amount[aria-pressed="true"] { background: var(--ink); box-shadow: inset 0 0 0 3px var(--c); }
+.amounts--choix .amount:focus-visible { outline: 3px solid var(--white); outline-offset: -3px; }
+.mensuel { display: flex; flex-direction: column; gap: 12px; }
+.mensuel__libre { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-weight: 500; color: var(--white); }
+.mensuel__champ { display: flex; align-items: center; gap: 10px; font-weight: 400; color: var(--mist); }
+.mensuel__champ input { width: 120px; min-height: 52px; padding: 0 14px; border: 2px solid rgba(255,255,255,.35); border-radius: var(--r); background: transparent; color: var(--white); font: 500 22px var(--f); }
+.mensuel__champ input:focus { outline: 0; border-color: var(--white); }
+.mensuel__aide { font-size: 14px; color: var(--mist); margin-top: -4px; }
+.mensuel__err { font-size: 15px; font-weight: 500; color: #ffb4a8; }
+.mensuel__ok { align-self: flex-start; }
+.don__retour { padding: 14px 16px; margin-bottom: 20px; border-radius: var(--r); background: #eef0d4; color: var(--ink); line-height: 1.55; }
+.don__retour--neutre { background: rgba(255,255,255,.12); color: var(--white); }
+
+.don__libre { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.don__libre label { flex-basis: 100%; font-weight: 500; color: var(--white); }
+.don__libre .mensuel__champ span { font-size: 18px; color: var(--mist); }
+.don__libre .mensuel__err { flex-basis: 100%; }
+
 /* ══════════════════════════════════════════════════════════════
    TRANSITIONS ENTRE PAGES (View Transitions, navigateurs récents)
    Le header et le chatbot restent en place ; le contenu se fond.

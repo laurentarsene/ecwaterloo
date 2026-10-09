@@ -56,7 +56,7 @@ update auth.users set raw_app_meta_data = raw_app_meta_data || '{"role":"super_a
 
 La personne se déconnecte puis se reconnecte. Le serveur vérifie ce rôle à chaque demande de données de dons. La clé Stripe (restreinte, lecture seule : Balance, Charges, Payouts, Subscriptions) se pose avec `supabase secrets set STRIPE_SECRET_KEY=rk_live_…`.
 
-**Dons mensuels** : coller les liens Stripe récurrents et le lien de l'espace client dans `DONS_MENSUELS`, en haut de `build.mjs`. Tant qu'un lien manque, le choix « Chaque mois » reste masqué.
+**Dons mensuels** (montant libre, 5 € minimum) : la fonction `ecw-api` crée la page de paiement Stripe pour le montant choisi, sur le produit « Don mensuel » (`prod_VPOXRJMFgQMZp4`). Secret : `STRIPE_CHECKOUT_KEY` (clé restreinte, Checkout Sessions en écriture). Le lien de l'espace client Stripe se règle dans `DONS_MENSUELS`, en haut de `build.mjs` ; vide, le choix « Chaque mois » est masqué.
 
 Tout compte créé dans Supabase Auth est administrateur : garder « Allow new users to sign up » désactivé et créer les comptes à la main (Authentication › Users › Add user).
 

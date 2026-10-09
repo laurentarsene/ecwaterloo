@@ -12,23 +12,34 @@ import { fileURLToPath } from 'node:url';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 
-const V = { css: 20, js: 39, chat: 5 };
+const V = { css: 22, js: 41, chat: 5 };
 
 // Informations légales (footer, page Confidentialité) : à un seul endroit
-// Dons mensuels : coller ici les liens Stripe « Payment Link » récurrents (chaque mois), un par montant,
-// et le lien de connexion à l'espace client Stripe (Réglages › Billing › Customer portal).
-// Tant qu'un lien manque, le choix « Chaque mois » reste masqué sur le site.
-const DONS_MENSUELS = {
-  montants: [[5, ''], [10, ''], [25, ''], [50, '']],
-  portail: '',
-};
-const donsMensuelsActifs = DONS_MENSUELS.portail && DONS_MENSUELS.montants.every(([, lien]) => lien);
+// Dons mensuels à montant libre (5 € minimum) : le serveur crée la page de paiement Stripe
+// (fonction ecw-api, secret STRIPE_CHECKOUT_KEY). Coller ici le lien de connexion à l'espace client
+// Stripe (Settings › Billing › Customer portal › Activate link) : tant qu'il manque, le choix
+// « Chaque mois » reste masqué sur le site.
+const DONS_MENSUELS = { portail: 'https://billing.stripe.com/p/login/dRm4gz0KQ0Yd5tE9ae4Rq00', suggestions: [5, 10, 25, 50] };
+// Don unique à montant libre : passer à true une fois le produit « Don » renseigné dans ecw-api (PRODUITS_DON.une)
+const DON_UNIQUE_LIBRE = false;
 const COULEURS_DON = ['#f26d5f', '#7fbfcb', '#c9cb45', '#fff'];
-const DONS_HTML = donsMensuelsActifs ? {
+const DONS_HTML = DONS_MENSUELS.portail ? {
   dons_frequence: `<div class="frequence" role="group" aria-label="Fréquence du don"><button type="button" class="frequence__b is-on" data-freq="une" aria-pressed="true">Une fois</button><button type="button" class="frequence__b" data-freq="mois" aria-pressed="false">Chaque mois</button></div>`,
-  dons_mensuels: `<div class="amounts" data-montants="mois" hidden>${DONS_MENSUELS.montants.map(([m, lien], k) => `<a href="${lien}" class="amount" style="--c:${COULEURS_DON[k]}"><span class="amount__sum">${m}€<small>/mois</small></span><span class="amount__what">Soit ${m * 12}&nbsp;€ sur l'année, sans y penser.</span><span class="amount__cta">Donner ${m}€ par mois →</span></a>`).join('')}</div>
-        <p class="don__mensuel" data-montants="mois" hidden>Un don mensuel nous aide à prévoir les colis et les permanences d'un mois sur l'autre. Vous pouvez le modifier ou l'arrêter à tout moment, en un clic&nbsp;: <a href="${DONS_MENSUELS.portail}">gérer mon don mensuel</a>.</p>`,
+  dons_mensuels: `<form class="mensuel" id="donMensuel" data-montants="mois" hidden novalidate>
+          <div class="amounts amounts--choix" role="group" aria-label="Montant par mois">${DONS_MENSUELS.suggestions.map((m, k) => `<button type="button" class="amount" data-montant="${m}" aria-pressed="${k === 1}" style="--c:${COULEURS_DON[k]}"><span class="amount__sum">${m}€<small>/mois</small></span><span class="amount__what">Soit ${m * 12}&nbsp;€ sur l'année.</span></button>`).join('')}</div>
+          <label class="mensuel__libre" for="donMontant"><span>Ou le montant de votre choix</span><span class="mensuel__champ"><input type="number" id="donMontant" name="montant" min="5" max="2000" step="1" inputmode="numeric" value="10" aria-describedby="donAide"><span>€ par mois</span></span></label>
+          <p class="mensuel__aide" id="donAide">À partir de 5&nbsp;€ par mois.</p>
+          <p class="mensuel__err" id="donErreur" role="alert" hidden></p>
+          <button type="submit" class="btn btn--lg btn--coral mensuel__ok" id="donEnvoyer">Donner 10&nbsp;€ par mois</button>
+          <p class="don__mensuel">Le paiement se fait sur la page sécurisée de Stripe. Un don mensuel nous aide à prévoir les colis et les permanences d'un mois sur l'autre. Vous pouvez le modifier ou l'arrêter à tout moment&nbsp;: <a href="${DONS_MENSUELS.portail}">gérer mon don mensuel</a>.</p>
+        </form>`,
 } : { dons_frequence: '', dons_mensuels: '' };
+DONS_HTML.don_libre = DON_UNIQUE_LIBRE ? `<form class="don__libre" id="donLibre" data-montants="une" novalidate>
+            <label for="donLibreMontant">Un autre montant</label>
+            <span class="mensuel__champ"><input type="number" id="donLibreMontant" min="2" max="10000" step="1" inputmode="numeric" placeholder="ex. 20"><span>€</span></span>
+            <button type="submit" class="btn btn--line-light" id="donLibreEnvoyer">Donner</button>
+            <p class="mensuel__err" id="donLibreErreur" role="alert" hidden></p>
+          </form>` : '';
 
 const LEGAL = {
   legal_name: 'Espace Convivial de Waterloo',

@@ -852,15 +852,61 @@ function makeModal(overlay, { onOpen } = {}) {
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   DON : une fois ou chaque mois (visible seulement si les liens mensuels sont configurés)
+   DON : une fois ou chaque mois (visible seulement quand le don mensuel est configuré)
+   Mensuel : montant libre à partir de 5 €, le serveur crée la page de paiement Stripe.
    ══════════════════════════════════════════════════════════════ */
 (function () {
-  const groupe = document.querySelector('.frequence'); if (!groupe) return;
-  groupe.addEventListener('click', (e) => {
+  const groupe = document.querySelector('.frequence');
+  const form = document.getElementById('donMensuel');
+  if (groupe) groupe.addEventListener('click', (e) => {
     const b = e.target.closest('[data-freq]'); if (!b) return;
     groupe.querySelectorAll('[data-freq]').forEach(x => { const on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on); });
     document.querySelectorAll('[data-montants]').forEach(el => { el.hidden = el.dataset.montants !== b.dataset.freq; });
-    const libre = document.querySelector('.don__free'); if (libre) libre.hidden = b.dataset.freq === 'mois';   // montant libre : don unique seulement
+    const libre = document.querySelector('.don__free'); if (libre) libre.hidden = b.dataset.freq === 'mois';   // montant libre ponctuel : don unique seulement
+  });
+  // Retour de Stripe
+  const retour = new URLSearchParams(location.search).get('don');
+  if (retour) {
+    const zone = document.querySelector('#don .don__main');
+    zone?.insertAdjacentHTML('afterbegin', retour === 'merci'
+      ? '<p class="don__retour" role="status"><strong>Merci, votre don mensuel est en place&nbsp;!</strong> Stripe vous a envoyé un reçu par e-mail, avec le lien pour le modifier ou l\'arrêter quand vous voulez.</p>'
+      : retour === 'merci-unique'
+      ? '<p class="don__retour" role="status"><strong>Merci pour votre don&nbsp;!</strong> Stripe vous a envoyé un reçu par e-mail. Chaque euro sert directement aux personnes que nous accompagnons.</p>'
+      : '<p class="don__retour don__retour--neutre" role="status">Le paiement n\'a pas été finalisé : rien n\'a été prélevé. Vous pouvez réessayer quand vous voulez.</p>');
+    history.replaceState(null, '', location.pathname + location.hash);
+  }
+  // Don unique à montant libre
+  const libre = document.getElementById('donLibre');
+  if (libre) {
+    const c = document.getElementById('donLibreMontant'), bt = document.getElementById('donLibreEnvoyer'), er = document.getElementById('donLibreErreur');
+    c.addEventListener('input', () => { const v = Math.round(Number(c.value)); bt.textContent = v >= 2 ? `Donner ${v}\u00a0€` : 'Donner'; er.hidden = true; });
+    libre.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const v = Math.round(Number(c.value));
+      if (!(v >= 2)) { er.textContent = 'Indiquez un montant d\'au moins 2 €.'; er.hidden = false; c.focus(); return; }
+      bt.disabled = true; bt.textContent = 'Ouverture du paiement…';
+      try { const r = await ECW.api('don', { frequence: 'une', montant: v }); location.href = r.url; }
+      catch (x) { er.textContent = 'La page de paiement ne s\'ouvre pas pour le moment. Choisissez un des montants ci-dessus, ou réessayez dans un instant.'; er.hidden = false; bt.disabled = false; bt.textContent = `Donner ${v}\u00a0€`; }
+    });
+  }
+  if (!form) return;
+  const champ = document.getElementById('donMontant'), bouton = document.getElementById('donEnvoyer'), err = document.getElementById('donErreur');
+  const fmt = (n) => new Intl.NumberFormat('fr-BE', { maximumFractionDigits: 0 }).format(n);
+  const maj = () => {
+    const v = Math.round(Number(champ.value));
+    form.querySelectorAll('[data-montant]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.montant === v)));
+    bouton.textContent = v >= 5 ? `Donner ${fmt(v)} € par mois` : 'Donner chaque mois';
+    err.hidden = true;
+  };
+  form.addEventListener('click', (e) => { const b = e.target.closest('[data-montant]'); if (!b) return; champ.value = b.dataset.montant; maj(); });
+  champ.addEventListener('input', maj);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const v = Math.round(Number(champ.value));
+    if (!(v >= 5)) { err.textContent = 'Le don mensuel commence à 5 € par mois.'; err.hidden = false; champ.focus(); return; }
+    if (v > 2000) { err.textContent = 'Pour un don mensuel de plus de 2 000 €, écrivez-nous : nous l\'organiserons avec vous.'; err.hidden = false; return; }
+    bouton.disabled = true; bouton.textContent = 'Ouverture de la page de paiement…';
+    try { const r = await ECW.api('don', { frequence: 'mois', montant: v }); location.href = r.url; }
+    catch (x) { err.textContent = 'La page de paiement ne s\'ouvre pas pour le moment. Réessayez dans un instant, ou faites un don unique en attendant.'; err.hidden = false; bouton.disabled = false; maj(); }
   });
 })();
-
